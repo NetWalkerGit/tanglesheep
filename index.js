@@ -381,7 +381,7 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
 
   if ((hour >= 20 || hour <= 7 )  || ( todayfeeds >= 100 ) ){
 
-            //nothing will happen       musim pridat zpravu pri pripsani krypta
+            //nothing will happen       
            // console.log("feeding limit reached");
        } else {
     btcbalances(btc, function (error, response) { 
@@ -606,7 +606,7 @@ function printQRimage () {
 
 
 
-//--------------------------------------------------Bitocin LN  payment ------------------------------------------------------------------
+//--------------------------------------------------Bitocin LN  payment  end ------------------------------------------------------------------
 
 
 
