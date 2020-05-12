@@ -45,7 +45,7 @@ const SockJS = require('sockjs-client');
 var sock = SockJS('http://46.252.233.34:59650/api');
  sock.onopen = function() {
               console.log('open');
-                    var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["ecda253e5b2fa517a77b6793dba38f1caf3288ea"]}}';
+                    var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": [config.obscontrol.api]}}';
                           sock.send(req);
 //ovce off
                var req = {
@@ -95,7 +95,7 @@ const SockJS = require('sockjs-client');
 var sock = SockJS('http://46.252.233.34:59650/api');
  sock.onopen = function() {
               console.log('open');
-                    var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["ecda253e5b2fa517a77b6793dba38f1caf3288ea"]}}';
+                    var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": [config.obscontrol.api]}}';
                           sock.send(req);
 //ovce on
                var req = {
