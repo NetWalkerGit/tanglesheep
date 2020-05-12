@@ -1,0 +1,551 @@
+const tmi = require('tmi.js');
+var schedule = require('node-schedule');
+const fs = require('fs');
+
+
+// Define configuration options
+const opts = {
+  identity: {
+    username: "SheepAdmin",
+    password: "oauth:pniqfkkj9i62f5o2h5ienj2zwpmpf7"
+  },
+  channels: [
+    "tanglesheep"
+  ]
+};
+
+
+var beeps = 0;
+var subcounter = [];
+
+// Create a client with our options
+const client = new tmi.client(opts);
+
+// Register our event handlers (defined below)
+//client.on('message', onMessageHandler);
+client.on('connected', onConnectedHandler);
+
+// Connect to Twitch:
+client.connect();
+
+
+
+
+
+var j = schedule.scheduleJob('  1 * * *', function(){
+           subcounter = [];
+           beeps = 0;
+
+});
+
+
+
+
+
+
+//camera handling
+
+//dravci on
+function birdcam () {
+const SockJS = require('sockjs-client');
+var sock = SockJS('http://46.252.233.34:59650/api');
+ sock.onopen = function() {
+              console.log('open');
+                    var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["ecda253e5b2fa517a77b6793dba38f1caf3288ea"]}}';
+                          sock.send(req);
+//ovce off
+               var req = {
+                     "jsonrpc": "2.0",
+                     "id": 10,
+                     "method": "setVisibility",
+                     "params": {
+                                     "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"d73bb435-0675-4754-93f4-e32414e85657\",\"vlc_source_37f2c3f5-d5d1-4c0b-b48e-787fea5958c7\"]",
+                                     "args": [false]
+                                 }
+         }
+              sock.send(JSON.stringify(req));
+
+
+
+
+  //dravci on
+                             var req = {
+                     "jsonrpc": "2.0",
+                     "id": 10,
+                     "method": "setVisibility",
+                     "params": {
+                                     "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"cc5c1a40-7761-49f7-b5f7-a2f24d73eff6\",\"vlc_source_4f468466-fa9c-4d48-bf98-869e7fb5c56c\"]",
+                                     "args": [true]
+                                 }
+         }
+              sock.send(JSON.stringify(req));
+
+
+          };
+
+ sock.onmessage = function(e) {
+              console.log('message', e.data);
+              sock.close();
+          };
+
+ sock.onclose = function() {
+              console.log('close');
+          };
+
+}
+
+ //ovce on
+
+function sheepcam () {
+const SockJS = require('sockjs-client');
+var sock = SockJS('http://46.252.233.34:59650/api');
+ sock.onopen = function() {
+              console.log('open');
+                    var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["ecda253e5b2fa517a77b6793dba38f1caf3288ea"]}}';
+                          sock.send(req);
+ecda253e5b2fa517a77b6793dba38f1caf3288ea//ovce on
+               var req = {
+                     "jsonrpc": "2.0",
+                     "id": 10,
+                     "method": "setVisibility",
+                     "params": {
+                                     "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"d73bb435-0675-4754-93f4-e32414e85657\",\"vlc_source_37f2c3f5-d5d1-4c0b-b48e-787fea5958c7\"]",
+                                     "args": [true]
+                                 }
+         }
+              sock.send(JSON.stringify(req));
+
+
+
+
+  //dravci off
+                             var req = {
+                     "jsonrpc": "2.0",
+                     "id": 10,
+                     "method": "setVisibility",
+                     "params": {
+                                     "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"cc5c1a40-7761-49f7-b5f7-a2f24d73eff6\",\"vlc_source_4f468466-fa9c-4d48-bf98-869e7fb5c56c\"]",
+                                     "args": [false]
+                                 }
+         }
+              sock.send(JSON.stringify(req));
+
+
+          };
+
+ sock.onmessage = function(e) {
+              console.log('message', e.data);
+              sock.close();
+          };
+
+ sock.onclose = function() {
+              console.log('close');
+          };
+
+}
+
+
+//alarm beeping  song play
+
+function beepingoff () {
+const SockJS = require('sockjs-client');
+var sock = SockJS('http://46.252.233.34:59650/api');
+ sock.onopen = function() {
+              console.log('open');
+                    var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["ecda253e5b2fa517a77b6793dba38f1caf3288ea"]}}';
+                          sock.send(req);
+//ovce on
+               var req = {
+                     "jsonrpc": "2.0",
+                     "id": 10,
+                     "method": "setVisibility",
+                     "params": {
+                                     "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"d73cb078-fd4f-427b-907c-7e3f46378999\",\"ffmpeg_source_4718982c-c0ea-4ba1-b098-2ae9c3546030\"]",
+                                     "args": [false]
+                                 }
+         }
+              sock.send(JSON.stringify(req));
+
+
+
+
+
+
+
+          };
+
+ sock.onmessage = function(e) {
+              console.log('message', e.data);
+              sock.close();
+          };
+
+ sock.onclose = function() {
+              console.log('close');
+          };
+
+}
+
+ function beepingon () {
+const SockJS = require('sockjs-client');
+var sock = SockJS('http://46.252.233.34:59650/api');
+ sock.onopen = function() {
+              console.log('open');
+                    var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["ecda253e5b2fa517a77b6793dba38f1caf3288ea"]}}';
+                          sock.send(req);
+
+                             var req = {
+                     "jsonrpc": "2.0",
+                     "id": 10,
+                     "method": "setVisibility",
+                     "params": {
+                                     "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"d73cb078-fd4f-427b-907c-7e3f46378999\",\"ffmpeg_source_4718982c-c0ea-4ba1-b098-2ae9c3546030\"]",
+                                     "args": [true]
+                                 }
+         }
+              sock.send(JSON.stringify(req));
+
+
+          };
+
+ sock.onmessage = function(e) {
+              console.log('message', e.data);
+              sock.close();
+          };
+
+ sock.onclose = function() {
+              console.log('close');
+          };
+
+}
+
+
+
+
+//subscribers  cams
+
+client.on ('chat', function(channel, userstate,  message, self) {
+
+// console.log (userstate);
+    // switch cams
+             if( (message === "!birdcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                              const  birdscamswitch = birdcam();
+                                 client.action("tanglesheep", userstate['display-name'] + " switching to bird cam ");
+
+                     } else   if( (message === "!sheepcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                              const  sheepcamswitch = sheepcam();
+                                 client.action("tanglesheep", userstate['display-name'] + " switching to sheep cam ");
+
+                                                                 //sheep cams
+
+                                        } else   if( (message === "!sheepentry" ) && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                 const  entry = camentry();
+                                 client.action("tanglesheep", userstate['display-name'] + " camera moving to sheep shed entry ");
+
+                                 } else   if( (message === "!sheepgarden") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                              const  garden = camgarden();
+                                 client.action("tanglesheep", userstate['display-name'] + " camera moving to sheep's garden ");
+
+                 } else   if( (message === "!sheeparoundshed") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                              const  aroundshed = camaroundshed();
+                                 client.action("tanglesheep", userstate['display-name'] + " camera moving to check around shed ");
+
+                  } else   if( (message === "!sheepfargarden") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                              const  fargarden = camfargarden();
+                                 client.action("tanglesheep", userstate['display-name'] + " camera moving to check far away sheep ");
+                   }
+
+					 else   if( (message === "!sheeppatrol") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                              const  sheeppatrol = camsheeppatrol();
+                                 client.action("tanglesheep", userstate['display-name'] + " camera starting to patrol ");
+                   }
+                                   //birds  cams
+                                    else   if( (message === "!birdmain") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                              const  birdmain = cambirdmain();
+                                 client.action("tanglesheep", userstate['display-name'] + " Cage of Lary and Roby ");
+                   }
+
+                                    else   if( (message === "!birdrest") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                              const  birdrest = cambirdrest();
+                                 client.action("tanglesheep", userstate['display-name'] + " Resting place view ");
+                   }
+
+                                   else   if( (message === "!birdfeeding") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                              const  birdfeeding = cambirdfeeding();
+                                 client.action("tanglesheep", userstate['display-name'] + " Feeding place view ");
+                   }
+
+                                      else   if( (message === "!birdfeeding2") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                              const  birdfeeding2 = cambirdfeeding2();
+                                 client.action("tanglesheep", userstate['display-name'] + " Lary's feeding place ");
+                   }
+
+                                      else   if( (message === "!bird2main") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                              const  bird2main = cambird2main();
+                                 client.action("tanglesheep", userstate['display-name'] + " Second cage all view ");
+                   }
+                                    else   if( (message === "!bird2feeding") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                              const  bird2feeding = cambird2feeding();
+                                 client.action("tanglesheep", userstate['display-name'] + " Second cage feeding place view ");
+                   }
+                                   else   if( (message === "!bird2rest") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                              const  bird2rest = cambird2rest();
+                                 client.action("tanglesheep", userstate['display-name'] + " Second cage rest place view ");
+                   }
+
+
+});
+
+
+
+//camera entry
+function camentry () {
+var request = require("request"); var options = { method: 'PUT',
+  url: 'http://twitch:Tanglesheep2019@46.252.233.34:82/ISAPI/PTZCtrl/channels/1/presets/1/goto',
+  headers:
+   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
+     'cache-control': 'no-cache' } }; request(options, function (error) {
+
+  console.log(error);
+});
+}
+
+//camera garden
+function camgarden () {
+var request = require("request"); var options = { method: 'PUT',
+  url: 'http://twitch:Tanglesheep2019@46.252.233.34:82/ISAPI/PTZCtrl/channels/1/presets/2/goto',
+  headers:
+   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
+     'cache-control': 'no-cache' } }; request(options, function (error) {
+
+  console.log(error);
+});
+}
+
+//camera aroundshed
+function camaroundshed () {
+var request = require("request"); var options = { method: 'PUT',
+  url: 'http://twitch:Tanglesheep2019@46.252.233.34:82/ISAPI/PTZCtrl/channels/1/presets/3/goto',
+  headers:
+   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
+     'cache-control': 'no-cache' } }; request(options, function (error) {
+
+  console.log(error);
+});
+}
+
+//camera fargarden
+function camfargarden () {
+var request = require("request"); var options = { method: 'PUT',
+  url: 'http://twitch:Tanglesheep2019@46.252.233.34:82/ISAPI/PTZCtrl/channels/1/presets/4/goto',
+  headers:
+   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
+     'cache-control': 'no-cache' } }; request(options, function (error) {
+
+  console.log(error);
+});
+}
+
+
+//camera sheep Patrol
+function camsheeppatrol() {
+var request = require("request"); var options = { method: 'PUT',
+  url: 'http://twitch:Tanglesheep2019@46.252.233.34:82/ISAPI/PTZCtrl/channels/1/presets/45/goto',
+  headers:
+   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
+     'cache-control': 'no-cache' } }; request(options, function (error) {
+
+  console.log(error);
+});
+}
+
+
+
+//camera cambirdmain Preset 1
+function cambirdmain () {
+var request = require("request"); var options = { method: 'PUT',
+  url: 'http://twitch:Tanglesheep2019@46.252.233.34:83/ISAPI/PTZCtrl/channels/1/presets/1/goto',
+  headers:
+   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
+     'cache-control': 'no-cache' } }; request(options, function (error) {
+
+  console.log(error);
+});
+}
+
+
+//camera cambirdrest Preset 2
+function cambirdrest () {
+var request = require("request"); var options = { method: 'PUT',
+  url: 'http://twitch:Tanglesheep2019@46.252.233.34:83/ISAPI/PTZCtrl/channels/1/presets/2/goto',
+  headers:
+   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
+     'cache-control': 'no-cache' } }; request(options, function (error) {
+
+  console.log(error);
+});
+}
+
+
+
+
+//camera cambirdfeeding Preset 3
+function cambirdfeeding () {
+var request = require("request"); var options = { method: 'PUT',
+  url: 'http://twitch:Tanglesheep2019@46.252.233.34:83/ISAPI/PTZCtrl/channels/1/presets/3/goto',
+  headers:
+   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
+     'cache-control': 'no-cache' } }; request(options, function (error) {
+
+  console.log(error);
+});
+}
+
+
+//camera cambirdfeeding2 Preset 4
+function cambirdfeeding2 () {
+var request = require("request"); var options = { method: 'PUT',
+  url: 'http://twitch:Tanglesheep2019@46.252.233.34:83/ISAPI/PTZCtrl/channels/1/presets/4/goto',
+  headers:
+   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
+     'cache-control': 'no-cache' } }; request(options, function (error) {
+
+  console.log(error);
+});
+}
+
+
+//camera cambird2main Preset 5
+function cambird2main () {
+var request = require("request"); var options = { method: 'PUT',
+  url: 'http://twitch:Tanglesheep2019@46.252.233.34:83/ISAPI/PTZCtrl/channels/1/presets/5/goto',
+  headers:
+   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
+     'cache-control': 'no-cache' } }; request(options, function (error) {
+
+  console.log(error);
+});
+}
+
+//camera cambird2feeding Preset 6
+function cambird2feeding () {
+var request = require("request"); var options = { method: 'PUT',
+  url: 'http://twitch:Tanglesheep2019@46.252.233.34:83/ISAPI/PTZCtrl/channels/1/presets/6/goto',
+  headers:
+   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
+     'cache-control': 'no-cache' } }; request(options, function (error) {
+
+  console.log(error);
+});
+}
+
+//camera cambird2feeding Preset 7
+function cambird2rest() {
+var request = require("request"); var options = { method: 'PUT',
+  url: 'http://twitch:Tanglesheep2019@46.252.233.34:83/ISAPI/PTZCtrl/channels/1/presets/7/goto',
+  headers:
+   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
+     'cache-control': 'no-cache' } }; request(options, function (error) {
+
+  console.log(error);
+});
+}
+
+
+
+
+
+
+client.on ('chat', function(channel, userstate,  message, self) {
+
+//get Date
+const date = new Date();
+let hour = date.getHours();
+//console.log(feeds);
+//console.log(limit);
+         if ((hour >= 20 || hour <= 7 ||  hour == 12 || hour == 13) &&   (message === "!beep") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder))  {
+
+                      client.action("tanglesheep", userstate['display-name'] + " Sheep's sleeping  or have siesta break now. Alarm not working :) ");
+
+           } else   if( (message === "!beep") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+
+                                          if  ( userstate['display-name'] in subcounter && subcounter[userstate['display-name']] >= 0) {
+                                                    client.action("tanglesheep", userstate['display-name'] + " No more alarm for today , you can cheer 10 bits to run alarm. <3");
+                                                 } else   {
+                                                                                                                        subcounter[userstate['display-name']] = beeps++;
+                                                                                                       const beep = beeper();
+                                                                                                                beepingoff();
+                                                                                                                beepingon();
+                                                                                                              client.action("tanglesheep", userstate['display-name'] + " Alarm Alarm sheepy come to eat :) ");
+
+                                                                                }
+}
+});
+
+
+//beeping for  Cheers
+
+client.on ("cheer", (channel, userstate, message) =>  {
+
+
+ //get Date
+const date = new Date();
+let hour = date.getHours();
+
+
+     if (hour >= 20 || hour <= 7 ||  hour == 12 || hour == 13)  {
+        client.action("tanglesheep", userstate['display-name'] + " Sheep's sleeping  or have siesta break now. Alarm not working :) ");
+
+                                 }
+                  else  if (userstate.bits === 10) {
+                                                 const beep = beeper();
+                                                 beepingoff();
+                                                  beepingon();
+                                             client.action("tanglesheep", userstate['display-name'] + " Alarm Alarm sheepy come to eat :)  ");
+                                    }
+
+});
+
+
+/*
+
+client.on ('chat', function(channel, userstate,  message, self, tags) {
+
+//get Date
+const date = new Date();
+let hour = date.getHours();
+//console.log(feeds);
+//console.log(limit);
+         if (tags['custom-reward-id'] === 'f71d9c13-5cdc-4baa-9d5b-7d9c4b0c1696') {
+                         client.action("tanglesheep", userstate['display-name'] + " Rewardsss  feeding works ");
+}
+});
+
+*/
+
+// Function calling feeder
+ function beeper () {
+  var request = require("request");
+  var options = { method: 'GET',
+  url: 'http://46.252.233.34:8888/beeper',
+  headers:
+   { 'Postman-Token': 'dd96305e-6ff3-4104-be37-ee199ef1755c,cd851081-94f4-44b9-8577-13d78b711042',
+     'cache-control': 'no-cache' } }; request(options, function (error, response, body) {
+
+
+//  if (error) throw new Error(error);
+//  console.log(body);
+  console.log(error);
+});
+
+
+}
+
+
+
+
+
+// Called every time the bot connects to Twitch chat
+function onConnectedHandler (addr, port) {
+  console.log(`* Connected to ${addr}:${port}`);
+}
+
