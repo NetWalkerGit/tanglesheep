@@ -295,7 +295,7 @@ client.on ("cheer", (channel, userstate, message) =>  {
  
 //---------------------------------------------cryptofeeding-----------------------------------------------------------
 
-// client.on ('chat', function(channel, userstate,  message) { 
+
   var ltcbalances = require('request');
   var btcbalances = require('request');
   var xrpbalances = require('request');
