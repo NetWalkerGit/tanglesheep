@@ -140,7 +140,7 @@ if ((hour >= 20 || hour <= 7 ) &&   (message === "!premiumfeed") && userstate.ba
    if (result.length == []) {                  // first time feeders not in DB
       dbcon.query(newuser, function (err, result) {  });
        
-      feedingservo();
+      feedingpremium();
       client.action("tanglesheep", userstate['display-name'] + " Thx for first time subpower feeding :) :) "); 
       dbcon.query("UPDATE  twitchuser SET fedtoday=?,subfeeds=? WHERE userid=?",['1','1', userstate['user-id']], function (err, result ) {});     //set first time feeder
                          } 
@@ -161,7 +161,7 @@ if ((hour >= 20 || hour <= 7 ) &&   (message === "!premiumfeed") && userstate.ba
        });
 
 
-         feedingservo();             //run feeder
+       feedingpremium();             //run feeder
         client.action("tanglesheep", userstate['display-name'] + " Premiumfeed feeding :) ");
        }
            });
