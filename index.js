@@ -4,6 +4,7 @@ const uniqid = require('uniqid');
 const schedule = require('node-schedule');
 const request = require("request");
 const config = require('./config.js');
+const webhook = require("webhook-discord")
 
 const dbcon = mysql.createConnection({
   host: (config.db.host),
@@ -12,6 +13,7 @@ const dbcon = mysql.createConnection({
   database: (config.db.database)
 });
 
+//twitch chat connection
 const opts = {
     identity: {
       username: (config.twitchapi.username),
@@ -28,6 +30,24 @@ const opts = {
   const client = new tmi.client(opts);
   client.on('connected', onConnectedHandler);
   client.connect();
+
+//webhook to discord
+  const Hook = new webhook.Webhook(config.webhook.discord);
+  
+  const msgnormal = new webhook.MessageBuilder()
+                  .setName("tanglesheep")
+                  .setColor("#63B7AF")
+                  .setText("Normal feeding happen")
+                  .setTime();
+
+  const msgnpremium = new webhook.MessageBuilder()
+                  .setName("tanglesheep")
+                  .setColor("#BC658D")
+                  .setText("Premium feeding happen")
+                  .setTime();
+
+//webhook to discord
+ 
 
 
 
@@ -617,7 +637,7 @@ function printQRimage () {
 
 // Function calling feeder
 function feeding () {
-  //  Hook.send(msg);
+   Hook.send(msgnormal);
 
     var options = { method: 'GET',
     url: (config.toolscontrol.dcmotor),
@@ -636,9 +656,9 @@ function feeding () {
               });
 
           };
-
+// Function feeding premium
           function feedingpremium () {
-            //  Hook.send(msg);
+              Hook.send(msgnpremium);
           
               var options = { method: 'GET',
               url: (config.toolscontrol.dcmotor2),
