@@ -272,7 +272,7 @@ client.on ("cheer", (channel, userstate, message) =>  {
                            dbcon.query("INSERT INTO twitchuser (id,firstfeed,userid,username,message,cheerfeeds) VALUES ("+ dbcon.escape(uniqid()) +","+ dbcon.escape(date) +"," + dbcon.escape(userstate['user-id']) + "," + dbcon.escape(userstate['display-name']) + "," + dbcon.escape(message) + ",'1')", function (err, result  ) {  
                             });
                                                 
-                            feedingservo();
+                            feedingpremium();
                           client.action("tanglesheep", userstate['display-name'] + " Thx for firs time  Premium feeding :)  ");
                                     
                            } else {
@@ -281,7 +281,7 @@ client.on ("cheer", (channel, userstate, message) =>  {
                                sumpocheerfeeds = (result[i].cheerfeeds) + 1;                                                                                          //incrase counter in DB
                                dbcon.query("UPDATE  twitchuser SET cheerfeeds=? WHERE userid=?",[sumpocheerfeeds, userstate['user-id']], function (err, result ) {    //incrase counter in DB
                                  });   
-                                 feedingservo();
+                                 feedingpremium();
                                    client.action("tanglesheep", userstate['display-name'] + " Thx for Premium carrot feeding <3 <3   Sheep are happy :)  ");
                                               });
                                            }
@@ -637,11 +637,11 @@ function feeding () {
 
           };
 
-          function feedingservo () {
+          function feedingpremium () {
             //  Hook.send(msg);
           
               var options = { method: 'GET',
-              url: (config.toolscontrol.servo12),
+              url: (config.toolscontrol.dcmotor2),
               headers:
                { 'cache-control': 'no-cache' } }; request(options, function (error, response, body) {
                   console.log(error);
