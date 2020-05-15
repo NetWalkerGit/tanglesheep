@@ -147,18 +147,28 @@ var sock = SockJS('http://46.252.233.34:59650/api');
 //subscribers  cams
 
 client.on ('chat', function(channel, userstate,  message, self) {
-
+// console.log(message);
 // console.log (userstate);
     // switch cams
              if( (message === "!birdcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                               const  birdscamswitch = birdcam();
                                  client.action("tanglesheep", userstate['display-name'] + " switching to bird cam ");
 
-                     } else   if( (message === "!sheepcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                              const  sheepcamswitch = sheepcam();
+                                } else   if( (message === "!sheepcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                  const  sheepcamswitch = sheepcam();
                                  client.action("tanglesheep", userstate['display-name'] + " switching to sheep cam ");
-
-                                                                 //sheep cams
+                               
+                                } else   if( userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221') {
+                                  const  sheepcamswitch = sheepcam();
+                                     client.action("tanglesheep", userstate['display-name'] + " switching to sheep cam ");
+                   
+                                 } else   if( userstate['custom-reward-id'] === '563f34fc-bf9e-4414-8c25-0a12615b2d84') {
+                                   const  sheepcamswitch = birdcam();
+                                  client.action("tanglesheep", userstate['display-name'] + " switching to bird cam ");
+             
+             
+             
+               //sheep cams
 
                                         } else   if( (message === "!sheepentry" ) && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                  const  entry = camentry();
