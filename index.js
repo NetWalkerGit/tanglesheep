@@ -261,7 +261,7 @@ client.on ("cheer", (channel, userstate, message) =>  {
           }  else if ( todayfeeds >= 100 ) {
                                         client.action("tanglesheep", userstate['display-name'] + " Max day feeds limit reached , try tomorrow :(  Lets not overfeed sheep <3 Thx for cheering anyway. it support us. ");
                                       
-            } else  if (userstate.bits == 50) {
+            } else  if (userstate.bits <= 79) {
                 
               dbcon.query('SELECT userid FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result ) {       
                 if (result.length == []) {                  // first time feeders not in DB
@@ -285,7 +285,7 @@ client.on ("cheer", (channel, userstate, message) =>  {
                                           });
                                         
 //--------------------------------------------------------cheeering Premium  feeding-------------------------------------------------------------------------
-                 } else  if (userstate.bits >= 51) {
+                 } else  if (userstate.bits >= 80) {
                 
                    dbcon.query('SELECT userid FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result ) {       
                         if (result.length == []) {                  // first time feeders not in DB
