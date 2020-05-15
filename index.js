@@ -54,6 +54,7 @@ const opts = {
   
   var totalfeeds ;
   var todayfeeds ;
+  var premiumfeeds;
   var sumsubfeeds ;
   var sumpointfeeds ;
   var sumpocheerfeeds;
@@ -676,11 +677,12 @@ function feeding () {
                   console.log(error);
               //    console.log(response);
                          });
-                         dbcon.query("SELECT totalfeeds,todayfeeds FROM feedstat", function (err, result) {      //Feeding counters
+                         dbcon.query("SELECT totalfeeds,todayfeeds,premiumfeeds FROM feedstat", function (err, result) {      //Feeding counters
                           for (var i in result)
                           totalfeeds = (result[i].totalfeeds) + 1;
                           todayfeeds = (result[i].todayfeeds) + 1;
-                          dbcon.query("UPDATE feedstat SET totalfeeds=?, todayfeeds=? WHERE id=?",[totalfeeds, todayfeeds, 1], function (err, result ) {             //incrase counter in DB
+                          premiumfeeds = (result[i].premiumfeeds) + 1;
+                          dbcon.query("UPDATE feedstat SET totalfeeds=?, todayfeeds=?, premiumfeeds=? WHERE id=?",[totalfeeds, todayfeeds, premiumfeeds, 1], function (err, result ) {             //incrase counter in DB
                             if (err) throw err; });    
                              
                         });
