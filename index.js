@@ -130,7 +130,7 @@ const opts = {
              dbcon.query(newuser, function (err, result) {  });
               
                 feeding();
-                dbcon.query("INSERT INTO feedingstats (id, type) VALUES ("+ dbcon.escape(uniqid()) +", 'subfeed')"); //feedingststat
+                dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'subfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
 
              client.action("tanglesheep", userstate['display-name'] + " Thx for first time subpower feeding :) :) "); 
              dbcon.query("UPDATE  twitchuser SET fedtoday=?,subfeeds=? WHERE userid=?",['1','1', userstate['user-id']], function (err, result ) {});     //set first time feeder
@@ -153,7 +153,7 @@ const opts = {
 
 
                 feeding();             //run feeder
-                dbcon.query("INSERT INTO feedingstats (id, type) VALUES ("+ dbcon.escape(uniqid()) +", 'subfeed')"); //feedingststat
+                dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'subfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
 
                client.action("tanglesheep", userstate['display-name'] + " Sub power feeding :) ");
               }
@@ -175,7 +175,7 @@ if ((hour >= 20 || hour <= 7 ) &&   (message === "!premiumfeed") && userstate.ba
       dbcon.query(newuser, function (err, result) {  });
        
       feedingpremium();
-      dbcon.query("INSERT INTO feedingstats (id, type) VALUES ("+ dbcon.escape(uniqid()) +", 'premiumfeed')"); //feedingststat
+      dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'premiumfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
 
       client.action("tanglesheep", userstate['display-name'] + " Thx for first time premiumfeed feeding :) :) "); 
       dbcon.query("UPDATE  twitchuser SET fedtoday=?,premiumfeed=? WHERE userid=?",['1','1', userstate['user-id']], function (err, result ) {});     //set first time feeder
@@ -198,7 +198,7 @@ if ((hour >= 20 || hour <= 7 ) &&   (message === "!premiumfeed") && userstate.ba
 
 
        feedingpremium();             //run feeder
-       dbcon.query("INSERT INTO feedingstats (id, type) VALUES ("+ dbcon.escape(uniqid()) +", 'premiumfeed')"); //feedingststat
+       dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'premiumfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
 
         client.action("tanglesheep", userstate['display-name'] + " Premiumfeed feeding :) ");
        }
@@ -208,7 +208,7 @@ if ((hour >= 20 || hour <= 7 ) &&   (message === "!premiumfeed") && userstate.ba
 
 //----------------------------------------------------------------------------- Loyalty feeding--------------------------------------------------
 
-   if ((hour >= 20 || hour <= 7 ) &&  (userstate['custom-reward-id'] === '5d77928f-00f7-4612-9ea6-2a64070b8902') ) {
+   if ((hour >= 22 || hour <= 7 ) &&  (userstate['custom-reward-id'] === '5d77928f-00f7-4612-9ea6-2a64070b8902') ) {
   
                     client.action("tanglesheep", userstate['display-name'] + " Sheep's sleeping  now. Check feeding hours on video :(  Sheep need some rest <3 Thx for understanding <3 ");
   
@@ -221,7 +221,7 @@ if ((hour >= 20 || hour <= 7 ) &&   (message === "!premiumfeed") && userstate.ba
                           dbcon.query("UPDATE  twitchuser SET pointfeeds=? WHERE userid=?",[1, userstate['user-id']], function (err, result ) {    //incrase counter in DB
                           });   
                                feeding();                          //run feeder
-                               dbcon.query("INSERT INTO feedingstats (id, type) VALUES ("+ dbcon.escape(uniqid()) +", 'loyaltyfeed')"); //feedingststat
+                               dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'loyaltyfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
                            client.action("tanglesheep", userstate['display-name'] + " Thx for first time  loyalty feeding:) ");
                           
                                                  }        
@@ -236,7 +236,7 @@ if ((hour >= 20 || hour <= 7 ) &&   (message === "!premiumfeed") && userstate.ba
                              });
                             
                                   feeding();   //run feeder
-                           dbcon.query("INSERT INTO feedingstats (id, type) VALUES ("+ dbcon.escape(uniqid()) +", 'loyaltyfeed')"); //feedingststat
+                           dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'loyaltyfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
 
                              client.action("tanglesheep", userstate['display-name'] + " Enjoy your loyalty feeding :) <3 ");
                                                                  }
@@ -290,7 +290,7 @@ client.on ("cheer", (channel, userstate, message) =>  {
                     });
                     
                     feeding();
-                    dbcon.query("INSERT INTO feedingstats (id, type) VALUES ("+ dbcon.escape(uniqid()) +", 'cheerfeed')"); //feedingststat
+                    dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'cheerfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
                    client.action("tanglesheep", userstate['display-name'] + " Thx for firs time  cheer feeding :)  ");
         
                                       } else {
@@ -301,7 +301,7 @@ client.on ("cheer", (channel, userstate, message) =>  {
                                           dbcon.query("UPDATE  twitchuser SET cheerfeeds=? WHERE userid=?",[sumpocheerfeeds, userstate['user-id']], function (err, result ) {    //incrase counter in DB
                                                     });   
                                         feeding();
-                                        dbcon.query("INSERT INTO feedingstats (id, type) VALUES ("+ dbcon.escape(uniqid()) +", 'cheerfeed')"); //feedingststat
+                                        dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'cheerfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
                                         client.action("tanglesheep", userstate['display-name'] + " Thx for feeding <3 <3   Sheep are happy :)  ");
                                                });
                                              }
@@ -316,7 +316,7 @@ client.on ("cheer", (channel, userstate, message) =>  {
                             });
                                                 
                             feedingpremium();
-                            dbcon.query("INSERT INTO feedingstats (id, type) VALUES ("+ dbcon.escape(uniqid()) +", 'premiumfeed')"); //feedingststat
+                            dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'premiumfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
                           client.action("tanglesheep", userstate['display-name'] + " Thx for firs time  Premium feeding :)  ");
                                     
                            } else {
@@ -326,7 +326,7 @@ client.on ("cheer", (channel, userstate, message) =>  {
                                dbcon.query("UPDATE  twitchuser SET cheerfeeds=? WHERE userid=?",[sumpocheerfeeds, userstate['user-id']], function (err, result ) {    //incrase counter in DB
                                  });   
                                  feedingpremium();
-                                 dbcon.query("INSERT INTO feedingstats (id, type) VALUES ("+ dbcon.escape(uniqid()) +", 'premiumfeed')"); //feedingststat
+                                 dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'premiumfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
                                    client.action("tanglesheep", userstate['display-name'] + " Thx for Premium carrot feeding <3 <3   Sheep are happy :)  ");
                                               });
                                            }
@@ -438,7 +438,7 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
           {
             console.log("BTC feeding works");
           feeding();
-          dbcon.query("INSERT INTO feedingstats (id, type) VALUES ("+ dbcon.escape(uniqid()) +", 'BTC')"); //feedingststat
+          dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BTC', '"+jsonParsed.txs[0].hash+"')"); //feedingststat
           client.action("tanglesheep"," Thx for feeding using BTC  your  TX https://blockchair.com/bitcoin/transaction/"+jsonParsed.txs[0].hash  );
             dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.final_balance, jsonParsed.address], function (err, result ) {}); 
           
@@ -457,7 +457,7 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
         {
           console.log("LTC feeding works");
         feeding();
-        dbcon.query("INSERT INTO feedingstats (id, type) VALUES ("+ dbcon.escape(uniqid()) +", 'LTC')"); //feedingststat
+        dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'LTC', '"+jsonParsed.txs[0].hash+"')"); //feedingststat
         client.action("tanglesheep"," Thx feeding using LTC   your  TX https://blockchair.com/litecoin/transaction/"+jsonParsed.txs[0].hash  );
           dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.final_balance, jsonParsed.address], function (err, result ) {}); 
         
@@ -477,7 +477,7 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
           {
             console.log("XRP feeding works");
           feeding();
-          dbcon.query("INSERT INTO feedingstats (id, type) VALUES ("+ dbcon.escape(uniqid()) +", 'XRP')"); //feedingststat
+          dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'XRP', '"+jsonParsed.previousAffectingTransactionID+"')"); //feedingststat
           client.action("tanglesheep"," Thx for feeding using XRP your TX https://xrpscan.com/tx/"+jsonParsed.previousAffectingTransactionID );
             dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.xrpBalance, jsonParsed.account], function (err, result ) {}); 
           
@@ -495,7 +495,7 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
           {
             console.log("BCH feeding works");
           feeding();
-          dbcon.query("INSERT INTO feedingstats (id, type) VALUES ("+ dbcon.escape(uniqid()) +", 'BCH')"); //feedingststat
+          dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BCH', '"+jsonParsed.data.last_tx+"')"); //feedingststat
           client.action("tanglesheep"," Thx for feeding using BCH your TX https://bch.btc.com/"+jsonParsed.data.last_tx );
             dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance + jsonParsed.data.unconfirmed_received,jsonParsed.data.address], function (err, result ) {}); 
           
@@ -513,7 +513,7 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
           {
             console.log("ETH feeding works");
           feeding();
-          dbcon.query("INSERT INTO feedingstats (id, type) VALUES ("+ dbcon.escape(uniqid()) +", 'ETH')"); //feedingststat
+          dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'ETH', '"+jsonParsed.data["0x042cee4e592a54f697620bc3090800ca180dbcbe"]["calls"]["0"]["transaction_hash"]+"')"); //feedingststat
           client.action("tanglesheep"," Thx for feeding using ETH your TX https://blockchair.com/ethereum/transaction/"+jsonParsed.data["0x042cee4e592a54f697620bc3090800ca180dbcbe"]["calls"]["0"]["transaction_hash"] );
           dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data["0x042cee4e592a54f697620bc3090800ca180dbcbe"]["address"]["balance"],"0x042cee4e592a54f697620bc3090800ca180dbcbe"], function (err, result ) {}); 
           
@@ -649,7 +649,7 @@ function printQRimage () {
       client.action("tanglesheep"," Thx for feeding via BITCOIN LN your payment hash is "+request.body.data.payment_hash);
       createnewcharge ();
       feeding ();
-      dbcon.query("INSERT INTO feedingstats (id, type) VALUES ("+ dbcon.escape(uniqid()) +", 'BTCLN')"); //feedingststat
+      dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BTCLN', '"+request.body.data.payment_hash+"')"); //feedingststat
      }
   });
   app.listen(8899);
