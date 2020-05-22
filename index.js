@@ -315,7 +315,7 @@ client.on ("cheer", (channel, userstate, message) =>  {
                             });
                                                 
                             feedingpremium();
-                            dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'premiumfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
+                            dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'cheerfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
                           client.action("tanglesheep", userstate['display-name'] + " Thx for firs time  Premium feeding :)  ");
                                     
                            } else {
@@ -325,7 +325,7 @@ client.on ("cheer", (channel, userstate, message) =>  {
                                dbcon.query("UPDATE  twitchuser SET cheerfeeds=? WHERE userid=?",[sumpocheerfeeds, userstate['user-id']], function (err, result ) {    //incrase counter in DB
                                  });   
                                  feedingpremium();
-                                 dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'premiumfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
+                                 dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'cheerfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
                                    client.action("tanglesheep", userstate['display-name'] + " Thx for Premium carrot feeding <3 <3   Sheep are happy :)  ");
                                               });
                                            }
