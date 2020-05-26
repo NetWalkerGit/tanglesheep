@@ -180,7 +180,7 @@ client.on ('chat', function(channel, userstate,  message, self) {
 
                  } else   if( (message === "!goat") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                               const  aroundshed = camaroundshed();
-                                 client.action("tanglesheep", userstate['display-name'] + " camera moving to check around shed ");
+                                 client.action("tanglesheep", userstate['display-name'] + " camera moving to check goats area ");
 
                   } else   if( (message === "!sheepfargarden") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                               const  fargarden = camfargarden();
