@@ -178,7 +178,7 @@ client.on ('chat', function(channel, userstate,  message, self) {
                               const  garden = camgarden();
                                  client.action("tanglesheep", userstate['display-name'] + " camera moving to sheep's garden ");
 
-                 } else   if( (message === "!sheeparoundshed") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                 } else   if( (message === "!goat") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                               const  aroundshed = camaroundshed();
                                  client.action("tanglesheep", userstate['display-name'] + " camera moving to check around shed ");
 
