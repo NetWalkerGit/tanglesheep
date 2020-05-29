@@ -224,7 +224,35 @@ client.on ('chat', function(channel, userstate,  message, self) {
                               const  bird2rest = cambird2rest();
                                  client.action("tanglesheep", userstate['display-name'] + " Second cage rest place view ");
                    }
+                   
+               // sheep free ptz move    
+                   var movevalue = message.match(/\d+/g);
+   
+                   if (movevalue === null){
+                     return false;
+                    }
+                   else if
+                   ( (message == "!sheepcam x"+movevalue[0]+" y"+movevalue[1]+" zoom"+movevalue[2] ) && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                     x = movevalue[0];
+                     y = movevalue[1];
+                     zoom = movevalue[2];
+                      sheepptzfree();
+                  //  client.action("tanglesheep", userstate['display-name'] + " camera moving  ");
+                   }
+                   else if
+                   ( (message == "!birdcam x"+movevalue[0]+" y"+movevalue[1]+" zoom"+movevalue[2] ) && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                     x = movevalue[0];
+                     y = movevalue[1];
+                     zoom = movevalue[2];
+                     birdptzfree();
+                  //  client.action("tanglesheep", userstate['display-name'] + " camera moving  ");
+                   }
 
+           
+             
+             
+             
+            
 
 });
 
@@ -383,10 +411,43 @@ var request = require("request"); var options = { method: 'PUT',
 });
 }
 
+//sheep freeeptz
+function sheepptzfree () {
+               
+  var request = require('request');
+   var options = {
+  'method': 'PUT',
+  'url': 'http://'+config.camera.pass+'@46.252.233.34:82/ISAPI/PTZCtrl/channels/1/absolute',
+  'headers': {
+    'Content-Type': 'application/xml'
+  },
+  body: "<PTZData>\n<AbsoluteHigh>\n<elevation> "+y+" </elevation>\n<azimuth> "+x+" </azimuth>\n<absoluteZoom>"+zoom+"</absoluteZoom>\n</AbsoluteHigh> \n</PTZData>"
 
+};
 
+request(options, function (error, response) { 
+  console.log(error);
+});
+}
 
+//birds freeeptz
+function birdptzfree () {
+               
+  var request = require('request');
+   var options = {
+  'method': 'PUT',
+  'url': 'http://'+config.camera.pass+'@46.252.233.34:83/ISAPI/PTZCtrl/channels/1/absolute',
+  'headers': {
+    'Content-Type': 'application/xml'
+  },
+  body: "<PTZData>\n<AbsoluteHigh>\n<elevation> "+y+" </elevation>\n<azimuth> "+x+" </azimuth>\n<absoluteZoom>"+zoom+"</absoluteZoom>\n</AbsoluteHigh> \n</PTZData>"
 
+};
+
+request(options, function (error, response) { 
+  console.log(error);
+});
+}
 
 // Called every time the bot connects to Twitch chat
 function onConnectedHandler (addr, port) {
