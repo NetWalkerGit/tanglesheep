@@ -255,7 +255,7 @@ var request = require("request"); var options = { method: 'PUT',
 }
 
 //camera aroundshed
-function camaroundshed () {
+function camfargarden () {
 var request = require("request"); var options = { method: 'PUT',
   url: "http://"+config.camera.pass+"@46.252.233.34:82/ISAPI/PTZCtrl/channels/1/presets/3/goto",
   headers:
@@ -267,7 +267,7 @@ var request = require("request"); var options = { method: 'PUT',
 }
 
 //camera fargarden
-function camfargarden () {
+function camaroundshed () {
 var request = require("request"); var options = { method: 'PUT',
   url: "http://"+config.camera.pass+"@46.252.233.34:82/ISAPI/PTZCtrl/channels/1/presets/4/goto",
   headers:
