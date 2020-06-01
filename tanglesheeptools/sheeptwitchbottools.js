@@ -274,7 +274,7 @@ client.on ('chat', function(channel, userstate,  message, self) {
                                    sheepcam();
                                  client.action("tanglesheep", userstate['display-name'] + " switching to sheep cam ");
 
-                                } else   if( (message === "!goatcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                } else   if( (message === "!goatshedcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                    goatshedcam();
                                  client.action("tanglesheep", userstate['display-name'] + " switching to goat shed cam ");
                                
