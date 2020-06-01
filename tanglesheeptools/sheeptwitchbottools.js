@@ -267,23 +267,23 @@ client.on ('chat', function(channel, userstate,  message, self) {
 // console.log (userstate);
     // switch cams
              if( (message === "!birdcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                              const  birdscamswitch = birdcam();
+                               birdcam();
                                  client.action("tanglesheep", userstate['display-name'] + " switching to bird cam ");
 
                                 } else   if( (message === "!sheepcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                  const  sheepcamswitch = sheepcam();
+                                   sheepcam();
                                  client.action("tanglesheep", userstate['display-name'] + " switching to sheep cam ");
 
                                 } else   if( (message === "!goatcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                  const  sheepcamswitch = goatshedcam();
+                                   goatshedcam();
                                  client.action("tanglesheep", userstate['display-name'] + " switching to goat shed cam ");
                                
                                 } else   if( userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221') {
-                                  const  sheepcamswitch = sheepcam();
+                                  sheepcam();
                                      client.action("tanglesheep", userstate['display-name'] + " switching to sheep cam ");
                    
                                  } else   if( userstate['custom-reward-id'] === '563f34fc-bf9e-4414-8c25-0a12615b2d84') {
-                                   const  sheepcamswitch = birdcam();
+                                    birdcam();
                                   client.action("tanglesheep", userstate['display-name'] + " switching to bird cam ");
              
              
@@ -291,57 +291,57 @@ client.on ('chat', function(channel, userstate,  message, self) {
                //sheep cams
 
                                         } else   if( (message === "!sheepentry" ) && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                 const  entry = camentry();
+                                            camentry();
                                  client.action("tanglesheep", userstate['display-name'] + " camera moving to sheep shed entry ");
 
                                  } else   if( (message === "!sheepgarden") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                              const  garden = camgarden();
+                                            camgarden();
                                  client.action("tanglesheep", userstate['display-name'] + " camera moving to sheep's garden ");
 
                  } else   if( (message === "!goat") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                              const  aroundshed = camaroundshed();
+                                            camaroundshed();
                                  client.action("tanglesheep", userstate['display-name'] + " camera moving to check goats area ");
 
                   } else   if( (message === "!sheepfargarden") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                              const  fargarden = camfargarden();
+                                             camfargarden();
                                  client.action("tanglesheep", userstate['display-name'] + " camera moving to check far away sheep ");
                    }
 
                                          else   if( (message === "!sheeppatrol") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                              const  sheeppatrol = camsheeppatrol();
+                                               camsheeppatrol();
                                  client.action("tanglesheep", userstate['display-name'] + " camera starting to patrol ");
                    }
                                    //birds  cams
                                     else   if( (message === "!birdmain") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                              const  birdmain = cambirdmain();
+                                              cambirdmain();
                                  client.action("tanglesheep", userstate['display-name'] + " Cage of Lary and Roby ");
                    }
 
                                     else   if( (message === "!birdrest") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                              const  birdrest = cambirdrest();
+                                               cambirdrest();
                                  client.action("tanglesheep", userstate['display-name'] + " Resting place view ");
                    }
 
                                    else   if( (message === "!birdfeeding") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                              const  birdfeeding = cambirdfeeding();
+                                             cambirdfeeding();
                                  client.action("tanglesheep", userstate['display-name'] + " Feeding place view ");
                    }
 
                                       else   if( (message === "!birdfeeding2") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                              const  birdfeeding2 = cambirdfeeding2();
+                                            cambirdfeeding2();
                                  client.action("tanglesheep", userstate['display-name'] + " Lary's feeding place ");
                    }
 
                                       else   if( (message === "!bird2main") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                              const  bird2main = cambird2main();
+                                             cambird2main();
                                  client.action("tanglesheep", userstate['display-name'] + " Second cage all view ");
                    }
                                     else   if( (message === "!bird2feeding") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                              const  bird2feeding = cambird2feeding();
+                                            cambird2feeding();
                                  client.action("tanglesheep", userstate['display-name'] + " Second cage feeding place view ");
                    }
                                    else   if( (message === "!bird2rest") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                              const  bird2rest = cambird2rest();
+                                        cambird2rest();
                                  client.action("tanglesheep", userstate['display-name'] + " Second cage rest place view ");
                    }
                    
