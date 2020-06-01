@@ -75,6 +75,35 @@ var sock = SockJS('http://46.252.233.34:59650/api');
               sock.send(JSON.stringify(req));
 
 
+//dravci on
+                             var req = {
+                     "jsonrpc": "2.0",
+                     "id": 10,
+                     "method": "setVisibility",
+                     "params": {
+                                     "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"cc5c1a40-7761-49f7-b5f7-a2f24d73eff6\",\"vlc_source_4f468466-fa9c-4d48-bf98-869e7fb5c56c\"]",
+                                     "args": [true]
+                                 }
+         }
+              sock.send(JSON.stringify(req));
+
+
+
+
+//goat off
+var req = {
+  "jsonrpc": "2.0",
+  "id": 10,
+  "method": "setVisibility",
+  "params": {
+                  "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"4cdb9f11-d7ee-4f04-8f3b-4bdd7f841d81\",\"vlc_source_c948cad3-cd7c-42dc-b554-5d472b1ac522\"]",
+                  "args": [false]
+              }
+}
+sock.send(JSON.stringify(req));
+
+
+
           };
 
  sock.onmessage = function(e) {
@@ -125,6 +154,22 @@ var sock = SockJS('http://46.252.233.34:59650/api');
               sock.send(JSON.stringify(req));
 
 
+
+//goat off
+var req = {
+  "jsonrpc": "2.0",
+  "id": 10,
+  "method": "setVisibility",
+  "params": {
+                  "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"4cdb9f11-d7ee-4f04-8f3b-4bdd7f841d81\",\"vlc_source_c948cad3-cd7c-42dc-b554-5d472b1ac522\"]",
+                  "args": [false]
+              }
+}
+sock.send(JSON.stringify(req));
+
+
+
+
           };
 
  sock.onmessage = function(e) {
@@ -139,6 +184,77 @@ var sock = SockJS('http://46.252.233.34:59650/api');
 }
 
 
+
+//goats on
+
+function goatshedcam () {
+  const SockJS = require('sockjs-client');
+  var sock = SockJS('http://46.252.233.34:59650/api');
+   sock.onopen = function() {
+                console.log('open');
+                      var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
+                            sock.send(req);
+  //ovce off
+                 var req = {
+                       "jsonrpc": "2.0",
+                       "id": 10,
+                       "method": "setVisibility",
+                       "params": {
+                                       "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"d73bb435-0675-4754-93f4-e32414e85657\",\"vlc_source_37f2c3f5-d5d1-4c0b-b48e-787fea5958c7\"]",
+                                       "args": [false]
+                                   }
+           }
+                sock.send(JSON.stringify(req));
+  
+  
+  
+  
+    //dravci off
+                               var req = {
+                       "jsonrpc": "2.0",
+                       "id": 10,
+                       "method": "setVisibility",
+                       "params": {
+                                       "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"cc5c1a40-7761-49f7-b5f7-a2f24d73eff6\",\"vlc_source_4f468466-fa9c-4d48-bf98-869e7fb5c56c\"]",
+                                       "args": [false]
+                                   }
+           }
+                sock.send(JSON.stringify(req));
+  
+  
+
+
+//goat on
+var req = {
+  "jsonrpc": "2.0",
+  "id": 10,
+  "method": "setVisibility",
+  "params": {
+                  "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"4cdb9f11-d7ee-4f04-8f3b-4bdd7f841d81\",\"vlc_source_c948cad3-cd7c-42dc-b554-5d472b1ac522\"]",
+                  "args": [true]
+              }
+}
+sock.send(JSON.stringify(req));
+
+
+
+
+            };
+
+
+
+
+  
+   sock.onmessage = function(e) {
+                console.log('message', e.data);
+                sock.close();
+            };
+  
+   sock.onclose = function() {
+                console.log('close');
+            };
+  
+  }
 
 
 
@@ -157,6 +273,10 @@ client.on ('chat', function(channel, userstate,  message, self) {
                                 } else   if( (message === "!sheepcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                   const  sheepcamswitch = sheepcam();
                                  client.action("tanglesheep", userstate['display-name'] + " switching to sheep cam ");
+
+                                } else   if( (message === "!goatcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                  const  sheepcamswitch = goatshedcam();
+                                 client.action("tanglesheep", userstate['display-name'] + " switching to goat shed cam ");
                                
                                 } else   if( userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221') {
                                   const  sheepcamswitch = sheepcam();
