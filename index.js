@@ -51,16 +51,6 @@ const opts = {
 
 
 
-  
-  var totalfeeds ;
-  var todayfeeds ;
-  var premiumfeeds;
-  var sumsubfeeds ;
-  var sumpointfeeds ;
-  var sumpocheerfeeds;
-
-
-
   dbcon.connect(function(err) {                //db connection start
     console.log("DB Connected!");
   });   //end of db coonect
@@ -80,6 +70,13 @@ const opts = {
           if (err) throw err; });
           dbcon.query("UPDATE twitchuser SET fedtoday = 0", function (err, result  ) {  
             if (err) throw err;  });
+
+            dbcon.query("SELECT totalfeeds,todayfeeds FROM feedstat", function (err, result) {      
+              for (var i in result)
+              todayfeeds = (result[i].todayfeeds);
+              totalfeeds = (result[i].totalfeeds);
+            }); 
+
            });
  // -----------------reset feeding------------------
 
