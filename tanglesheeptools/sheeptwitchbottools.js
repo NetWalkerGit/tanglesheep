@@ -32,9 +32,6 @@ client.connect();
 
 
 
-
-
-
 //subscribers  cams
 
 client.on ('chat', function(channel, userstate,  message, self) {
@@ -389,7 +386,7 @@ sock.send(JSON.stringify(req));
                   console.log('open');
                         var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
                               sock.send(req);
-    //ovce off
+
                    var req = {
                          "jsonrpc": "2.0",
                          "id": 10,
@@ -400,11 +397,11 @@ sock.send(JSON.stringify(req));
                                      }
                                      
              }
+             
              sock.send(JSON.stringify(req));
-
              sock.onmessage = function(e) {
               console.log('message', e.data);
-              sock.close();
+              sock.close(); 
           };
         
              var req = {
@@ -416,15 +413,14 @@ sock.send(JSON.stringify(req));
                               "args": [true]
                           }
                          }
-                  sock.send(JSON.stringify(req));
-
-
+                       
+                   sock.send(JSON.stringify(req));
                   sock.onmessage = function(e) {
                     console.log('message', e.data);
                     sock.close();
                 };
 
-                };
+        };
               
 
             
