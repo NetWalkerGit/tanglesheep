@@ -35,6 +35,130 @@ client.connect();
 
 
 
+//subscribers  cams
+
+client.on ('chat', function(channel, userstate,  message, self) {
+  // console.log(message);
+  // console.log (userstate);
+      // switch cams
+               if( (message === "!birdcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                 birdcam();
+                                   client.action("tanglesheep", userstate['display-name'] + " switching to bird cam ");
+  
+                                  } else   if( (message === "!sheepcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                     sheepcam();
+                                   client.action("tanglesheep", userstate['display-name'] + " switching to sheep cam ");
+  
+                                  } else   if( (message === "!goatshedcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                     goatshedcam();
+                                   client.action("tanglesheep", userstate['display-name'] + " switching to goat shed cam ");
+                                 
+                                  } else   if( userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221') {
+                                    sheepcam();
+                                       client.action("tanglesheep", userstate['display-name'] + " switching to sheep cam ");
+                     
+                                   } else   if( userstate['custom-reward-id'] === '563f34fc-bf9e-4414-8c25-0a12615b2d84') {
+                                      birdcam();
+                                    client.action("tanglesheep", userstate['display-name'] + " switching to bird cam ");
+  
+                                  } else   if( (message === "!beepalert") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                    beepalert();
+                                  client.action("tanglesheep", userstate['display-name'] + " beep alert ");
+               
+               
+                 //sheep cams
+  
+                                          } else   if( (message === "!sheepentry" ) && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                              camentry();
+                                   client.action("tanglesheep", userstate['display-name'] + " camera moving to sheep shed entry ");
+  
+                                   } else   if( (message === "!sheepgarden") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                              camgarden();
+                                   client.action("tanglesheep", userstate['display-name'] + " camera moving to sheep's garden ");
+  
+                   } else   if( (message === "!goat") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                              camaroundshed();
+                                   client.action("tanglesheep", userstate['display-name'] + " camera moving to check goats area ");
+  
+                    } else   if( (message === "!sheepfargarden") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                               camfargarden();
+                                   client.action("tanglesheep", userstate['display-name'] + " camera moving to check far away sheep ");
+                     }
+  
+                                           else   if( (message === "!sheeppatrol") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                                 camsheeppatrol();
+                                   client.action("tanglesheep", userstate['display-name'] + " camera starting to patrol ");
+                     }
+                                     //birds  cams
+                                      else   if( (message === "!birdmain") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                                cambirdmain();
+                                   client.action("tanglesheep", userstate['display-name'] + " Cage of Lary and Roby ");
+                     }
+  
+                                      else   if( (message === "!birdrest") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                                 cambirdrest();
+                                   client.action("tanglesheep", userstate['display-name'] + " Resting place view ");
+                     }
+  
+                                     else   if( (message === "!birdfeeding") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                               cambirdfeeding();
+                                   client.action("tanglesheep", userstate['display-name'] + " Feeding place view ");
+                     }
+  
+                                        else   if( (message === "!birdfeeding2") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                              cambirdfeeding2();
+                                   client.action("tanglesheep", userstate['display-name'] + " Lary's feeding place ");
+                     }
+  
+                                        else   if( (message === "!bird2main") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                               cambird2main();
+                                   client.action("tanglesheep", userstate['display-name'] + " Second cage all view ");
+                     }
+                                      else   if( (message === "!bird2feeding") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                              cambird2feeding();
+                                   client.action("tanglesheep", userstate['display-name'] + " Second cage feeding place view ");
+                     }
+                                     else   if( (message === "!bird2rest") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                          cambird2rest();
+                                   client.action("tanglesheep", userstate['display-name'] + " Second cage rest place view ");
+                     }
+                     
+                 // sheep free ptz move    
+                     var movevalue = message.match(/\d+/g);
+     
+                     if (movevalue === null){
+                       return false;
+                      }
+                     else if
+                     ( (message == "!sheepcam x"+movevalue[0]+" y"+movevalue[1]+" zoom"+movevalue[2] ) && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                       x = movevalue[0];
+                       y = movevalue[1];
+                       zoom = movevalue[2];
+                        sheepptzfree();
+                    //  client.action("tanglesheep", userstate['display-name'] + " camera moving  ");
+                     }
+                     else if
+                     ( (message == "!birdcam x"+movevalue[0]+" y"+movevalue[1]+" zoom"+movevalue[2] ) && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                       x = movevalue[0];
+                       y = movevalue[1];
+                       zoom = movevalue[2];
+                       birdptzfree();
+                    //  client.action("tanglesheep", userstate['display-name'] + " camera moving  ");
+                     }
+  
+             
+               
+               
+               
+              
+  
+  });
+
+
+
+
+
+
 
 
 //camera handling
@@ -241,9 +365,6 @@ sock.send(JSON.stringify(req));
 
             };
 
-
-
-
   
    sock.onmessage = function(e) {
                 console.log('message', e.data);
@@ -259,122 +380,62 @@ sock.send(JSON.stringify(req));
 
 
 
+//beeep aleert test
 
-//subscribers  cams
+  function beepalert () {
+    const SockJS = require('sockjs-client');
+    var sock = SockJS('http://46.252.233.34:59650/api');
+     sock.onopen = function() {
+                  console.log('open');
+                        var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
+                              sock.send(req);
+    //ovce off
+                   var req = {
+                         "jsonrpc": "2.0",
+                         "id": 10,
+                         "method": "setVisibility",
+                         "params": {
+                                         "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"b2893761-fd07-4f3f-a7f6-fd3bdcc974e1\",\"ffmpeg_source_e15cc494-7aa4-4ea0-8bcc-0464acf9ee86\"]",
+                                         "args": [false]
+                                     }
+                                     
+             }
+             sock.send(JSON.stringify(req));
 
-client.on ('chat', function(channel, userstate,  message, self) {
-// console.log(message);
-// console.log (userstate);
-    // switch cams
-             if( (message === "!birdcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                               birdcam();
-                                 client.action("tanglesheep", userstate['display-name'] + " switching to bird cam ");
+             sock.onmessage = function(e) {
+              console.log('message', e.data);
+              sock.close();
+          };
+        
+             var req = {
+              "jsonrpc": "2.0",
+              "id": 10,
+              "method": "setVisibility",
+              "params": {
+                              "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"b2893761-fd07-4f3f-a7f6-fd3bdcc974e1\",\"ffmpeg_source_e15cc494-7aa4-4ea0-8bcc-0464acf9ee86\"]",
+                              "args": [true]
+                          }
+                         }
+                  sock.send(JSON.stringify(req));
 
-                                } else   if( (message === "!sheepcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                   sheepcam();
-                                 client.action("tanglesheep", userstate['display-name'] + " switching to sheep cam ");
 
-                                } else   if( (message === "!goatshedcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                   goatshedcam();
-                                 client.action("tanglesheep", userstate['display-name'] + " switching to goat shed cam ");
-                               
-                                } else   if( userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221') {
-                                  sheepcam();
-                                     client.action("tanglesheep", userstate['display-name'] + " switching to sheep cam ");
-                   
-                                 } else   if( userstate['custom-reward-id'] === '563f34fc-bf9e-4414-8c25-0a12615b2d84') {
-                                    birdcam();
-                                  client.action("tanglesheep", userstate['display-name'] + " switching to bird cam ");
-             
-             
-             
-               //sheep cams
+                  sock.onmessage = function(e) {
+                    console.log('message', e.data);
+                    sock.close();
+                };
 
-                                        } else   if( (message === "!sheepentry" ) && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                            camentry();
-                                 client.action("tanglesheep", userstate['display-name'] + " camera moving to sheep shed entry ");
+                };
+              
 
-                                 } else   if( (message === "!sheepgarden") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                            camgarden();
-                                 client.action("tanglesheep", userstate['display-name'] + " camera moving to sheep's garden ");
-
-                 } else   if( (message === "!goat") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                            camaroundshed();
-                                 client.action("tanglesheep", userstate['display-name'] + " camera moving to check goats area ");
-
-                  } else   if( (message === "!sheepfargarden") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                             camfargarden();
-                                 client.action("tanglesheep", userstate['display-name'] + " camera moving to check far away sheep ");
-                   }
-
-                                         else   if( (message === "!sheeppatrol") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                               camsheeppatrol();
-                                 client.action("tanglesheep", userstate['display-name'] + " camera starting to patrol ");
-                   }
-                                   //birds  cams
-                                    else   if( (message === "!birdmain") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                              cambirdmain();
-                                 client.action("tanglesheep", userstate['display-name'] + " Cage of Lary and Roby ");
-                   }
-
-                                    else   if( (message === "!birdrest") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                               cambirdrest();
-                                 client.action("tanglesheep", userstate['display-name'] + " Resting place view ");
-                   }
-
-                                   else   if( (message === "!birdfeeding") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                             cambirdfeeding();
-                                 client.action("tanglesheep", userstate['display-name'] + " Feeding place view ");
-                   }
-
-                                      else   if( (message === "!birdfeeding2") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                            cambirdfeeding2();
-                                 client.action("tanglesheep", userstate['display-name'] + " Lary's feeding place ");
-                   }
-
-                                      else   if( (message === "!bird2main") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                             cambird2main();
-                                 client.action("tanglesheep", userstate['display-name'] + " Second cage all view ");
-                   }
-                                    else   if( (message === "!bird2feeding") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                            cambird2feeding();
-                                 client.action("tanglesheep", userstate['display-name'] + " Second cage feeding place view ");
-                   }
-                                   else   if( (message === "!bird2rest") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                        cambird2rest();
-                                 client.action("tanglesheep", userstate['display-name'] + " Second cage rest place view ");
-                   }
-                   
-               // sheep free ptz move    
-                   var movevalue = message.match(/\d+/g);
-   
-                   if (movevalue === null){
-                     return false;
-                    }
-                   else if
-                   ( (message == "!sheepcam x"+movevalue[0]+" y"+movevalue[1]+" zoom"+movevalue[2] ) && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                     x = movevalue[0];
-                     y = movevalue[1];
-                     zoom = movevalue[2];
-                      sheepptzfree();
-                  //  client.action("tanglesheep", userstate['display-name'] + " camera moving  ");
-                   }
-                   else if
-                   ( (message == "!birdcam x"+movevalue[0]+" y"+movevalue[1]+" zoom"+movevalue[2] ) && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                     x = movevalue[0];
-                     y = movevalue[1];
-                     zoom = movevalue[2];
-                     birdptzfree();
-                  //  client.action("tanglesheep", userstate['display-name'] + " camera moving  ");
-                   }
-
-           
-             
-             
-             
             
+  
+   sock.onclose = function() {
+                console.log('close');
+            };
+  
+  }
 
-});
+
 
 
 
