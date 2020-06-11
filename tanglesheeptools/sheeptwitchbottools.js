@@ -58,9 +58,7 @@ client.on ('chat', function(channel, userstate,  message, self) {
                                       birdcam();
                                     client.action("tanglesheep", userstate['display-name'] + " switching to bird cam ");
   
-                                  } else   if( (message === "!beepalert") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                    beepalert();
-                                  client.action("tanglesheep", userstate['display-name'] + " beep alert ");
+                           
                
                
                  //sheep cams
