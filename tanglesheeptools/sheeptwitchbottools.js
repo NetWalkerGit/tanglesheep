@@ -377,61 +377,6 @@ sock.send(JSON.stringify(req));
 
 
 
-//beeep aleert test
-
-  function beepalert () {
-    const SockJS = require('sockjs-client');
-    var sock = SockJS('http://46.252.233.34:59650/api');
-     sock.onopen = function() {
-                  console.log('open');
-                        var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
-                              sock.send(req);
-
-                   var req = {
-                         "jsonrpc": "2.0",
-                         "id": 10,
-                         "method": "setVisibility",
-                         "params": {
-                                         "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"b2893761-fd07-4f3f-a7f6-fd3bdcc974e1\",\"ffmpeg_source_e15cc494-7aa4-4ea0-8bcc-0464acf9ee86\"]",
-                                         "args": [false]
-                                     }
-                                     
-             }
-             
-             sock.send(JSON.stringify(req));
-             sock.onmessage = function(e) {
-              console.log('message', e.data);
-              sock.close(); 
-          };
-        
-             var req = {
-              "jsonrpc": "2.0",
-              "id": 10,
-              "method": "setVisibility",
-              "params": {
-                              "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"b2893761-fd07-4f3f-a7f6-fd3bdcc974e1\",\"ffmpeg_source_e15cc494-7aa4-4ea0-8bcc-0464acf9ee86\"]",
-                              "args": [true]
-                          }
-                         }
-                       
-                   sock.send(JSON.stringify(req));
-                  sock.onmessage = function(e) {
-                    console.log('message', e.data);
-                    sock.close();
-                };
-
-        };
-              
-
-            
-  
-   sock.onclose = function() {
-                console.log('close');
-            };
-  
-  }
-
-
 
 
 

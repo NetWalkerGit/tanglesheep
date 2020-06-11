@@ -660,6 +660,67 @@ function printQRimage () {
 
 
 
+// feeding sound alert for video
+
+
+function beepalert () {
+  const SockJS = require('sockjs-client');
+  const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }
+  var sock = SockJS('http://46.252.233.34:59650/api');
+   sock.onopen =  function() {
+                console.log('open');
+                      var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
+                            sock.send(req);
+
+                 var req1 = {
+                       "jsonrpc": "2.0",
+                       "id": 10,
+                       "method": "setVisibility",
+                       "params": {
+                                       "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"b2893761-fd07-4f3f-a7f6-fd3bdcc974e1\",\"ffmpeg_source_e15cc494-7aa4-4ea0-8bcc-0464acf9ee86\"]",
+                                       "args": [false]
+                                   }
+                                   
+           }
+           
+           sock.send(JSON.stringify(req1));
+           sock.onmessage = function(e) {
+            console.log('message deactive', e.data);
+          };
+          sleep(1500).then(() => {
+           var req2 = {
+            "jsonrpc": "2.0",
+            "id": 10,
+            "method": "setVisibility",
+            "params": {
+                            "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"b2893761-fd07-4f3f-a7f6-fd3bdcc974e1\",\"ffmpeg_source_e15cc494-7aa4-4ea0-8bcc-0464acf9ee86\"]",
+                            "args": [true]
+                        }
+                       }
+                     
+                 sock.send(JSON.stringify(req2));
+                sock.onmessage = function(e) {
+                  console.log('message active', e.data);
+                  sock.close();
+                  console.log('close');
+              }
+            })
+            }
+      
+    }       
+
+
+
+// feeding sound alert for video  end
+
+
+
+
+
+
+
 
 
 
@@ -680,7 +741,7 @@ function feeding () {
                 todayfeeds = (result[i].todayfeeds) + 1;
                 dbcon.query("UPDATE feedstat SET totalfeeds=?, todayfeeds=? WHERE id=?",[totalfeeds, todayfeeds, 1], function (err, result ) {             //incrase counter in DB
                   if (err) throw err; });    
-                   
+                  beepalert ();
               });
 
           };
@@ -702,7 +763,7 @@ function feeding () {
                           premiumfeeds = (result[i].premiumfeeds) + 1;
                           dbcon.query("UPDATE feedstat SET totalfeeds=?, todayfeeds=?, premiumfeeds=? WHERE id=?",[totalfeeds, todayfeeds, premiumfeeds, 1], function (err, result ) {             //incrase counter in DB
                             if (err) throw err; });    
-                             
+                            beepalert ();
                         });
           
                     };
