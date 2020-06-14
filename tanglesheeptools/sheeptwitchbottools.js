@@ -38,6 +38,8 @@ client.on ('chat', function(channel, userstate,  message, self) {
   // console.log(message);
   // console.log (userstate);
       // switch cams
+   
+
                if( (message === "!birdcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                  birdcam();
                                    client.action("tanglesheep", userstate['display-name'] + " switching to bird cam ");
@@ -116,8 +118,12 @@ client.on ('chat', function(channel, userstate,  message, self) {
                                      else   if( (message === "!bird2rest") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                           cambird2rest();
                                    client.action("tanglesheep", userstate['display-name'] + " Second cage rest place view ");
-                                  }  else 
-                                  { client.action("tanglesheep", userstate['display-name'] + " You need to be subscriber to use this comand "); }
+
+                     }  else if(( message === "!birdcam" ) || (message === "!sheepcam") || (message === "!goatshedcam") || (message === "!goat")) {
+ 
+                      client.action("tanglesheep", userstate['display-name'] + " you need to be subscriber of tanglesheep channel");
+            
+                     }
                      
                  // sheep free ptz move    
                      var movevalue = message.match(/\d+/g);
