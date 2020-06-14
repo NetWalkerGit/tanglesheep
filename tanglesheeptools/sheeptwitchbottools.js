@@ -57,7 +57,7 @@ client.on ('chat', function(channel, userstate,  message, self) {
                                    } else   if( userstate['custom-reward-id'] === '563f34fc-bf9e-4414-8c25-0a12615b2d84') {
                                       birdcam();
                                     client.action("tanglesheep", userstate['display-name'] + " switching to bird cam ");
-  
+                                
                            
                
                
@@ -116,7 +116,8 @@ client.on ('chat', function(channel, userstate,  message, self) {
                                      else   if( (message === "!bird2rest") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                           cambird2rest();
                                    client.action("tanglesheep", userstate['display-name'] + " Second cage rest place view ");
-                     }
+                                  }  else 
+                                  { client.action("tanglesheep", userstate['display-name'] + " You need to be subscriber to use this comand "); }
                      
                  // sheep free ptz move    
                      var movevalue = message.match(/\d+/g);
@@ -139,11 +140,10 @@ client.on ('chat', function(channel, userstate,  message, self) {
                        zoom = movevalue[2];
                        birdptzfree();
                     //  client.action("tanglesheep", userstate['display-name'] + " camera moving  ");
-                     }
-  
+                     } 
              
-               
-               
+  
+            
                
               
   
