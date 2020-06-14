@@ -154,7 +154,12 @@ const opts = {
                client.action("tanglesheep", userstate['display-name'] + " Sub power feeding :) ");
               }
                   });
-           };
+           }
+           else if( message === "!subfeed" ) {
+ 
+            client.action("tanglesheep", userstate['display-name'] + " you need to be subscriber of tanglesheep channel or use bits");
+  
+           }
          
     
 //-----------------------------------------------------------------------premiumfeed--------------------------------------------------
@@ -199,7 +204,12 @@ if ((hour >= 20 || hour <= 7 ) &&   (message === "!premiumfeed") && userstate.ba
         client.action("tanglesheep", userstate['display-name'] + " Premiumfeed feeding :) ");
        }
            });
-    };
+    }
+    else if( message === "!premiumfeed" ) {
+ 
+      client.action("tanglesheep", userstate['display-name'] + " you need to be subscriber of tanglesheep channel or use bits");
+
+     }
 
 
 //----------------------------------------------------------------------------- Loyalty feeding--------------------------------------------------
