@@ -720,10 +720,6 @@ function beepalert () {
 
 
 
-
-
-
-
 // Function calling feeder
 function feeding () {
    Hook.send(msgnormal);
