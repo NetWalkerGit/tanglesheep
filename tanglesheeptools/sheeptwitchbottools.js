@@ -133,17 +133,17 @@ client.on ('chat', function(channel, userstate,  message, self) {
                       }
                      else if
                      ( (message == "!sheepcam x"+movevalue[0]+" y"+movevalue[1]+" zoom"+movevalue[2] ) && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                       x = movevalue[0];
-                       y = movevalue[1];
-                       zoom = movevalue[2];
+                       x = movevalue[0] * 10;
+                       y = movevalue[1] * 10;
+                       zoom = movevalue[2] * 10;
                         sheepptzfree();
                     //  client.action("tanglesheep", userstate['display-name'] + " camera moving  ");
                      }
                      else if
                      ( (message == "!birdcam x"+movevalue[0]+" y"+movevalue[1]+" zoom"+movevalue[2] ) && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                       x = movevalue[0];
-                       y = movevalue[1];
-                       zoom = movevalue[2];
+                       x = movevalue[0] * 10;;
+                       y = movevalue[1] * 10;;
+                       zoom = movevalue[2] * 10;
                        birdptzfree();
                     //  client.action("tanglesheep", userstate['display-name'] + " camera moving  ");
                      } 
