@@ -18,7 +18,7 @@ const opts = {
   };
 
 
-
+//  var scena = "scene_655ebfbe-1998-4755-808d-4d1b032b11b1" ;
 
 // Create a client with our options
 const client = new tmi.client(opts);
@@ -35,7 +35,7 @@ client.connect();
 //subscribers  cams
 
 client.on ('chat', function(channel, userstate,  message, self) {
-  // console.log(message);
+ //  console.log(message);
   // console.log (userstate);
       // switch cams
    
@@ -52,6 +52,8 @@ client.on ('chat', function(channel, userstate,  message, self) {
                                      goatshedcam();
                                    client.action("tanglesheep", userstate['display-name'] + " switching to goat shed cam ");
                                  
+                               //redeeme
+                               
                                   } else   if( userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221') {
                                     sheepcam();
                                        client.action("tanglesheep", userstate['display-name'] + " switching to sheep cam ");
@@ -59,10 +61,36 @@ client.on ('chat', function(channel, userstate,  message, self) {
                                    } else   if( userstate['custom-reward-id'] === '563f34fc-bf9e-4414-8c25-0a12615b2d84') {
                                       birdcam();
                                     client.action("tanglesheep", userstate['display-name'] + " switching to bird cam ");
-                                
-                           
-               
-               
+
+                                    
+                                  } else   if( userstate['custom-reward-id'] === '65263b98-c85f-4905-b35a-a965eca3cba7') {
+                                   
+                                  client.action("tanglesheep","!8ball Answer " + userstate['display-name'] + " question..  ");
+
+                                } else   if( userstate['custom-reward-id'] === '44fe302e-9369-49db-bb48-f9c9fb80e128') {
+                                  showstat();
+                                  client.action("tanglesheep","woooow check stats  for today");
+
+                                } else   if( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') {
+                                  global.scena = "scene_0d23c014-d824-4172-a0bd-560b84e060e7";
+                                  switchscene();
+                                  client.action("tanglesheep","woooow big birds cam");
+
+                                } else   if( userstate['custom-reward-id'] === 'da73b198-b887-4b63-a4ba-fdbe72f3fb6e') {
+                                  global.scena = "scene_7f387d78-3019-4394-bcc2-4182d1ecabbc";
+                                  switchscene();
+                                  client.action("tanglesheep","woooow big goat cam");
+
+                                } else   if( userstate['custom-reward-id'] === 'ce027de5-caf2-4f71-8d51-6921ed3bc802') {
+                                  global.scena = "scene_68c54b98-b21d-4c22-aaff-fd40eee037f4";
+                                  switchscene();
+                                  client.action("tanglesheep","woooow big sheep outside cam");
+
+                                } else   if( userstate['custom-reward-id'] === '5ad1a3bc-cbc1-4664-bd9e-83c6805fca68') {
+                                   global.scena = "scene_655ebfbe-1998-4755-808d-4d1b032b11b1";
+                                  switchscene();
+                                  client.action("tanglesheep","woooow big sheep shed cam");
+                             //redeeme
                  //sheep cams
   
                                           } else   if( (message === "!sheepentry" ) && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
@@ -574,6 +602,131 @@ request(options, function (error, response) {
   console.log(error);
 });
 }
+
+
+
+
+
+
+// show statistic for points
+
+
+function showstat () {
+  const SockJS = require('sockjs-client');
+  const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }
+  var sock = SockJS('http://46.252.233.34:59650/api');
+   sock.onopen =  function() {
+                console.log('open');
+                      var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
+                            sock.send(req);
+
+                 var req1 = {
+                       "jsonrpc": "2.0",
+                       "id": 10,
+                       "method": "setVisibility",
+                       "params": {
+                                       "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\", \"6b386ed5-8418-405c-88d8-90d432f6bfa5\", \"browser_source_c4f354c3-dfd0-45ee-b269-5fbb2e60a1ba\"]",
+                                       "args": [true]
+                                   }
+                                   
+           }
+           
+           sock.send(JSON.stringify(req1));
+           sock.onmessage = function(e) {
+            console.log('message deactive', e.data);
+          };
+          sleep(15000).then(() => {
+           var req2 = {
+            "jsonrpc": "2.0",
+            "id": 10,
+            "method": "setVisibility",
+            "params": {
+                            "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\", \"6b386ed5-8418-405c-88d8-90d432f6bfa5\", \"browser_source_c4f354c3-dfd0-45ee-b269-5fbb2e60a1ba\"]",
+                            "args": [false]
+                        }
+                       }
+                     
+                 sock.send(JSON.stringify(req2));
+                sock.onmessage = function(e) {
+                  console.log('message active', e.data);
+                  sock.close();
+                  console.log('close');
+              }
+            })
+            }
+      
+    }       
+
+
+
+// feeding sound alert for video  end
+
+
+
+
+
+
+// scene switching
+
+
+function switchscene () {
+  const SockJS = require('sockjs-client');
+  console.log(scena);
+  const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }
+  var sock = SockJS('http://46.252.233.34:59650/api');
+   sock.onopen =  function() {
+                console.log('open');
+                      var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
+                            sock.send(req);
+
+                 var req1 = {
+                       "jsonrpc": "2.0",
+                       "id": 10,
+                       "method": "makeSceneActive",
+                       "params": {
+                        "resource": "ScenesService",
+                                       "args": [scena]
+                                   }
+                                   
+           }
+           
+           sock.send(JSON.stringify(req1));
+           sock.onmessage = function(e) {
+            console.log('message deactive', e.data);
+          };
+          sleep(30000).then(() => {
+           var req2 = {
+            "jsonrpc": "2.0",
+            "id": 10,
+            "method": "makeSceneActive",
+            "params": {
+              "resource": "ScenesService",
+                            "args": ["scene_33f33347-27af-4aec-86b2-e8650e33003f"]
+                        }
+                       }
+                     
+                 sock.send(JSON.stringify(req2));
+                sock.onmessage = function(e) {
+                  console.log('message active', e.data);
+                  sock.close();
+                  console.log('close');
+              }
+            })
+            }
+      
+    }       
+
+
+
+// scene switching
+
+
+
+
 
 // Called every time the bot connects to Twitch chat
 function onConnectedHandler (addr, port) {
