@@ -549,7 +549,7 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
           feeding();
           cardanopromo();
          dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'ADA', '"+jsonParsed.data["Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"]["address"]["caTxList"]["0"]["ctbId"]+"')"); //feedingststat
-       client.action("tanglesheep"," Thx for feeding using Cardano.  Visit https://cardanians.io/   your TX https://blockchair.com/cardano/transaction/"+jsonParsed.data["Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"]["address"]["caTxList"]["0"]["ctbId"] );
+       client.action("tanglesheep"," Thx for feeding using Cardano.  Visit https://www.cardano.org/   your TX https://blockchair.com/cardano/transaction/"+jsonParsed.data["Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"]["address"]["caTxList"]["0"]["ctbId"] );
           dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data["Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"]["address"]["caBalance"]["getCoin"],"Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"], function (err, result ) {}); 
           console.log("ADA feeding works");
           };
