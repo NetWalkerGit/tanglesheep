@@ -214,7 +214,7 @@ if ((hour >= 20 || hour <= 7 ) &&   (message === "!premiumfeed") && userstate.ba
 
 //----------------------------------------------------------------------------- Loyalty feeding--------------------------------------------------
 
-   if ((hour >= 22 || hour <= 7 ) &&  (userstate['custom-reward-id'] === '5d77928f-00f7-4612-9ea6-2a64070b8902') ) {
+   if ((hour >= 20 || hour <= 7 ) &&  (userstate['custom-reward-id'] === '5d77928f-00f7-4612-9ea6-2a64070b8902') ) {
   
                     client.action("tanglesheep", userstate['display-name'] + " Sheep's sleeping  now. Check feeding hours on video :(  Sheep need some rest <3 Thx for understanding <3 ");
   
