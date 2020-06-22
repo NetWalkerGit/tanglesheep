@@ -353,6 +353,8 @@ client.on ("cheer", (channel, userstate, message) =>  {
   var xrpbalances = require('request');
   var bchbalances = require('request');
   var ethbalances = require('request');
+  var cardanobalance = require('request');
+
   //var iotarequest = require('request');
 
 var btc = {
@@ -386,6 +388,13 @@ var ltc = {
   var eth = {
     'method': 'GET',
     'url': 'https://api.blockchair.com/ethereum/dashboards/address/0x042CEE4E592a54F697620bC3090800cA180DBcBE?limit=1&offset=0',
+    'headers': {
+    }
+  };
+
+  var cardano = {
+    'method': 'GET',
+    'url': 'https://api.blockchair.com/cardano/raw/address/Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5',
     'headers': {
     }
   };
@@ -443,12 +452,12 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
           for (var i in result)
           if ((jsonParsed.final_balance - result[i].balance) > 2000 )    //checking   new balance - balance from DB is bigger than 0.5 $ = 5000 satoshi
           {
-            console.log("BTC feeding works");
+          
           feeding();
           dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BTC', '"+jsonParsed.txs[0].hash+"')"); //feedingststat
           client.action("tanglesheep"," Thx for feeding using BTC  your  TX https://blockchair.com/bitcoin/transaction/"+jsonParsed.txs[0].hash  );
             dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.final_balance, jsonParsed.address], function (err, result ) {}); 
-          
+            console.log("BTC feeding works");
           };
         });
      
@@ -462,12 +471,12 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
         for (var i in result)
         if ((jsonParsed.final_balance - result[i].balance) > 200000 )    //checking   new balance - balance from DB is bigger than 0.5 $ 
         {
-          console.log("LTC feeding works");
+          
         feeding();
         dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'LTC', '"+jsonParsed.txs[0].hash+"')"); //feedingststat
         client.action("tanglesheep"," Thx feeding using LTC   your  TX https://blockchair.com/litecoin/transaction/"+jsonParsed.txs[0].hash  );
           dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.final_balance, jsonParsed.address], function (err, result ) {}); 
-        
+          console.log("LTC feeding works");
         };
       });
    
@@ -482,12 +491,12 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
           for (var i in result)
           if ((jsonParsed.xrpBalance - result[i].balance) > 1 )    //checking   new balance - balance from DB is bigger than than 0.5 $ 
           {
-            console.log("XRP feeding works");
+            
           feeding();
           dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'XRP', '"+jsonParsed.previousAffectingTransactionID+"')"); //feedingststat
           client.action("tanglesheep"," Thx for feeding using XRP your TX https://xrpscan.com/tx/"+jsonParsed.previousAffectingTransactionID );
             dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.xrpBalance, jsonParsed.account], function (err, result ) {}); 
-          
+            console.log("XRP feeding works");
           };
         });
      
@@ -500,12 +509,12 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
           for (var i in result)
           if (((jsonParsed.data.balance + jsonParsed.data.unconfirmed_received ) - result[i].balance) > 10000 )    //checking   new balance - balance from DB is bigger  than 0.5 $ 
           {
-            console.log("BCH feeding works");
+           
           feeding();
           dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BCH', '"+jsonParsed.data.last_tx+"')"); //feedingststat
           client.action("tanglesheep"," Thx for feeding using BCH your TX https://bch.btc.com/"+jsonParsed.data.last_tx );
             dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance + jsonParsed.data.unconfirmed_received,jsonParsed.data.address], function (err, result ) {}); 
-          
+            console.log("BCH feeding works");
           };
         });
      
@@ -518,16 +527,36 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
           for (var i in result)
           if ((jsonParsed.data["0x042cee4e592a54f697620bc3090800ca180dbcbe"]["address"]["balance"] - result[i].balance) > 1000000000000000 )    //checking   new balance - balance from DB is bigger  than 0.5 $ 
           {
-            console.log("ETH feeding works");
+          
           feeding();
           dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'ETH', '"+jsonParsed.data["0x042cee4e592a54f697620bc3090800ca180dbcbe"]["calls"]["0"]["transaction_hash"]+"')"); //feedingststat
           client.action("tanglesheep"," Thx for feeding using ETH your TX https://blockchair.com/ethereum/transaction/"+jsonParsed.data["0x042cee4e592a54f697620bc3090800ca180dbcbe"]["calls"]["0"]["transaction_hash"] );
           dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data["0x042cee4e592a54f697620bc3090800ca180dbcbe"]["address"]["balance"],"0x042cee4e592a54f697620bc3090800ca180dbcbe"], function (err, result ) {}); 
-          
+          console.log("ETH feeding works");
           };
         });
      
       });
+
+      cardanobalance(cardano, function (error, response) { 
+        if (error) throw new Error(error);
+        var jsonParsed = JSON.parse(response.body);
+        dbcon.query('SELECT balance FROM balance WHERE  address = "Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"', function (err, result) {  
+          for (var i in result)
+          if ((jsonParsed.data["Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"]["address"]["caBalance"]["getCoin"] - result[i].balance) > 5000000 )    //checking   new balance - balance from DB is bigger than 0.5 $ = 5000 satoshi
+          {
+            
+          feeding();
+          cardanopromo();
+         dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'ADA', '"+jsonParsed.data["Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"]["address"]["caTxList"]["0"]["ctbId"]+"')"); //feedingststat
+       client.action("tanglesheep"," Thx for feeding using Cardano.  Visit https://cardanians.io/   your TX https://blockchair.com/cardano/transaction/"+jsonParsed.data["Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"]["address"]["caTxList"]["0"]["ctbId"] );
+          dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data["Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"]["address"]["caBalance"]["getCoin"],"Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"], function (err, result ) {}); 
+          console.log("ADA feeding works");
+          };
+       
+     
+      });
+    });
 
 /*
       iotarequest(optionsbalance, function (error, response, data) {
@@ -726,7 +755,60 @@ function beepalert () {
 // feeding sound alert for video  end
 
 
+// Cardano logo promo
 
+
+function cardanopromo () {
+  const SockJS = require('sockjs-client');
+  const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }
+  var sock = SockJS('http://46.252.233.34:59650/api');
+   sock.onopen =  function() {
+                console.log('open');
+                      var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
+                            sock.send(req);
+
+                 var req1 = {
+                       "jsonrpc": "2.0",
+                       "id": 10,
+                       "method": "setVisibility",
+                       "params": {
+                                       "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\", \"5a6fde86-cacd-4b12-802d-84e1b96c700f\", \"image_source_7ffbf480-d04b-4e4d-a377-c0ce667921f2\"]",
+                                       "args": [true]
+                                   }
+                                   
+           }
+           
+           sock.send(JSON.stringify(req1));
+           sock.onmessage = function(e) {
+            console.log('message deactive', e.data);
+          };
+          sleep(6000).then(() => {
+           var req2 = {
+            "jsonrpc": "2.0",
+            "id": 10,
+            "method": "setVisibility",
+            "params": {
+                            "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\", \"5a6fde86-cacd-4b12-802d-84e1b96c700f\", \"image_source_7ffbf480-d04b-4e4d-a377-c0ce667921f2\"]",
+                            "args": [false]
+                        }
+                       }
+                     
+                 sock.send(JSON.stringify(req2));
+                sock.onmessage = function(e) {
+                  console.log('message active', e.data);
+                  sock.close();
+                  console.log('close');
+              }
+            })
+            }
+      
+    }       
+
+
+
+// Cardano logo promo
 
 
 
@@ -747,7 +829,7 @@ function feeding () {
                 todayfeeds = (result[i].todayfeeds) + 1;
                 dbcon.query("UPDATE feedstat SET totalfeeds=?, todayfeeds=? WHERE id=?",[totalfeeds, todayfeeds, 1], function (err, result ) {             //incrase counter in DB
                   if (err) throw err; });    
-                  beepalert ();
+              //    beepalert ();   // plasy sound during the feeding
               });
 
           };
@@ -769,7 +851,7 @@ function feeding () {
                           premiumfeeds = (result[i].premiumfeeds) + 1;
                           dbcon.query("UPDATE feedstat SET totalfeeds=?, todayfeeds=?, premiumfeeds=? WHERE id=?",[totalfeeds, todayfeeds, premiumfeeds, 1], function (err, result ) {             //incrase counter in DB
                             if (err) throw err; });    
-                            beepalert ();
+                            //    beepalert ();   // plasy sound during the feeding
                         });
           
                     };
