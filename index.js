@@ -707,7 +707,7 @@ function beepalert () {
   const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
   }
-  var sock = SockJS('http://46.252.233.34:59650/api');
+  var sock = SockJS('http://95.85.254.86:59650/api');
    sock.onopen =  function() {
                 console.log('open');
                       var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
@@ -763,7 +763,7 @@ function cardanopromo () {
   const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
   }
-  var sock = SockJS('http://46.252.233.34:59650/api');
+  var sock = SockJS('http://95.85.254.86:59650/api');
    sock.onopen =  function() {
                 console.log('open');
                       var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
