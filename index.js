@@ -214,7 +214,7 @@ if ((hour >= 20 || hour <= 7 ) &&   (message === "!premiumfeed") && userstate.ba
 
 //----------------------------------------------------------------------------- Loyalty feeding--------------------------------------------------
 
-   if ((hour >= 22 || hour <= 7 ) &&  (userstate['custom-reward-id'] === '5d77928f-00f7-4612-9ea6-2a64070b8902') ) {
+   if ((hour >= 20 || hour <= 7 ) &&  (userstate['custom-reward-id'] === '5d77928f-00f7-4612-9ea6-2a64070b8902') ) {
   
                     client.action("tanglesheep", userstate['display-name'] + " Sheep's sleeping  now. Check feeding hours on video :(  Sheep need some rest <3 Thx for understanding <3 ");
   
@@ -255,8 +255,8 @@ if ((hour >= 20 || hour <= 7 ) &&   (message === "!premiumfeed") && userstate.ba
       dbcon.query('SELECT userid FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result) {
         if ((result.length > 0 ) && ( message === "!myfeedingstats"))   // if user exist and mesage is  then print stats
           { 
-                 dbcon.query('SELECT username,subfeeds,pointfeeds,cheerfeeds  FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result, fields){
-                 client.action("tanglesheep", "username:" +result[0].username + " subfeeds:" + result[0].subfeeds + " pointfeeds:" + result[0].pointfeeds + " cheerfeeds:" + result[0].cheerfeeds);
+                 dbcon.query('SELECT username,subfeeds,pointfeeds,cheerfeeds,premiumfeedtime  FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result, fields){
+                 client.action("tanglesheep", "username:" +result[0].username + " subfeeds:" + result[0].subfeeds + " pointfeeds:" + result[0].pointfeeds + " cheerfeeds:" + result[0].cheerfeeds + " lastpremiumfeed:" + result[0].premiumfeedtime);
                  });     
                         
              }else if ( message === "!myfeedingstats")  {
@@ -549,7 +549,7 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
           feeding();
           cardanopromo();
          dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'ADA', '"+jsonParsed.data["Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"]["address"]["caTxList"]["0"]["ctbId"]+"')"); //feedingststat
-       client.action("tanglesheep"," Thx for feeding using Cardano.  Visit https://cardanians.io/   your TX https://blockchair.com/cardano/transaction/"+jsonParsed.data["Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"]["address"]["caTxList"]["0"]["ctbId"] );
+       client.action("tanglesheep"," Thx for feeding using Cardano.  Visit https://www.cardano.org/   your TX https://blockchair.com/cardano/transaction/"+jsonParsed.data["Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"]["address"]["caTxList"]["0"]["ctbId"] );
           dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data["Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"]["address"]["caBalance"]["getCoin"],"Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"], function (err, result ) {}); 
           console.log("ADA feeding works");
           };
@@ -707,7 +707,7 @@ function beepalert () {
   const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
   }
-  var sock = SockJS('http://46.252.233.34:59650/api');
+  var sock = SockJS('http://95.85.254.86:59650/api');
    sock.onopen =  function() {
                 console.log('open');
                       var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
@@ -752,7 +752,7 @@ function beepalert () {
 
 
 
-// feeding sound alert for video  end
+// feeding sound alert for video  
 
 
 // Cardano logo promo
@@ -763,7 +763,7 @@ function cardanopromo () {
   const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
   }
-  var sock = SockJS('http://46.252.233.34:59650/api');
+  var sock = SockJS('http://95.85.254.86:59650/api');
    sock.onopen =  function() {
                 console.log('open');
                       var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
