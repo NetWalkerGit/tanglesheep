@@ -551,6 +551,8 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
         cardanopromo();
         client.action("tanglesheep"," Thx for feeding using Cardano.  Visit https://www.cardano.org/   your TX https://blockchair.com/cardano/transaction/"+jsonParsed.records[0].id );
         console.log("ADA feeding works");
+        dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'ADA', '"+jsonParsed.records[0].id+"')"); //feedingststat
+
         fs.writeFile('cardanotx.txt',jsonParsed.records[0].id, function (err) {       
           if (err) throw err;
                     });
