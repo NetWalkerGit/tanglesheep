@@ -4,6 +4,7 @@ const uniqid = require('uniqid');
 const schedule = require('node-schedule');
 const request = require("request");
 const config = require('./config.js');
+const fs = require('fs');
 const webhook = require("webhook-discord")
 
 const dbcon = mysql.createConnection({
@@ -387,14 +388,14 @@ var ltc = {
 
   var eth = {
     'method': 'GET',
-    'url': 'https://api.blockchair.com/ethereum/dashboards/address/0x042CEE4E592a54F697620bC3090800cA180DBcBE?limit=1&offset=0',
+    'url': 'https://api.blockcypher.com/v1/eth/main/addrs/0x042CEE4E592a54F697620bC3090800cA180DBcBE',
     'headers': {
     }
   };
 
   var cardano = {
     'method': 'GET',
-    'url': 'https://api.blockchair.com/cardano/raw/address/Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5',
+    'url': 'https://api.adaex.org/wallets/7/9/c/b8f6e397886ecd2ab42c5a6582aa8c97.json',
     'headers': {
     }
   };
@@ -521,44 +522,45 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
       });
 
       ethbalances(eth, function (error, response) { 
-        if (error) throw new Error(error);
-        var jsonParsed = JSON.parse(response.body);
-        dbcon.query('SELECT balance FROM balance WHERE  address = "0x042cee4e592a54f697620bc3090800ca180dbcbe"', function (err, result) {   
-          for (var i in result)
-          if ((jsonParsed.data["0x042cee4e592a54f697620bc3090800ca180dbcbe"]["address"]["balance"] - result[i].balance) > 1000000000000000 )    //checking   new balance - balance from DB is bigger  than 0.5 $ 
-          {
-          
-          feeding();
-          dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'ETH', '"+jsonParsed.data["0x042cee4e592a54f697620bc3090800ca180dbcbe"]["calls"]["0"]["transaction_hash"]+"')"); //feedingststat
-          client.action("tanglesheep"," Thx for feeding using ETH your TX https://blockchair.com/ethereum/transaction/"+jsonParsed.data["0x042cee4e592a54f697620bc3090800ca180dbcbe"]["calls"]["0"]["transaction_hash"] );
-          dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data["0x042cee4e592a54f697620bc3090800ca180dbcbe"]["address"]["balance"],"0x042cee4e592a54f697620bc3090800ca180dbcbe"], function (err, result ) {}); 
-          console.log("ETH feeding works");
-          };
+  if (error) throw new Error(error);
+  var jsonParsed = JSON.parse(response.body);
+  dbcon.query('SELECT balance FROM balance WHERE  address = "0x042cee4e592a54f697620bc3090800ca180dbcbe"', function (err, result) {   
+    for (var i in result)
+    if ((jsonParsed.final_balance - result[i].balance) > 1000000000000000 )    //checking   new balance - balance from DB is bigger  than 0.5 $ 
+    {
+    feeding();
+    dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'ETH', '"+jsonParsed.txrefs[0].tx_hash+"')"); //feedingststat
+    client.action("tanglesheep"," Thx for feeding using ETH your TX https://live.blockcypher.com/eth/tx/"+jsonParsed.txrefs[0].tx_hash );
+    dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.final_balance,"0x042cee4e592a54f697620bc3090800ca180dbcbe"], function (err, result ) {}); 
+    console.log("ETH feeding works");
+        };
+      });
+   });
+
+  cardanobalance(cardano, function (error, response) { 
+    if (error) {return console.log(err); }
+    var jsonParsed = JSON.parse(response.body);
+
+
+    fs.readFile('cardanotx.txt', 'utf8', function (err,lasttxtid) {
+      if (err) {  return console.log(err);}
+
+      if (  (jsonParsed.records[0].id != lasttxtid ) && (jsonParsed.records[0].value > 5) )  {
+
+        feeding();
+        cardanopromo();
+        client.action("tanglesheep"," Thx for feeding using Cardano.  Visit https://www.cardano.org/   your TX https://blockchair.com/cardano/transaction/"+jsonParsed.records[0].id );
+        console.log("ADA feeding works");
+        fs.writeFile('cardanotx.txt',jsonParsed.records[0].id, function (err) {       
+          if (err) throw err;
+                    });
+
+               };
         });
-     
-      });
-
-      cardanobalance(cardano, function (error, response) { 
-        if (error) throw new Error(error);
-        var jsonParsed = JSON.parse(response.body);
-        dbcon.query('SELECT balance FROM balance WHERE  address = "Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"', function (err, result) {  
-          for (var i in result)
-          if ((jsonParsed.data["Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"]["address"]["caBalance"]["getCoin"] - result[i].balance) > 5000000 )    //checking   new balance - balance from DB is bigger than 0.5 $ = 5000 satoshi
-          {
-            
-          feeding();
-          cardanopromo();
-         dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'ADA', '"+jsonParsed.data["Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"]["address"]["caTxList"]["0"]["ctbId"]+"')"); //feedingststat
-       client.action("tanglesheep"," Thx for feeding using Cardano.  Visit https://www.cardano.org/   your TX https://blockchair.com/cardano/transaction/"+jsonParsed.data["Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"]["address"]["caTxList"]["0"]["ctbId"] );
-          dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data["Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"]["address"]["caBalance"]["getCoin"],"Ae2tdPwUPEZ1EPMAgjzGct8rUiHLYtcGMdCXZDXNRtpPw22UWTZHuAqNXt5"], function (err, result ) {}); 
-          console.log("ADA feeding works");
-          };
-       
-     
-      });
-    });
-
+ });
+    
 /*
+
       iotarequest(optionsbalance, function (error, response, data) {
         if (!error && response.statusCode == 200) {
     //      console.log(data.hashes[0]);
