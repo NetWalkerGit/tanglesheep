@@ -361,7 +361,6 @@ client.on ("cheer", (channel, userstate, message) =>  {
 var btc = {
   'method': 'GET',
   'url': 'https://blockchain.info/rawaddr/37wQuQDXQvw8yLwPSmAjkuU8xgjqJycwBp?limit=1',
-  'timeout' : '10000',
   'headers': {
   }
 };
@@ -369,7 +368,6 @@ var btc = {
 var ltc = {
     'method': 'GET',
     'url': 'https://api.blockcypher.com/v1/ltc/main/addrs/MWvyvpnuW42vNRZT6BYC83J1RWNMtuxtPr/full?limit=1',
-    'timeout' : '10000',
     'headers': {
     }
   };
@@ -377,7 +375,6 @@ var ltc = {
   var xrp = {
     'method': 'GET',
     'url': 'https://api.xrpscan.com/api/v1/account/rMAZ8bBvyf5YsazFRs3Aj1So3dArcaJMXD',
-    'timeout' : '10000',
     'headers': {
     }
   };
@@ -385,7 +382,6 @@ var ltc = {
   var bch = {
     'method': 'GET',
     'url': 'https://bch-chain.api.btc.com/v3/address/1Pn2oQzbk2JaALdhsvtgyWAv49rdUxHyUF',
-    'timeout' : '10000',
     'headers': {
     }
   };
@@ -393,7 +389,6 @@ var ltc = {
   var eth = {
     'method': 'GET',
     'url': 'https://api.blockcypher.com/v1/eth/main/addrs/0x042CEE4E592a54F697620bC3090800cA180DBcBE',
-    'timeout' : '10000',
     'headers': {
     }
   };
@@ -401,7 +396,6 @@ var ltc = {
   var cardano = {
     'method': 'GET',
     'url': 'https://api.adaex.org/wallets/7/9/c/b8f6e397886ecd2ab42c5a6582aa8c97.json',
-    'timeout' : '10000',
     'headers': {
     }
   };
