@@ -447,13 +447,13 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
   const date = new Date();
   let hour = date.getHours();
 
-  if ((hour >= 20 || hour <= 7 )  || ( todayfeeds >= 100 ) ){
+  if ((hour >= 21 || hour <= 7 )  || ( todayfeeds >= 100 ) ){
 
             //nothing will happen       
            // console.log("feeding limit reached");
        } else {
     btcbalances(btc, function (error, response) { 
-        if (error) throw new Error(error);
+      try {
         var jsonParsed = JSON.parse(response.body);
         dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.address), function (err, result) {  
           for (var i in result)
@@ -467,12 +467,14 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
             console.log("BTC feeding works");
           };
         });
-     
+      } catch(error) {
+      console.log('BTC feeding error');
+      }
       });
     
     
     ltcbalances(ltc, function (error, response) { 
-      if (error) throw new Error(error);
+      try {
       var jsonParsed = JSON.parse(response.body);
       dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.address), function (err, result) {  
         for (var i in result)
@@ -486,13 +488,15 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
           console.log("LTC feeding works");
         };
       });
-   
+    } catch(error) {
+      console.log('ltc feeding error');
+      }
     });
   
 
 
       xrpbalances(xrp, function (error, response) { 
-        if (error) throw new Error(error);
+        try {
         var jsonParsed = JSON.parse(response.body);
         dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.account), function (err, result) {  
           for (var i in result)
@@ -506,11 +510,13 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
             console.log("XRP feeding works");
           };
         });
-     
+      } catch(error) {
+        console.log('xrp feeding error');
+        }
       });
 
       bchbalances(bch, function (error, response) { 
-        if (error) throw new Error(error);
+        try {
         var jsonParsed = JSON.parse(response.body);
         dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.data.address), function (err, result) {  
           for (var i in result)
@@ -524,11 +530,13 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
             console.log("BCH feeding works");
           };
         });
-     
+      } catch(error) {
+        console.log('bch feeding error');
+        }
       });
 
       ethbalances(eth, function (error, response) { 
-  if (error) throw new Error(error);
+        try {
   var jsonParsed = JSON.parse(response.body);
   dbcon.query('SELECT balance FROM balance WHERE  address = "0x042cee4e592a54f697620bc3090800ca180dbcbe"', function (err, result) {   
     for (var i in result)
@@ -541,15 +549,18 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
     console.log("ETH feeding works");
         };
       });
+    } catch(error) {
+      console.log('eth feeding error');
+      }
    });
 
   cardanobalance(cardano, function (error, response) { 
-    if (error) throw new Error(error);
+    try {
     var jsonParsed = JSON.parse(response.body);
 
 
     fs.readFile('cardanotx.txt', 'utf8', function (err,lasttxtid) {
-      if (err) {  return console.log(err);}
+      
 
       if (  (jsonParsed.records[0].id != lasttxtid ) && (jsonParsed.records[0].value > 5) )  {
 
@@ -560,11 +571,14 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
         dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'ADA', '"+jsonParsed.records[0].id+"')"); //feedingststat
 
         fs.writeFile('cardanotx.txt',jsonParsed.records[0].id, function (err) {       
-          if (err) throw err;
+         
                     });
 
                };
         });
+      } catch(error) {
+        console.log('cardano feeding error');
+        }
  });
     
 /*
