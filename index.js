@@ -360,7 +360,7 @@ client.on ("cheer", (channel, userstate, message) =>  {
 
 var btc = {
   'method': 'GET',
-  'url': 'https://blockchain.info/rawaddr/37wQuQDXQvw8yLwPSmAjkuU8xgjqJycwBp',
+  'url': 'https://blockchain.info/rawaddr/37wQuQDXQvw8yLwPSmAjkuU8xgjqJycwBp?limit=1',
   'timeout' : '10000',
   'headers': {
   }
