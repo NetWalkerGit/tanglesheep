@@ -447,7 +447,7 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
   const date = new Date();
   let hour = date.getHours();
 
-  if ((hour >= 21 || hour <= 7 )  || ( todayfeeds >= 100 ) ){
+  if ((hour >= 20 || hour <= 7 )  || ( todayfeeds >= 100 ) ){
 
             //nothing will happen       
            // console.log("feeding limit reached");
