@@ -359,51 +359,33 @@ client.on ("cheer", (channel, userstate, message) =>  {
   //var iotarequest = require('request');
 
 var btc = {
-  'method': 'GET',
-  'url': 'https://blockchain.info/rawaddr/37wQuQDXQvw8yLwPSmAjkuU8xgjqJycwBp?limit=1',
-  'timeout' : '10000',
-  'headers': {
-  }
+  method: 'GET',
+  url: 'https://api.blockcypher.com/v1/btc/main/addrs/37wQuQDXQvw8yLwPSmAjkuU8xgjqJycwBp?limit=1',
 };
 
 var ltc = {
-    'method': 'GET',
-    'url': 'https://api.blockcypher.com/v1/ltc/main/addrs/MWvyvpnuW42vNRZT6BYC83J1RWNMtuxtPr/full?limit=1',
-    'timeout' : '10000',
-    'headers': {
-    }
+    method: 'GET',
+    url: 'https://api.blockcypher.com/v1/ltc/main/addrs/MWvyvpnuW42vNRZT6BYC83J1RWNMtuxtPr/full?limit=1'
   };
 
   var xrp = {
-    'method': 'GET',
-    'url': 'https://api.xrpscan.com/api/v1/account/rMAZ8bBvyf5YsazFRs3Aj1So3dArcaJMXD',
-    'timeout' : '10000',
-    'headers': {
-    }
+    method: 'GET',
+    url: 'https://api.xrpscan.com/api/v1/account/rMAZ8bBvyf5YsazFRs3Aj1So3dArcaJMXD'
   };
 
   var bch = {
-    'method': 'GET',
-    'url': 'https://bch-chain.api.btc.com/v3/address/1Pn2oQzbk2JaALdhsvtgyWAv49rdUxHyUF',
-    'timeout' : '10000',
-    'headers': {
-    }
+    method: 'GET',
+    url: 'https://bch-chain.api.btc.com/v3/address/1Pn2oQzbk2JaALdhsvtgyWAv49rdUxHyUF'
   };
 
   var eth = {
-    'method': 'GET',
-    'url': 'https://api.blockcypher.com/v1/eth/main/addrs/0x042CEE4E592a54F697620bC3090800cA180DBcBE',
-    'timeout' : '10000',
-    'headers': {
-    }
+    method: 'GET',
+    url: 'https://api.blockcypher.com/v1/eth/main/addrs/0x042CEE4E592a54F697620bC3090800cA180DBcBE?limit=1'
   };
 
   var cardano = {
-    'method': 'GET',
-    'url': 'https://api.adaex.org/wallets/7/9/c/b8f6e397886ecd2ab42c5a6582aa8c97.json',
-    'timeout' : '10000',
-    'headers': {
-    }
+    method: 'GET',
+    url: 'https://api.adaex.org/wallets/7/9/c/b8f6e397886ecd2ab42c5a6582aa8c97.json'
   };
 /*
   //--------------iota-----------
@@ -461,14 +443,14 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
           {
           
           feeding();
-          dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BTC', '"+jsonParsed.txs[0].hash+"')"); //feedingststat
-          client.action("tanglesheep"," Thx for feeding using BTC  your  TX https://blockchair.com/bitcoin/transaction/"+jsonParsed.txs[0].hash  );
+          dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BTC', '"+jsonParsed.txrefs[0].tx_hash+"')"); //feedingststat
+          client.action("tanglesheep"," Thx for feeding using BTC  your  TX https://blockchair.com/bitcoin/transaction/"+jsonParsed.txrefs[0].tx_hash  );
             dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.final_balance, jsonParsed.address], function (err, result ) {}); 
             console.log("BTC feeding works");
           };
         });
       } catch(error) {
-      console.log('BTC feeding error');
+      console.log('BTC feeding error  '+error);
       }
       });
     
@@ -489,7 +471,7 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
         };
       });
     } catch(error) {
-      console.log('ltc feeding error');
+      console.log('ltc feeding error  '+error);
       }
     });
   
@@ -511,8 +493,8 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
           };
         });
       } catch(error) {
-        console.log('xrp feeding error');
-        }
+        console.log('xrp feeding error  '+error);
+      }
       });
 
       bchbalances(bch, function (error, response) { 
@@ -531,7 +513,7 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
           };
         });
       } catch(error) {
-        console.log('bch feeding error');
+        console.log('bch feeding error  '+error);
         }
       });
 
@@ -550,7 +532,7 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
         };
       });
     } catch(error) {
-      console.log('eth feeding error');
+      console.log('eth feeding error  '+error);
       }
    });
 
@@ -577,7 +559,7 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
                };
         });
       } catch(error) {
-        console.log('cardano feeding error');
+        console.log('cardano feeding error  '+error);
         }
  });
     
