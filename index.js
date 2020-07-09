@@ -360,12 +360,12 @@ client.on ("cheer", (channel, userstate, message) =>  {
 
 var btc = {
   method: 'GET',
-  url: 'https://api.blockcypher.com/v1/btc/main/addrs/37wQuQDXQvw8yLwPSmAjkuU8xgjqJycwBp?limit=1',
+  url: 'https://blockchain.info/rawaddr/37wQuQDXQvw8yLwPSmAjkuU8xgjqJycwBp?limit=1',
 };
 
 var ltc = {
     method: 'GET',
-    url: 'https://api.blockcypher.com/v1/ltc/main/addrs/MWvyvpnuW42vNRZT6BYC83J1RWNMtuxtPr/full?limit=1'
+    url: 'https://api.blockcypher.com/v1/ltc/main/addrs/MWvyvpnuW42vNRZT6BYC83J1RWNMtuxtPr?limit=1'
   };
 
   var xrp = {
@@ -425,7 +425,7 @@ var ltc = {
   };
 //--------------iota-----------
    */
-var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
+var checker = schedule.scheduleJob(' */30 * * * * * ', function(){         
   const date = new Date();
   let hour = date.getHours();
 
@@ -434,25 +434,25 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
             //nothing will happen       
            // console.log("feeding limit reached");
        } else {
-    btcbalances(btc, function (error, response) { 
-      try {
-        var jsonParsed = JSON.parse(response.body);
-        dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.address), function (err, result) {  
-          for (var i in result)
-          if ((jsonParsed.final_balance - result[i].balance) > 2000 )    //checking   new balance - balance from DB is bigger than 0.5 $ = 5000 satoshi
-          {
-          
-          feeding();
-          dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BTC', '"+jsonParsed.txrefs[0].tx_hash+"')"); //feedingststat
-          client.action("tanglesheep"," Thx for feeding using BTC  your  TX https://blockchair.com/bitcoin/transaction/"+jsonParsed.txrefs[0].tx_hash  );
-            dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.final_balance, jsonParsed.address], function (err, result ) {}); 
-            console.log("BTC feeding works");
-          };
-        });
-      } catch(error) {
-      console.log('BTC feeding error  '+error);
-      }
-      });
+        btcbalances(btc, function (error, response) { 
+          try {
+            var jsonParsed = JSON.parse(response.body);
+            dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.address), function (err, result) {  
+              for (var i in result)
+              if ((jsonParsed.final_balance - result[i].balance) > 2000 )    //checking   new balance - balance from DB is bigger than 0.5 $ = 5000 satoshi
+              {
+              
+              feeding();
+              dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BTC', '"+jsonParsed.txs[0].hash+"')"); //feedingststat
+              client.action("tanglesheep"," Thx for feeding using BTC  your  TX https://blockchair.com/bitcoin/transaction/"+jsonParsed.txs[0].hash  );
+                dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.final_balance, jsonParsed.address], function (err, result ) {}); 
+                console.log("BTC feeding works");
+              };
+            });
+          } catch(error) {
+            console.log('BTC feeding error  '+error);
+          }
+          });
     
     
     ltcbalances(ltc, function (error, response) { 
