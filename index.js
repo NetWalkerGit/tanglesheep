@@ -458,6 +458,7 @@ var checker = schedule.scheduleJob(' */30 * * * * * ', function(){
     ltcbalances(ltc, function (error, response) { 
       try {
       var jsonParsed = JSON.parse(response.body);
+      console.log('statusCode:', response && response.statusCode);
       dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.address), function (err, result) {  
         for (var i in result)
         if ((jsonParsed.final_balance - result[i].balance) > 200000 )    //checking   new balance - balance from DB is bigger than 0.5 $ 
@@ -705,60 +706,83 @@ function printQRimage () {
 
 
 
-// feeding sound alert for video
+// feeding gif animation and sound
 
 
-function beepalert () {
+function feedaniamtion () {
   const SockJS = require('sockjs-client');
   const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
   }
   var sock = SockJS('http://95.85.254.86:59650/api');
+
+
+  var animgifreq2 = {
+    "jsonrpc": "2.0",
+    "id": 10,
+    "method": "setVisibility",
+    "params": {
+                    "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\", \"7bb7eadc-215a-4678-a9a0-d9d33db1c593\", \"image_source_cdbaf39b-78f9-4637-9165-d35bb1c90211\"]",
+                    "args": [false]
+                }
+               }
+
+  var soundalertreq2 = {
+      "jsonrpc": "2.0",
+       "id": 10,
+       "method": "setVisibility",
+        "params": {
+                   "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"b2893761-fd07-4f3f-a7f6-fd3bdcc974e1\",\"ffmpeg_source_e15cc494-7aa4-4ea0-8bcc-0464acf9ee86\"]",
+                      "args": [true]
+                      }
+                 }
+
+        var animgifreq1 = {
+         "jsonrpc": "2.0",
+         "id": 10,
+         "method": "setVisibility",
+          "params": {
+                      "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\", \"7bb7eadc-215a-4678-a9a0-d9d33db1c593\", \"image_source_cdbaf39b-78f9-4637-9165-d35bb1c90211\"]",
+                       "args": [true]
+                              }            
+                }
+                var soundalertreq1 = {
+                 "jsonrpc": "2.0",
+                 "id": 10,
+                 "method": "setVisibility",
+                 "params": {
+                                 "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"b2893761-fd07-4f3f-a7f6-fd3bdcc974e1\",\"ffmpeg_source_e15cc494-7aa4-4ea0-8bcc-0464acf9ee86\"]",
+                                 "args": [false]
+                             }            
+               }
+
    sock.onopen =  function() {
                 console.log('open');
                       var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
                             sock.send(req);
 
-                 var req1 = {
-                       "jsonrpc": "2.0",
-                       "id": 10,
-                       "method": "setVisibility",
-                       "params": {
-                                       "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"b2893761-fd07-4f3f-a7f6-fd3bdcc974e1\",\"ffmpeg_source_e15cc494-7aa4-4ea0-8bcc-0464acf9ee86\"]",
-                                       "args": [false]
-                                   }
-                                   
-           }
-           
-           sock.send(JSON.stringify(req1));
-           sock.onmessage = function(e) {
-            console.log('message deactive', e.data);
-          };
+              
+
+           sock.send(JSON.stringify(animgifreq1));
+           sock.send(JSON.stringify(soundalertreq1));
+
           sleep(1500).then(() => {
-           var req2 = {
-            "jsonrpc": "2.0",
-            "id": 10,
-            "method": "setVisibility",
-            "params": {
-                            "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"b2893761-fd07-4f3f-a7f6-fd3bdcc974e1\",\"ffmpeg_source_e15cc494-7aa4-4ea0-8bcc-0464acf9ee86\"]",
-                            "args": [true]
-                        }
-                       }
-                     
-                 sock.send(JSON.stringify(req2));
-                sock.onmessage = function(e) {
-                  console.log('message active', e.data);
-                  sock.close();
-                  console.log('close');
-              }
+
+                 sock.send(JSON.stringify(soundalertreq2));
+
+              })
+        sleep(4500).then(() => {
+
+               sock.send(JSON.stringify(animgifreq2));
+              sock.close();
+         
             })
-            }
-      
+         }
     }       
 
 
 
-// feeding sound alert for video  
+//  feeding gif animation and sound
 
 
 // Cardano logo promo
@@ -787,9 +811,7 @@ function cardanopromo () {
            }
            
            sock.send(JSON.stringify(req1));
-           sock.onmessage = function(e) {
-            console.log('message deactive', e.data);
-          };
+         
           sleep(6000).then(() => {
            var req2 = {
             "jsonrpc": "2.0",
@@ -802,12 +824,8 @@ function cardanopromo () {
                        }
                      
                  sock.send(JSON.stringify(req2));
-                sock.onmessage = function(e) {
-                  console.log('message active', e.data);
                   sock.close();
-                  console.log('close');
-              }
-            })
+               })
             }
       
     }       
@@ -835,7 +853,7 @@ function feeding () {
                 todayfeeds = (result[i].todayfeeds) + 1;
                 dbcon.query("UPDATE feedstat SET totalfeeds=?, todayfeeds=? WHERE id=?",[totalfeeds, todayfeeds, 1], function (err, result ) {             //incrase counter in DB
                   if (err) throw err; });    
-              //    beepalert ();   // plasy sound during the feeding
+                  feedaniamtion ();   // plasy sound during the feeding
               });
 
           };
@@ -857,7 +875,7 @@ function feeding () {
                           premiumfeeds = (result[i].premiumfeeds) + 1;
                           dbcon.query("UPDATE feedstat SET totalfeeds=?, todayfeeds=?, premiumfeeds=? WHERE id=?",[totalfeeds, todayfeeds, premiumfeeds, 1], function (err, result ) {             //incrase counter in DB
                             if (err) throw err; });    
-                            //    beepalert ();   // plasy sound during the feeding
+                                feedaniamtion ();   // plasy sound during the feeding
                         });
           
                     };
