@@ -425,7 +425,7 @@ var ltc = {
   };
 //--------------iota-----------
    */
-var checker = schedule.scheduleJob(' */30 * * * * * ', function(){         
+var checker = schedule.scheduleJob(' 30 * * * * * ', function(){         
   const date = new Date();
   let hour = date.getHours();
 
