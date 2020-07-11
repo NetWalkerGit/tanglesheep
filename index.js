@@ -303,8 +303,7 @@ client.on ("cheer", (channel, userstate, message) =>  {
 
         client.action("tanglesheep", userstate['display-name'] + " Sheep's sleeping   now. Check feeding hours on video :(  Sheep need some rest <3 Thx for understanding <3 ");
     
-        } else  if    (userstate.bits == 2){                     //slot machine game bits amount
-          client.action("tanglesheep","!slots show if " + userstate['display-name'] + " is lucky ?  ");
+        
 
         } else  if    (userstate.bits <= 49){
                  client.action("tanglesheep", userstate['display-name'] + " Thx for cheering <3 <3  If you want to feed our fluffy sheep, cheer more than 49 bits :) ");
@@ -312,7 +311,8 @@ client.on ("cheer", (channel, userstate, message) =>  {
           }  else if ( todayfeeds >= 100 ) {
                                         client.action("tanglesheep", userstate['display-name'] + " Max day feeds limit reached , try tomorrow :(  Lets not overfeed sheep <3 Thx for cheering anyway. it support us. ");
                                       
-           
+            } else  if    (userstate.bits == 2){                     //slot machine game bits amount
+              client.action("tanglesheep","!slots show if " + userstate['display-name'] + " is lucky ?  ");
                                         
 //--------------------------------------------------------cheeering Premium  feeding 80 bits-------------------------------------------------------------------------
                  } else  if (userstate.bits == 80) {
