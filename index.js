@@ -458,7 +458,7 @@ var checker = schedule.scheduleJob(' 30 * * * * * ', function(){
     ltcbalances(ltc, function (error, response) { 
       try {
       var jsonParsed = JSON.parse(response.body);
-      console.log('statusCode:', response && response.statusCode);
+     // console.log('statusCode:', response && response.statusCode);
       dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.address), function (err, result) {  
         for (var i in result)
         if ((jsonParsed.final_balance - result[i].balance) > 200000 )    //checking   new balance - balance from DB is bigger than 0.5 $ 
@@ -840,10 +840,8 @@ function cardanopromo () {
 function feeding () {
    Hook.send(msgnormal);
 
-    var options = { method: 'GET',
-    url: (config.toolscontrol.dcmotor),
-    headers:
-     { 'cache-control': 'no-cache' } }; request(options, function (error, response, body) {
+    var options = { method: 'GET',url: (config.toolscontrol.dcmotor),headers:{ 'cache-control': 'no-cache' } };
+      request(options, function (error, response, body) {
         console.log(error);
     //    console.log(response);
                });
@@ -861,10 +859,9 @@ function feeding () {
           function feedingpremium () {
               Hook.send(msgnpremium);
           
-              var options = { method: 'GET',
-              url: (config.toolscontrol.dcmotor2),
-              headers:
-               { 'cache-control': 'no-cache' } }; request(options, function (error, response, body) {
+              var options = { method: 'GET', url: (config.toolscontrol.dcmotor2),headers:{ 'cache-control': 'no-cache' } };
+                request(options, function (error, response, body) {
+
                   console.log(error);
               //    console.log(response);
                          });
