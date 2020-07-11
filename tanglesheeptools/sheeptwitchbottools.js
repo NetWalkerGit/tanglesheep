@@ -32,18 +32,16 @@ client.connect();
 
 
 
-//subscribers  cams
+
+
+
+
 
 client.on ('chat', function(channel, userstate,  message, self) {
 //  console.log(message);
-   //console.log (userstate);
-    
-   /*
-      if( ((message === "Kappa Kappa Kappa") || (message === "PogChamp PogChamp PogChamp") ||  (message === "MorphinTime MorphinTime MorphinTime") ) && (userstate['display-name'] === 'Nightbot') ) {     
-        client.action("tanglesheep", userstate['display-name'] + " !slots I'm Feeling Lucky ");
-      };
-*/
-
+//   console.log (userstate);
+ 
+  
   // switch cams
                if( (message === "!birdcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                  birdcam();
@@ -172,7 +170,7 @@ client.on ('chat', function(channel, userstate,  message, self) {
 
                      }  
                      
-                     if(( message === "!birdcam" ) || (message === "!sheepcam") || (message === "!goatshedcam") || (message === "!goat")) {
+                     if((( message === "!birdcam" ) || (message === "!sheepcam") || (message === "!goatshedcam") || (message === "!goat")) && (userstate['badge-info'] === null) ){
  
                       client.action("tanglesheep", userstate['display-name'] + " you need to be subscriber of tanglesheep channel");
             
