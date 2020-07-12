@@ -256,7 +256,7 @@ if ((hour >= 20 || hour <= 7 ) &&   (message === "!premiumfeed") && userstate.ba
 if ((hour >= 20 || hour <= 7 ) && ( userstate['custom-reward-id'] === '69c85b34-2385-4f99-9e94-b6e751af55f3' )) {
   client.action("tanglesheep", userstate['display-name'] + " Sheep's sleeping  now. Check feeding hours on video :(  Sheep need some rest <3 Thx for understanding <3 ");
 
-} else  if (userstate['custom-reward-id'] === '5d77928f-00f7-4612-9ea6-2a64070b8902')  {
+} else  if (userstate['custom-reward-id'] === '69c85b34-2385-4f99-9e94-b6e751af55f3')  {
 
   client.action("tanglesheep","!slots show if " + userstate['display-name'] + " is lucky ?  ");
 };
@@ -311,7 +311,7 @@ client.on ("cheer", (channel, userstate, message) =>  {
           }  else if ( todayfeeds >= 100 ) {
                                         client.action("tanglesheep", userstate['display-name'] + " Max day feeds limit reached , try tomorrow :(  Lets not overfeed sheep <3 Thx for cheering anyway. it support us. ");
                                       
-            } else  if    (userstate.bits == 2){                     //slot machine game bits amount
+            } else  if    (userstate.bits == 4){                     //slot machine game bits amount
               client.action("tanglesheep","!slots show if " + userstate['display-name'] + " is lucky ?  ");
                                         
 //--------------------------------------------------------cheeering Premium  feeding 80 bits-------------------------------------------------------------------------
