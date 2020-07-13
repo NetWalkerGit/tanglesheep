@@ -232,14 +232,12 @@ if ((hour >= 20 || hour <= 7 ) &&   (message === "!premiumfeed") && userstate.ba
                            client.action("tanglesheep", userstate['display-name'] + " Thx for first time  loyalty feeding:) ");
                           
                                                  }        
-                                                     else {
+                                else {
 
                              dbcon.query('SELECT pointfeeds FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result) {      //sumpointfeeds counter
                                for (var i in result)
                                sumpointfeeds = (result[i].pointfeeds) + 1;                                                                                          //incrase counter in DB
-                               dbcon.query("UPDATE  twitchuser SET pointfeeds=?,message=?  WHERE userid=?",[sumpointfeeds,message, userstate['user-id']], function (err, result ) {    //incrase counter in DB
-                                       //  if (err) throw err; });   
-                                  });
+                               dbcon.query("UPDATE  twitchuser SET pointfeeds=?,message=?  WHERE userid=?",[sumpointfeeds,message, userstate['user-id']]);    //incrase counter in DB  
                              });
                             
                                   feeding();   //run feeder
@@ -302,8 +300,8 @@ client.on ("cheer", (channel, userstate, message) =>  {
        if (hour >= 20|| hour <= 7 )   {
 
         client.action("tanglesheep", userstate['display-name'] + " Sheep's sleeping   now. Check feeding hours on video :(  Sheep need some rest <3 Thx for understanding <3 ");
-
-      }  else if ( todayfeeds >= 100 ) {
+     
+      }  else if ( todayfeeds >= 100 ) {              // max feeding limit
         client.action("tanglesheep", userstate['display-name'] + " Max day feeds limit reached , try tomorrow :(  Lets not overfeed sheep <3 Thx for cheering anyway. it support us. ");
 
     
@@ -318,10 +316,9 @@ client.on ("cheer", (channel, userstate, message) =>  {
 //--------------------------------------------------------cheeering Premium  feeding 80 bits-------------------------------------------------------------------------
                  } else  if (userstate.bits == 80) {
                 
-                   dbcon.query('SELECT userid FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result ) {       
-                        if (result.length == []) {                  // first time feeders not in DB
-                           dbcon.query("INSERT INTO twitchuser (id,firstfeed,userid,username,message,cheerfeeds) VALUES ("+ dbcon.escape(uniqid()) +","+ dbcon.escape(date) +"," + dbcon.escape(userstate['user-id']) + "," + dbcon.escape(userstate['display-name']) + "," + dbcon.escape(message) + ",'1')", function (err, result  ) {  
-                            });
+                         dbcon.query('SELECT userid FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result ) {       
+                         if (result.length == []) {                  // first time feeders not in DB
+                           dbcon.query("INSERT INTO twitchuser (id,firstfeed,userid,username,message,cheerfeeds) VALUES ("+ dbcon.escape(uniqid()) +","+ dbcon.escape(date) +"," + dbcon.escape(userstate['user-id']) + "," + dbcon.escape(userstate['display-name']) + "," + dbcon.escape(message) + ",'1')");
                                                 
                             feedingpremium();
                             dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'cheerfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
@@ -330,42 +327,41 @@ client.on ("cheer", (channel, userstate, message) =>  {
                            } else {
                              dbcon.query('SELECT cheerfeeds FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result) {      //cheerfeeds counter
                               for (var i in result)
-                               sumpocheerfeeds = (result[i].cheerfeeds) + 1;                                                                                          //incrase counter in DB
-                               dbcon.query("UPDATE  twitchuser SET cheerfeeds=? WHERE userid=?",[sumpocheerfeeds, userstate['user-id']], function (err, result ) {    //incrase counter in DB
-                                 });   
+                               sumpocheerfeeds = (result[i].cheerfeeds) + 1;                                                                                          //update amount of cheerfeeds in user statas
+                               dbcon.query("UPDATE  twitchuser SET cheerfeeds=? WHERE userid=?",[sumpocheerfeeds, userstate['user-id']]);   
                                  feedingpremium();
                                  dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'cheerfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
-                                   client.action("tanglesheep", userstate['display-name'] + " Thx for Premium carrot feeding <3 <3   Sheep are happy :)  ");
+                                 client.action("tanglesheep", userstate['display-name'] + " Thx for Premium carrot feeding <3 <3   Sheep are happy :)  ");
                                               });
                                            }
                                        });
                                     
-                       //cheering pellets
-                                  } else   {
+              //cheering pellets amounr bigger than 50 but not 80
+                 } else   {
                 
-                                    dbcon.query('SELECT userid FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result ) {       
-                                      if (result.length == []) {                  // first time feeders not in DB
-                                         dbcon.query("INSERT INTO twitchuser (id,firstfeed,userid,username,message,cheerfeeds) VALUES ("+ dbcon.escape(uniqid()) +","+ dbcon.escape(date) +"," + dbcon.escape(userstate['user-id']) + "," + dbcon.escape(userstate['display-name']) + "," + dbcon.escape(message) + ",'1')", function (err, result  ) {  
-                                          });
-                                          
-                                          feeding();
-                                          dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'cheerfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
-                                         client.action("tanglesheep", userstate['display-name'] + " Thx for firs time  cheer feeding :)  ");
+                       dbcon.query('SELECT userid FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result ) {       
+                        if (result.length == []) {                  // first time feeders not in DB
+                        dbcon.query("INSERT INTO twitchuser (id,firstfeed,userid,username,message,cheerfeeds) VALUES ("+ dbcon.escape(uniqid()) +","+ dbcon.escape(date) +"," + dbcon.escape(userstate['user-id']) + "," + dbcon.escape(userstate['display-name']) + "," + dbcon.escape(message) + ",'1')", function (err, result  ) {  
+                         });
+                         
+                         feeding();
+                         dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'cheerfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
+                        client.action("tanglesheep", userstate['display-name'] + " Thx for firs time  cheer feeding :)  ");
                               
-                                                            } else {
+                          } else {
                           
-                                                              dbcon.query('SELECT cheerfeeds FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result) {      //cheerfeeds counter
-                                                                for (var i in result)
-                                                                sumpocheerfeeds = (result[i].cheerfeeds) + 1;                                                                                          //incrase counter in DB
-                                                                dbcon.query("UPDATE  twitchuser SET cheerfeeds=? WHERE userid=?",[sumpocheerfeeds, userstate['user-id']], function (err, result ) {    //incrase counter in DB
-                                                                          });   
-                                                              feeding();
-                                                              dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'cheerfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
-                                                              client.action("tanglesheep", userstate['display-name'] + " Thx for feeding <3 <3   Sheep are happy :)  ");
-                                                                     });
-                                                                   }
-                                                                });
-                                                              }
+                          dbcon.query('SELECT cheerfeeds FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result) {      //cheerfeeds counter
+                            for (var i in result)
+                            sumpocheerfeeds = (result[i].cheerfeeds) + 1;                                                                                          //incrase counter in DB
+                            dbcon.query("UPDATE  twitchuser SET cheerfeeds=? WHERE userid=?",[sumpocheerfeeds, userstate['user-id']], function (err, result ) {    //incrase counter in DB
+                                      });   
+                          feeding();
+                          dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'cheerfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
+                          client.action("tanglesheep", userstate['display-name'] + " Thx for feeding <3 <3   Sheep are happy :)  ");
+                                 });
+                               }
+                            });
+                          }
         });
 
 
