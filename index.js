@@ -28,9 +28,16 @@ const opts = {
     }
   };
 
+  //twitch tmi connection
   const client = new tmi.client(opts);
   client.on('connected', onConnectedHandler);
   client.connect();
+
+   function onConnectedHandler (addr, port) {
+    console.log(`* Connected to ${addr}:${port}`);
+  } 
+  //twitch tmi connection
+
 
 //webhook to discord
   const Hook = new webhook.Webhook(config.webhook.discord);
@@ -261,7 +268,7 @@ if ((hour >= 20 || hour <= 7 ) && ( userstate['custom-reward-id'] === '69c85b34-
 
 
 //Winner run
-      if( ((message === "Kappa Kappa Kappa") || (message === "PogChamp PogChamp PogChamp") ||  (message === "MorphinTime MorphinTime MorphinTime") ) && (userstate['display-name'] === 'Nightbot') ) {     
+      if( ((message === "tangle8Shepherd | tangle8Shepherd | tangle8Shepherd") || (message === "tangle8Feedsheep | tangle8Feedsheep | tangle8Feedsheep") ||  (message === "tangle8Hypesheep | tangle8Hypesheep | tangle8Hypesheep") ) && (userstate['display-name'] === 'Nightbot') ) {     
         client.action("tanglesheep", " JACKPOT!!!  Today is your lucky DAY, watch the feeding.");
         feeding();             //run feeder
         dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'SlotsWinner', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
@@ -305,7 +312,7 @@ client.on ("cheer", (channel, userstate, message) =>  {
         client.action("tanglesheep", userstate['display-name'] + " Max day feeds limit reached , try tomorrow :(  Lets not overfeed sheep <3 Thx for cheering anyway. it support us. ");
 
     
-      } else  if    (userstate.bits == 4){                     //slot machine game bits amount
+      } else  if    (userstate.bits == 5){                     //slot machine game bits amount
         client.action("tanglesheep","!slots show if " + userstate['display-name'] + " is lucky ?  ");
 
         } else  if    (userstate.bits <= 49){
@@ -897,10 +904,7 @@ function feeding () {
           
                     };
 
-function onConnectedHandler (addr, port) {
-    console.log(`* Connected to ${addr}:${port}`);
-   
-  }
+
   
 
 

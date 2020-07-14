@@ -20,15 +20,15 @@ const opts = {
 
 //  var scena = "scene_655ebfbe-1998-4755-808d-4d1b032b11b1" ;
 
-// Create a client with our options
-const client = new tmi.client(opts);
+ //twitch tmi connection
+ const client = new tmi.client(opts);
+ client.on('connected', onConnectedHandler);
+ client.connect();
 
-// Register our event handlers (defined below)
-//client.on('message', onMessageHandler);
-client.on('connected', onConnectedHandler);
-
-// Connect to Twitch:
-client.connect();
+  function onConnectedHandler (addr, port) {
+   console.log(`* Connected to ${addr}:${port}`);
+ } 
+ //twitch tmi connection
 
 
 
@@ -746,8 +746,3 @@ function switchscene () {
 
 
 
-
-// Called every time the bot connects to Twitch chat
-function onConnectedHandler (addr, port) {
-  console.log(`* Connected to ${addr}:${port}`);
-}
