@@ -417,9 +417,7 @@ var ltc = {
 
   var doge = {
     'method': 'GET',
-    'url': 'https://sochain.com/api/v2/address/DOGE/DD13MttjXeK7JkPp24jPGzAZ43b2kgDa5p',
-    'headers': {
-    }
+    'url': 'https://sochain.com/api/v2/address/DOGE/DPNWMTWW3zWWucFRhmn3e2GS42LWHEeXDW'
   };
 /*
   //--------------iota-----------
