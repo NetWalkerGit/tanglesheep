@@ -497,7 +497,7 @@ var checker = schedule.scheduleJob(' 30 * * * * * ', function(){
                 
                 feeding();
                 dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'DOGE', '"+jsonParsed.data.txs[0].txid+"')"); //feedingststat
-                client.action("tanglesheep"," Thx for feeding using DOGE  your  TX https://blockchair.com/bitcoin/transaction/"+jsonParsed.data.txs[0].txid  );
+                client.action("tanglesheep"," Thx for feeding using DOGE  your  TX https://blockchair.com/dogecoin/transaction/"+jsonParsed.data.txs[0].txid  );
                   dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance, jsonParsed.data.address], function (err, result ) {}); 
                   console.log("DOGE feeding works");
                 };
