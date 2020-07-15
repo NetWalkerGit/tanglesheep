@@ -382,12 +382,12 @@ client.on ("cheer", (channel, userstate, message) =>  {
   var bchbalances = require('request');
   var ethbalances = require('request');
   var cardanobalance = require('request');
-
+  var dogecoinbalance = require('request');
   //var iotarequest = require('request');
 
 var btc = {
   method: 'GET',
-  url: 'https://blockchain.info/rawaddr/37wQuQDXQvw8yLwPSmAjkuU8xgjqJycwBp?limit=1',
+  url: 'https://blockchain.info/rawaddr/37wQuQDXQvw8yLwPSmAjkuU8xgjqJycwBp?limit=1'
 };
 
 var ltc = {
@@ -413,6 +413,13 @@ var ltc = {
   var cardano = {
     method: 'GET',
     url: 'https://api.adaex.org/wallets/7/9/c/b8f6e397886ecd2ab42c5a6582aa8c97.json'
+  };
+
+  var doge = {
+    'method': 'GET',
+    'url': 'https://sochain.com/api/v2/address/DOGE/DD13MttjXeK7JkPp24jPGzAZ43b2kgDa5p',
+    'headers': {
+    }
   };
 /*
   //--------------iota-----------
@@ -481,6 +488,26 @@ var checker = schedule.scheduleJob(' 30 * * * * * ', function(){
           }
           });
     
+
+          dogecoinbalance(doge, function (error, response) { 
+            try {
+             var jsonParsed = JSON.parse(response.body);
+              dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.data.address), function (err, result) {  
+                for (var i in result)
+                if ((jsonParsed.data.balance - result[i].balance) > 100 )    //checking   new balance - balance from DB is bigger than 0.5 $ = 5000 satoshi
+                {
+                
+                feeding();
+                dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BTC', '"+jsonParsed.txs[0].hash+"')"); //feedingststat
+                client.action("tanglesheep"," Thx for feeding using BTC  your  TX https://blockchair.com/bitcoin/transaction/"+jsonParsed.data.txs[0].txid  );
+                  dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance, jsonParsed.data.address], function (err, result ) {}); 
+                  console.log("BTC feeding works");
+                };
+              });
+            } catch(error) {
+              console.log('BTC feeding error  '+error);
+            }
+            });
     
     ltcbalances(ltc, function (error, response) { 
       try {
