@@ -122,7 +122,7 @@ const opts = {
 
         //-----------------------------------------------------------------------subfeeds--------------------------------------------------
 
-        if ((hour >= 20 || hour <= 7 ) &&   (message === "!subfeed") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder))  {
+        if ((hour >= 20 || hour <= 6 ) &&   (message === "!subfeed") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder))  {
 
          client.action("tanglesheep", userstate['display-name'] + " Sheep's sleeping  now. Check feeding hours on video :(  Sheep need some rest <3 Thx for understanding <3 ");
 
@@ -172,7 +172,7 @@ const opts = {
     
 //-----------------------------------------------------------------------premiumfeed--------------------------------------------------
 
-if ((hour >= 20 || hour <= 7 ) &&   (message === "!premiumfeed") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder))  {
+if ((hour >= 20 || hour <= 6 ) &&   (message === "!premiumfeed") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder))  {
 
   client.action("tanglesheep", userstate['display-name'] + " Sheep's sleeping  now. Check feeding hours on video :(  Sheep need some rest <3 Thx for understanding <3 ");
 
@@ -222,7 +222,7 @@ if ((hour >= 20 || hour <= 7 ) &&   (message === "!premiumfeed") && userstate.ba
 
 //----------------------------------------------------------------------------- Loyalty feeding--------------------------------------------------
 
-   if ((hour >= 20 || hour <= 7 ) &&  (userstate['custom-reward-id'] === '5d77928f-00f7-4612-9ea6-2a64070b8902') ) {
+   if ((hour >= 20 || hour <= 6 ) &&  (userstate['custom-reward-id'] === '5d77928f-00f7-4612-9ea6-2a64070b8902') ) {
   
                     client.action("tanglesheep", userstate['display-name'] + " Sheep's sleeping  now. Check feeding hours on video :(  Sheep need some rest <3 Thx for understanding <3 ");
   
@@ -258,7 +258,7 @@ if ((hour >= 20 || hour <= 7 ) &&   (message === "!premiumfeed") && userstate.ba
 
 //--------------- Slot machine game--------------
 
-if ((hour >= 20 || hour <= 7 ) && ( userstate['custom-reward-id'] === '69c85b34-2385-4f99-9e94-b6e751af55f3' )) {
+if ((hour >= 20 || hour <= 6 ) && ( userstate['custom-reward-id'] === '69c85b34-2385-4f99-9e94-b6e751af55f3' )) {
   client.action("tanglesheep", userstate['display-name'] + " Sheep's sleeping  now. Check feeding hours on video :(  Sheep need some rest <3 Thx for understanding <3 ");
 
 } else  if (userstate['custom-reward-id'] === '69c85b34-2385-4f99-9e94-b6e751af55f3')  {
@@ -304,7 +304,7 @@ client.on ("cheer", (channel, userstate, message) =>  {
   let hour = date.getHours();
 
  
-       if (hour >= 20|| hour <= 7 )   {
+       if (hour >= 20|| hour <= 6 )   {
 
         client.action("tanglesheep", userstate['display-name'] + " Sheep's sleeping   now. Check feeding hours on video :(  Sheep need some rest <3 Thx for understanding <3 ");
      
@@ -461,7 +461,7 @@ var checker = schedule.scheduleJob(' 30 * * * * * ', function(){
   const date = new Date();
   let hour = date.getHours();
 
-  if ((hour >= 20 || hour <= 7 )  || ( todayfeeds >= 100 ) ){
+  if ((hour >= 20 || hour <= 6 )  || ( todayfeeds >= 100 ) ){
 
             //nothing will happen       
            // console.log("feeding limit reached");
@@ -734,7 +734,7 @@ function printQRimage () {
     const date = new Date();
     let hour = date.getHours();
 
-    if ((hour >= 20 || hour <= 7 )  || ( todayfeeds >= 100 ) ){
+    if ((hour >= 20 || hour <= 6 )  || ( todayfeeds >= 100 ) ){
 
       client.action("tanglesheep"," Sorry sheep sleeping :( , Thx for yoru Bitcoin LN " +request.body.data.payment_hash+ " payment anyway it support us :) ");
 
