@@ -32,24 +32,6 @@ const opts = {
 
 
 
-//spotify
-
-var spotifyget = require('request');
-var options = {
-  'method': 'GET',
-  'url': 'https://api.spotify.com/v1/me/player/currently-playing',
-  'headers': {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': (config.spotify.key)
-  }
-};
-
-
-//spotify
-
-
-
 
 client.on ('chat', function(channel, userstate,  message, self) {
 //  console.log(message);
@@ -189,14 +171,6 @@ client.on ('chat', function(channel, userstate,  message, self) {
                       client.action("tanglesheep", userstate['display-name'] + " you need to be subscriber of tanglesheep channel");
             
                      }
-                     if(( message === "!spotify" ) || (message === "!track") || (message === "!song")  ){
- 
-                      spotifyget(options, function (error, response) {
-                        var jsonParsed = JSON.parse(response.body);
-                        client.action("tanglesheep"," TRACK: "+jsonParsed.item.name + "  ALBUM:  "+ jsonParsed.item.album.name +" ARTIST: " + jsonParsed.item.artists[0].name+ "  SONG URL: "+ jsonParsed.item.external_urls.spotify  );
-                      });
-            
-                     }
 
 
 
@@ -222,11 +196,6 @@ client.on ('chat', function(channel, userstate,  message, self) {
                        birdptzfree();
                     //  client.action("tanglesheep", userstate['display-name'] + " camera moving  ");
                      } 
-             
-                    
-           
-               
-              
   
   });
 
