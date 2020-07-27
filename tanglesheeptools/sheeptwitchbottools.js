@@ -57,12 +57,12 @@ client.on ('chat', function(channel, userstate,  message, self) {
                                
                                   } 
                                   
-                                  if( userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221') {
+                                  if(( userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221') && (message === "switchtosheepcam")) {
                                     sheepcam();
                                        client.action("tanglesheep", userstate['display-name'] + " switching to sheep cam ");
                      
                                    } 
-                                    if( userstate['custom-reward-id'] === '563f34fc-bf9e-4414-8c25-0a12615b2d84') {
+                                    if(( userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221') && (message === "switchtobirdcam")) {
                                       birdcam();
                                     client.action("tanglesheep", userstate['display-name'] + " switching to bird cam ");
 
@@ -79,28 +79,28 @@ client.on ('chat', function(channel, userstate,  message, self) {
 
                                 } 
                                 
-                                if( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') {
+                                if (( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "bigbirdcam")) {
                                   global.scena = "scene_0d23c014-d824-4172-a0bd-560b84e060e7";
                                   switchscene();
                                   client.action("tanglesheep","woooow big birds cam");
 
                                 } 
                                 
-                                if( userstate['custom-reward-id'] === 'da73b198-b887-4b63-a4ba-fdbe72f3fb6e') {
+                                if(( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "biggoatcam")) {
                                   global.scena = "scene_7f387d78-3019-4394-bcc2-4182d1ecabbc";
                                   switchscene();
                                   client.action("tanglesheep","woooow big goat cam");
 
                                 } 
                                 
-                                if( userstate['custom-reward-id'] === 'ce027de5-caf2-4f71-8d51-6921ed3bc802') {
+                                if(( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652')  && (message === "bigsheepcam")) {
                                   global.scena = "scene_68c54b98-b21d-4c22-aaff-fd40eee037f4";
                                   switchscene();
                                   client.action("tanglesheep","woooow big sheep outside cam");
 
                                 } 
                                 
-                                if( userstate['custom-reward-id'] === '5ad1a3bc-cbc1-4664-bd9e-83c6805fca68') {
+                                if(( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "bigsheepshed")) {
                                    global.scena = "scene_655ebfbe-1998-4755-808d-4d1b032b11b1";
                                   switchscene();
                                   client.action("tanglesheep","woooow big sheep shed cam");
