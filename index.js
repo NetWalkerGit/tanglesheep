@@ -588,34 +588,6 @@ var checker = schedule.scheduleJob(' 30 * * * * * ', function(){
       console.log('eth feeding error  '+error);
       }
    });
-
-  cardanobalance(cardano, function (error, response) { 
-    try {
-    var jsonParsed = JSON.parse(response.body);
-
-
-    fs.readFile('cardanotx.txt', 'utf8', function (err,lasttxtid) {
-      
-
-      if (  (jsonParsed.records[0].id != lasttxtid ) && (jsonParsed.records[0].value > 5) )  {
-
-        feeding();
-        cardanopromo();
-        client.action("tanglesheep"," Thx for feeding using Cardano.  Visit https://www.cardano.org/   your TX https://blockchair.com/cardano/transaction/"+jsonParsed.records[0].id );
-        console.log("ADA feeding works");
-        dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'ADA', '"+jsonParsed.records[0].id+"')"); //feedingststat
-
-        fs.writeFile('cardanotx.txt',jsonParsed.records[0].id, function (err) {       
-         
-                    });
-
-               };
-        });
-      } catch(error) {
-        console.log('cardano feeding error  '+error);
-        }
- });
-    
 /*
 
       iotarequest(optionsbalance, function (error, response, data) {
@@ -704,7 +676,7 @@ function printQRimage () {
       'cache-control': 'no-cache',
       'Content-Type': 'application/json' },
     body: {
-      amount: 5500,
+      amount: 4600,
       description: 'feeding',
       expiry_sec: 604000,
       currency: 'btc'
