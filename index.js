@@ -513,8 +513,8 @@ var checker = schedule.scheduleJob(' 30 * * * * * ', function(){
         {
           
         feeding();
-        dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'LTC', '"+jsonParsed.txs[0].hash+"')"); //feedingststat
-        client.action("tanglesheep"," Thx feeding using LTC   your  TX https://blockchair.com/litecoin/transaction/"+jsonParsed.txs[0].hash  );
+        dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'LTC', '"+jsonParsed.txrefs[0].tx_hash+"')"); //feedingststat
+        client.action("tanglesheep"," Thx feeding using LTC   your  TX https://blockchair.com/litecoin/transaction/"+jsonParsed.txrefs[0].tx_hash  );
           dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.final_balance, jsonParsed.address], function (err, result ) {}); 
           console.log("LTC feeding works");
         };
