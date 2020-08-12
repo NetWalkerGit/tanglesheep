@@ -410,10 +410,7 @@ var ltc = {
     url: 'https://api.blockcypher.com/v1/eth/main/addrs/0x042CEE4E592a54F697620bC3090800cA180DBcBE?limit=1'
   };
 
-  var cardano = {
-    method: 'GET',
-    url: 'https://api.adaex.org/wallets/7/9/c/b8f6e397886ecd2ab42c5a6582aa8c97.json'
-  };
+
 
   var doge = {
     'method': 'GET',
