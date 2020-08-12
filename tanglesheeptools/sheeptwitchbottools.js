@@ -20,139 +20,160 @@ const opts = {
 
 //  var scena = "scene_655ebfbe-1998-4755-808d-4d1b032b11b1" ;
 
-// Create a client with our options
-const client = new tmi.client(opts);
+ //twitch tmi connection
+ const client = new tmi.client(opts);
+ client.on('connected', onConnectedHandler);
+ client.connect();
 
-// Register our event handlers (defined below)
-//client.on('message', onMessageHandler);
-client.on('connected', onConnectedHandler);
-
-// Connect to Twitch:
-client.connect();
+  function onConnectedHandler (addr, port) {
+   console.log(`* Connected to ${addr}:${port}`);
+ } 
+ //twitch tmi connection
 
 
 
-//subscribers  cams
 
 client.on ('chat', function(channel, userstate,  message, self) {
- //  console.log(message);
-  // console.log (userstate);
-      // switch cams
-   
-
+//  console.log(message);
+//   console.log (userstate);
+ 
+  
+  // switch cams
                if( (message === "!birdcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                  birdcam();
                                    client.action("tanglesheep", userstate['display-name'] + " switching to bird cam ");
   
-                                  } else   if( (message === "!sheepcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                  } 
+                                  
+                                  if( (message === "!sheepcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                      sheepcam();
                                    client.action("tanglesheep", userstate['display-name'] + " switching to sheep cam ");
   
-                                  } else   if( (message === "!goatshedcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                  } 
+                                  
+                                  if( (message === "!goatshedcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                      goatshedcam();
                                    client.action("tanglesheep", userstate['display-name'] + " switching to goat shed cam ");
-                                 
-                               //redeeme
                                
-                                  } else   if( userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221') {
+                                  } 
+                                  
+                                  if(( userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221') && (message === "switchtosheepcam")) {
                                     sheepcam();
                                        client.action("tanglesheep", userstate['display-name'] + " switching to sheep cam ");
                      
-                                   } else   if( userstate['custom-reward-id'] === '563f34fc-bf9e-4414-8c25-0a12615b2d84') {
+                                   } 
+                                    if(( userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221') && (message === "switchtobirdcam")) {
                                       birdcam();
                                     client.action("tanglesheep", userstate['display-name'] + " switching to bird cam ");
 
-                                    
-                                  } else   if( userstate['custom-reward-id'] === '65263b98-c85f-4905-b35a-a965eca3cba7') {
+                                  } 
+                                    if( userstate['custom-reward-id'] === '65263b98-c85f-4905-b35a-a965eca3cba7') {
                                    
                                   client.action("tanglesheep","!8ball Answer " + userstate['display-name'] + " question..  ");
 
-                                } else   if( userstate['custom-reward-id'] === '44fe302e-9369-49db-bb48-f9c9fb80e128') {
+                                } 
+                                
+                                if( userstate['custom-reward-id'] === '44fe302e-9369-49db-bb48-f9c9fb80e128') {
                                   showstat();
                                   client.action("tanglesheep","woooow check stats  for today");
 
-                                } else   if( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') {
+                                } 
+                                
+                                if (( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "bigbirdcam")) {
                                   global.scena = "scene_0d23c014-d824-4172-a0bd-560b84e060e7";
                                   switchscene();
                                   client.action("tanglesheep","woooow big birds cam");
 
-                                } else   if( userstate['custom-reward-id'] === 'da73b198-b887-4b63-a4ba-fdbe72f3fb6e') {
+                                } 
+                                
+                                if(( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "biggoatcam")) {
                                   global.scena = "scene_7f387d78-3019-4394-bcc2-4182d1ecabbc";
                                   switchscene();
                                   client.action("tanglesheep","woooow big goat cam");
 
-                                } else   if( userstate['custom-reward-id'] === 'ce027de5-caf2-4f71-8d51-6921ed3bc802') {
+                                } 
+                                
+                                if(( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652')  && (message === "bigsheepcam")) {
                                   global.scena = "scene_68c54b98-b21d-4c22-aaff-fd40eee037f4";
                                   switchscene();
                                   client.action("tanglesheep","woooow big sheep outside cam");
 
-                                } else   if( userstate['custom-reward-id'] === '5ad1a3bc-cbc1-4664-bd9e-83c6805fca68') {
+                                } 
+                                
+                                if(( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "bigsheepshed")) {
                                    global.scena = "scene_655ebfbe-1998-4755-808d-4d1b032b11b1";
                                   switchscene();
                                   client.action("tanglesheep","woooow big sheep shed cam");
-                             //redeeme
-                 //sheep cams
-  
-                                          } else   if( (message === "!sheepentry" ) && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                 } 
+                                 
+                                 if( (message === "!sheepentry" ) && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                               camentry();
                                    client.action("tanglesheep", userstate['display-name'] + " camera moving to sheep shed entry ");
   
-                                   } else   if( (message === "!sheepgarden") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                   } 
+                                   
+                              if( (message === "!sheepgarden") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                               camgarden();
                                    client.action("tanglesheep", userstate['display-name'] + " camera moving to sheep's garden ");
   
-                   } else   if( (message === "!goat") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                   } 
+                     if( (message === "!goat") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                               camaroundshed();
                                    client.action("tanglesheep", userstate['display-name'] + " camera moving to check goats area ");
   
-                    } else   if( (message === "!sheepfargarden") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                    } 
+                      if( (message === "!sheepfargarden") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                                camfargarden();
                                    client.action("tanglesheep", userstate['display-name'] + " camera moving to check far away sheep ");
                      }
   
-                                           else   if( (message === "!sheeppatrol") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                       if( (message === "!sheeppatrol") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                                  camsheeppatrol();
                                    client.action("tanglesheep", userstate['display-name'] + " camera starting to patrol ");
                      }
-                                     //birds  cams
-                                      else   if( (message === "!birdmain") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+
+                       if( (message === "!birdmain") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                                 cambirdmain();
                                    client.action("tanglesheep", userstate['display-name'] + " Cage of Lary and Roby ");
                      }
   
-                                      else   if( (message === "!birdrest") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                      if( (message === "!birdrest") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                                  cambirdrest();
                                    client.action("tanglesheep", userstate['display-name'] + " Resting place view ");
                      }
   
-                                     else   if( (message === "!birdfeeding") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                      if( (message === "!birdfeeding") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                                cambirdfeeding();
                                    client.action("tanglesheep", userstate['display-name'] + " Feeding place view ");
                      }
   
-                                        else   if( (message === "!birdfeeding2") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                       if( (message === "!birdfeeding2") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                               cambirdfeeding2();
                                    client.action("tanglesheep", userstate['display-name'] + " Lary's feeding place ");
                      }
   
-                                        else   if( (message === "!bird2main") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                      if( (message === "!bird2main") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                                cambird2main();
                                    client.action("tanglesheep", userstate['display-name'] + " Second cage all view ");
                      }
-                                      else   if( (message === "!bird2feeding") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                    if( (message === "!bird2feeding") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                               cambird2feeding();
                                    client.action("tanglesheep", userstate['display-name'] + " Second cage feeding place view ");
                      }
-                                     else   if( (message === "!bird2rest") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                     if( (message === "!bird2rest") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                           cambird2rest();
                                    client.action("tanglesheep", userstate['display-name'] + " Second cage rest place view ");
 
-                     }  else if(( message === "!birdcam" ) || (message === "!sheepcam") || (message === "!goatshedcam") || (message === "!goat")) {
+                     }  
+                     
+                     if((( message === "!birdcam" ) || (message === "!sheepcam") || (message === "!goatshedcam") || (message === "!goat")) && (userstate['badge-info'] === null) ){
  
                       client.action("tanglesheep", userstate['display-name'] + " you need to be subscriber of tanglesheep channel");
             
                      }
-                     
+
+
+
                  // sheep free ptz move    
                      var movevalue = message.match(/\d+/g);
      
@@ -175,11 +196,6 @@ client.on ('chat', function(channel, userstate,  message, self) {
                        birdptzfree();
                     //  client.action("tanglesheep", userstate['display-name'] + " camera moving  ");
                      } 
-             
-  
-            
-               
-              
   
   });
 
@@ -661,10 +677,6 @@ function showstat () {
 
 
 
-// feeding sound alert for video  end
-
-
-
 
 
 
@@ -727,8 +739,3 @@ function switchscene () {
 
 
 
-
-// Called every time the bot connects to Twitch chat
-function onConnectedHandler (addr, port) {
-  console.log(`* Connected to ${addr}:${port}`);
-}

@@ -17,6 +17,6 @@
     "sockjs-client": "^1.4.0",
     "tmi.js": "^1.5.0",
     "uniqid": "^5.2.0",
-    "webhook-discord": "^3.7.3"
+    "webhook-discord": "^3.7.5"
   }
 }
