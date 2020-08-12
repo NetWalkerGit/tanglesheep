@@ -381,7 +381,6 @@ client.on ("cheer", (channel, userstate, message) =>  {
   var xrpbalances = require('request');
   var bchbalances = require('request');
   var ethbalances = require('request');
-  var cardanobalance = require('request');
   var dogecoinbalance = require('request');
   //var iotarequest = require('request');
 
@@ -806,54 +805,7 @@ function feedaniamtion () {
 //  feeding gif animation and sound
 
 
-// Cardano logo promo
 
-
-function cardanopromo () {
-  const SockJS = require('sockjs-client');
-  const sleep = (milliseconds) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds))
-  }
-  var sock = SockJS('http://95.85.254.86:59650/api');
-   sock.onopen =  function() {
-                console.log('open');
-                      var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
-                            sock.send(req);
-
-                 var req1 = {
-                       "jsonrpc": "2.0",
-                       "id": 10,
-                       "method": "setVisibility",
-                       "params": {
-                                       "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\", \"5a6fde86-cacd-4b12-802d-84e1b96c700f\", \"image_source_7ffbf480-d04b-4e4d-a377-c0ce667921f2\"]",
-                                       "args": [true]
-                                   }
-                                   
-           }
-           
-           sock.send(JSON.stringify(req1));
-         
-          sleep(6000).then(() => {
-           var req2 = {
-            "jsonrpc": "2.0",
-            "id": 10,
-            "method": "setVisibility",
-            "params": {
-                            "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\", \"5a6fde86-cacd-4b12-802d-84e1b96c700f\", \"image_source_7ffbf480-d04b-4e4d-a377-c0ce667921f2\"]",
-                            "args": [false]
-                        }
-                       }
-                     
-                 sock.send(JSON.stringify(req2));
-                  sock.close();
-               })
-            }
-      
-    }       
-
-
-
-// Cardano logo promo
 
 
 
