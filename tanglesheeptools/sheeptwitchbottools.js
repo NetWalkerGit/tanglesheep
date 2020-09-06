@@ -431,7 +431,7 @@ sock.send(JSON.stringify(req));
 //camera entry
 function camentry () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@95.85.254.86:82/ISAPI/PTZCtrl/channels/1/presets/5/goto",
+  url: "http://"+config.camera.pass+"@95.85.254.86:82/ISAPI/PTZCtrl/channels/1/presets/1/goto",
   headers:
    { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
      'cache-control': 'no-cache' } }; request(options, function (error) {
