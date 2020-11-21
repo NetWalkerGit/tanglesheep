@@ -41,7 +41,8 @@ const opts = {
 
 //webhook to discord
   const Hook = new webhook.Webhook(config.webhook.discord);
-  
+  const HookAlert = new webhook.Webhook(config.webhook.discordalert);
+
   const msgnormal = new webhook.MessageBuilder()
                   .setName("tanglesheep")
                   .setColor("#63B7AF")
@@ -52,7 +53,11 @@ const opts = {
                   .setName("tanglesheep")
                   .setColor("#BC658D")
                   .setText("Premium feeding happen");
-              
+
+   const errormsg = new webhook.MessageBuilder()
+                  .setName("tanglesheep")
+                  .setColor("#FF0000")
+                  .setText("Connection from server to ESP32chip broken!!!");           
 
 //webhook to discord
  
@@ -810,35 +815,42 @@ function feedaniamtion () {
 
 
 // Function calling feeder
-function feeding () {
-   Hook.send(msgnormal);
-
-    var options = { method: 'GET',url: (config.toolscontrol.dcmotor),headers:{ 'cache-control': 'no-cache' } };
-      request(options, function (error, response, body) {
-        console.log(error);
-    //    console.log(response);
-               });
-               dbcon.query("SELECT totalfeeds,todayfeeds FROM feedstat", function (err, result) {      //Feeding counters
-                for (var i in result)
-                totalfeeds = (result[i].totalfeeds) + 1;
-                todayfeeds = (result[i].todayfeeds) + 1;
-                dbcon.query("UPDATE feedstat SET totalfeeds=?, todayfeeds=? WHERE id=?",[totalfeeds, todayfeeds, 1], function (err, result ) {             //incrase counter in DB
-                  if (err) throw err; });    
-                  feedaniamtion ();   // plasy sound during the feeding
-              });
-
-          };
+ 
+  function feeding () {
+    
+  
+      var options = { method: 'GET',url: (config.toolscontrol.dcmotor),headers:{ 'cache-control': 'no-cache' } };
+        request(options, function (error, response, body) {
+         if (!error && response.statusCode == 200) {
+            // console.log("URL is OK") 
+                  Hook.send(msgnormal);
+                 dbcon.query("SELECT totalfeeds,todayfeeds FROM feedstat", function (err, result) {      //Feeding counters
+                  for (var i in result)
+                  totalfeeds = (result[i].totalfeeds) + 1;
+                  todayfeeds = (result[i].todayfeeds) + 1;
+                  dbcon.query("UPDATE feedstat SET totalfeeds=?, todayfeeds=? WHERE id=?",[totalfeeds, todayfeeds, 1], function (err, result ) {             //incrase counter in DB
+                    if (err) throw err; });    
+                    feedaniamtion ();   // plasy sound during the feeding
+                });
+          
+       } else {
+        HookAlert.send(errormsg);
+         client.action("tanglesheep","CAN'T REACH FEEDER !!!, CONNECTION BROKEN , PLEASE CONTACT ADMIN ON DISCORD THX AND MY APOLOGIES tangle8Goatbits  tangle8Goatbits");
+         console.log("can't reach ESP32")  
+                 };
+            });
+    };
+        
 // Function feeding premium
           function feedingpremium () {
-              Hook.send(msgnpremium);
+              
           
               var options = { method: 'GET', url: (config.toolscontrol.dcmotor2),headers:{ 'cache-control': 'no-cache' } };
                 request(options, function (error, response, body) {
-
-                  console.log(error);
-              //    console.log(response);
-                         });
-                         dbcon.query("SELECT totalfeeds,todayfeeds,premiumfeeds FROM feedstat", function (err, result) {      //Feeding counters
+                  if (!error && response.statusCode == 200) {
+                // console.log("URL is OK")
+                           Hook.send(msgnpremium);
+                          dbcon.query("SELECT totalfeeds,todayfeeds,premiumfeeds FROM feedstat", function (err, result) {      //Feeding counters
                           for (var i in result)
                           totalfeeds = (result[i].totalfeeds) + 1;
                           todayfeeds = (result[i].todayfeeds) + 1;
@@ -848,7 +860,13 @@ function feeding () {
                                 feedaniamtion ();   // plasy sound during the feeding
                         });
           
-                    };
+                      } else {
+                        HookAlert.send(errormsg);
+                        client.action("tanglesheep","CAN'T REACH FEEDER !!!, CONNECTION BROKEN , PLEASE CONTACT ADMIN ON DISCORD THX AND MY APOLOGIES tangle8Goatbits  tangle8Goatbits ");
+                        console.log("can't reach ESP32")  
+                                };
+                           });
+                   };
 
 
   
