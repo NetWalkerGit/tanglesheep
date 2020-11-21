@@ -556,7 +556,7 @@ var checker = schedule.scheduleJob(' 30 * * * * * ', function(){
            
           feeding();
           dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BCH', '"+jsonParsed.data.last_tx+"')"); //feedingststat
-          client.action("tanglesheep"," Thx for feeding using BCH your TX https://bch.btc.com/"+jsonParsed.data.last_tx );
+          client.action("tanglesheep"," Thx for feeding using BCH " );
             dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance + jsonParsed.data.unconfirmed_received,jsonParsed.data.address], function (err, result ) {}); 
             console.log("BCH feeding works");
           };
@@ -672,7 +672,7 @@ function printQRimage () {
       'cache-control': 'no-cache',
       'Content-Type': 'application/json' },
     body: {
-      amount: 4600,
+      amount: 3000,
       description: 'feeding',
       expiry_sec: 604000,
       currency: 'btc'
