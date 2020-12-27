@@ -677,7 +677,7 @@ function printQRimage () {
       'cache-control': 'no-cache',
       'Content-Type': 'application/json' },
     body: {
-      amount: 3000,
+      amount: 2000,
       description: 'feeding',
       expiry_sec: 604000,
       currency: 'btc'
@@ -845,7 +845,7 @@ function feedaniamtion () {
           function feedingpremium () {
               
           
-              var options = { method: 'GET', url: (config.toolscontrol.dcmotor2),headers:{ 'cache-control': 'no-cache' } };
+              var options = { method: 'GET', url: (config.toolscontrol.dcmotor),headers:{ 'cache-control': 'no-cache' } };
                 request(options, function (error, response, body) {
                   if (!error && response.statusCode == 200) {
                 // console.log("URL is OK")
