@@ -677,7 +677,7 @@ function printQRimage () {
       'cache-control': 'no-cache',
       'Content-Type': 'application/json' },
     body: {
-      amount: 2000,
+      amount: 1500,
       description: 'feeding',
       expiry_sec: 604000,
       currency: 'btc'
@@ -701,6 +701,7 @@ function printQRimage () {
     createnewcharge ();         
   });
  
+  createnewcharge ();  // create new charge each time script start or restart
   
   app.use(express.json());
   app.post('/confirmation', function(request, response){
