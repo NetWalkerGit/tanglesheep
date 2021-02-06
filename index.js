@@ -391,7 +391,7 @@ client.on ("cheer", (channel, userstate, message) =>  {
 
 var btc = {
   method: 'GET',
-  url: 'https://blockchain.info/rawaddr/37wQuQDXQvw8yLwPSmAjkuU8xgjqJycwBp?limit=1'
+  url: 'https://blockchain.info/rawaddr/3B3XuvnASgHo3KFx66aBau2sb6mssStjuw?limit=1'
 };
 
 var ltc = {
