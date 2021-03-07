@@ -691,6 +691,7 @@ var app = express();
       feeding ();
       dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BTCLN', '"+request.body.hashed_order+"')"); //feedingststat
      }
+     response.status(200).end();
   });
   app.listen(8899);
 
