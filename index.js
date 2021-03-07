@@ -664,45 +664,50 @@ function printQRimage () {
   }
   
   //------------creating new charge---------
-  function createnewcharge () {
+  const opennode = require('opennode');
+  opennode.setCredentials('0c6e262d-a1ab-4a1f-81e3-333af1ee7014', 'dev');
   
-  
-  var endpoint = 'https://api.strike.acinq.co';
-  var api_key = (config.acinqapi.apikey);
-  
-  var options = {
-    method: 'POST',
-    url: endpoint + '/api/v1/charges',
-    headers: {
-      'cache-control': 'no-cache',
-      'Content-Type': 'application/json' },
-    body: {
-      amount: 1500,
-      description: 'feeding',
-      expiry_sec: 604000,
-      currency: 'btc'
-    },
-    json: true,
-    auth: {
-      user: api_key,
-      pass: '',
-    }
+  const charge = {
+    description: 'Feeding sheep',
+    amount: 0.5, // required
+    currency: 'USD',
+    callback_url: "http://iota.hostmyapps.net:8899/confirmation",
+    auto_settle: false
   };
   
-  request(options, function (error, response, body) {
-    if (error) throw new Error(error);
-    printQRimage () ;   // create new qr code  with last payment request [0]
-   // console.log(body);
-  });
+  function createlnpay () {
+  opennode.createCharge(charge)
+      .then(charge => {
+        var request = require('request');
+          console.log(charge);
+       
   
-  }
+      
+            var qr_svg = qr.image(charge.lightning_invoice.payreq, { type: 'png' });
+           qr_svg.pipe(require('fs').createWriteStream('LNpayment.png'));
+           var svg_string = qr.imageSync(charge.lightning_invoice.payreq, { type: 'png' });
+      
+         //   console.log(jsonParsed.payreq);
+         
+  
+      })
+      .catch(error => {
+          console.error(`${error.status} | ${error.message}`);
+      });
+  
+    };
+  
+    
+
   
   var lnpayrequestcreator = schedule.scheduleJob({hour: 1, minute: 30, dayOfWeek: 0}, function(){  //create payment  every sunday at 1:20 am
-    createnewcharge ();         
+    createlnpay ();      
   });
  
-  createnewcharge ();  // create new charge each time script start or restart
-  
+  createlnpay ();;  // create new charge each time script start or restart
+
+  var bodyParser = require('body-parser')
+  app.use(express.urlencoded({ extended: true }))
   app.use(express.json());
   app.post('/confirmation', function(request, response){
     const date = new Date();
@@ -710,15 +715,15 @@ function printQRimage () {
 
     if ((hour >= 20 || hour <= 6 )  || ( todayfeeds >= 100 ) ){
 
-      client.action("tanglesheep"," Sorry sheep sleeping :( , Thx for yoru Bitcoin LN " +request.body.data.payment_hash+ " payment anyway it support us :) ");
+      client.action("tanglesheep"," Sorry sheep sleeping :( , Thx for yoru Bitcoin LN " +request.body.hashed_order+ " payment anyway it support us :) ");
 
       createnewcharge ();    // if somebody pays after feeding hours  create new  QR anyway
 
-     }else if (request.body.data.paid == true){
-      client.action("tanglesheep"," Thx for feeding via BITCOIN LN your payment hash is "+request.body.data.payment_hash);
-      createnewcharge ();
+     }else if (request.body.status == paid){
+      client.action("tanglesheep"," Thx for feeding via BITCOIN LN your payment hash is "+rrequest.body.hashed_order);
+      createlnpay (); 
       feeding ();
-      dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BTCLN', '"+request.body.data.payment_hash+"')"); //feedingststat
+      dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BTCLN', '"+request.body.hashed_order+"')"); //feedingststat
      }
   });
   app.listen(8899);
