@@ -650,18 +650,14 @@ var app = express();
   function createlnpay () {
   opennode.createCharge(charge)
       .then(charge => {
-        var request = require('request');
-  //        console.log(charge);
-       
-  
-      
+       //        console.log(charge);
+     //create QR code      
             var qr_svg = qr.image(charge.lightning_invoice.payreq, { type: 'png' });
            qr_svg.pipe(require('fs').createWriteStream('/var/www/html/tanglesheep/streamfeedcount/LNpayment.png'));
            var svg_string = qr.imageSync(charge.lightning_invoice.payreq, { type: 'png' });
       
          //   console.log(jsonParsed.payreq);
-         
-  
+       
       })
       .catch(error => {
           console.error(`${error.status} | ${error.message}`);
@@ -689,7 +685,7 @@ var app = express();
 
       createnewcharge ();    // if somebody pays after feeding hours  create new  QR anyway
 
-     }else if (request.body.status == paid){
+     }else if (request.body.status == "paid"){
       client.action("tanglesheep"," Thx for feeding via BITCOIN LN your payment hash is "+request.body.hashed_order);
       createlnpay (); 
       feeding ();
