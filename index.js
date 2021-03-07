@@ -651,7 +651,7 @@ var app = express();
   opennode.createCharge(charge)
       .then(charge => {
         var request = require('request');
-          console.log(charge);
+  //        console.log(charge);
        
   
       
@@ -678,9 +678,7 @@ var app = express();
  
   createlnpay ();;  // create new charge each time script start or restart
 
-  var bodyParser = require('body-parser')
   app.use(express.urlencoded({ extended: true }))
-  app.use(express.json());
   app.post('/confirmation', function(request, response){
     const date = new Date();
     let hour = date.getHours();
