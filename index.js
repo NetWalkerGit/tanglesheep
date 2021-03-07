@@ -634,44 +634,16 @@ var qr = require('qr-image');
 var express = require('express');
 var app = express();
 
-
-function printQRimage () {
-  var endpoint = 'https://api.strike.acinq.co';
-  var api_key = (config.acinqapi.apikey);
-  
-  var options = {
-    method: 'GET',
-    url: endpoint + '/api/v1/charges?1',
-    headers: {
-      'cache-control': 'no-cache',
-      'Content-Type': 'application/json' },
-    json: true,
-    auth: {
-      user: api_key,
-      pass: '',
-    }
-  };
-  
-  request(options, function (error, response, body) {
-    if (error) throw new Error(error);
-    var qr_svg = qr.image(body[0].payment_request, { type: 'png' });
-  qr_svg.pipe(require('fs').createWriteStream('/var/www/html/tanglesheep/streamfeedcount/LNpayment.png'));
-  var svg_string = qr.imageSync(body[0].payment_request, { type: 'png' });
-  
-    //console.log(body);
-  });
-  
-  }
   
   //------------creating new charge---------
   const opennode = require('opennode');
-  opennode.setCredentials('0c6e262d-a1ab-4a1f-81e3-333af1ee7014', 'dev');
+  opennode.setCredentials(config.opennode.apikey, 'live');
   
   const charge = {
     description: 'Feeding sheep',
     amount: 0.5, // required
     currency: 'USD',
-    callback_url: "http://iota.hostmyapps.net:8899/confirmation",
+    callback_url: config.opennode.callbackurl,
     auto_settle: false
   };
   
@@ -684,7 +656,7 @@ function printQRimage () {
   
       
             var qr_svg = qr.image(charge.lightning_invoice.payreq, { type: 'png' });
-           qr_svg.pipe(require('fs').createWriteStream('LNpayment.png'));
+           qr_svg.pipe(require('fs').createWriteStream('/var/www/html/tanglesheep/streamfeedcount/LNpayment.png'));
            var svg_string = qr.imageSync(charge.lightning_invoice.payreq, { type: 'png' });
       
          //   console.log(jsonParsed.payreq);
@@ -720,7 +692,7 @@ function printQRimage () {
       createnewcharge ();    // if somebody pays after feeding hours  create new  QR anyway
 
      }else if (request.body.status == paid){
-      client.action("tanglesheep"," Thx for feeding via BITCOIN LN your payment hash is "+rrequest.body.hashed_order);
+      client.action("tanglesheep"," Thx for feeding via BITCOIN LN your payment hash is "+request.body.hashed_order);
       createlnpay (); 
       feeding ();
       dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BTCLN', '"+request.body.hashed_order+"')"); //feedingststat
