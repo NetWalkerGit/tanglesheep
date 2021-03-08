@@ -668,7 +668,7 @@ var app = express();
     
 
   
-  var lnpayrequestcreator = schedule.scheduleJob({hour: 1, minute: 30, dayOfWeek: 0}, function(){  //create payment  every sunday at 1:20 am
+  var lnpayrequestcreator = schedule.scheduleJob('59 * * * *', function(){  //create payment  every sunday at 1:20 am
     createlnpay ();      
   });
  
