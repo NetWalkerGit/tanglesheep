@@ -381,19 +381,21 @@ client.on ("cheer", (channel, userstate, message) =>  {
 //---------------------------------------------cryptofeeding-----------------------------------------------------------
 
 
-  var ltcbalances = require('request');
+ 
   var btcbalances = require('request');
+  /*
+  var ltcbalances = require('request');
   var xrpbalances = require('request');
   var bchbalances = require('request');
   var ethbalances = require('request');
   var dogecoinbalance = require('request');
   //var iotarequest = require('request');
-
+*/
 var btc = {
   method: 'GET',
   url: 'https://blockchain.info/rawaddr/3B3XuvnASgHo3KFx66aBau2sb6mssStjuw?limit=1'
 };
-
+/*
 var ltc = {
     method: 'GET',
     url: 'https://api.blockcypher.com/v1/ltc/main/addrs/MWvyvpnuW42vNRZT6BYC83J1RWNMtuxtPr?limit=1'
@@ -420,7 +422,7 @@ var ltc = {
     'method': 'GET',
     'url': 'https://sochain.com/api/v2/address/DOGE/DPNWMTWW3zWWucFRhmn3e2GS42LWHEeXDW'
   };
-/*
+
   //--------------iota-----------
   var commandtx = {
     "command": "findTransactions",
@@ -486,7 +488,7 @@ var checker = schedule.scheduleJob(' 30 * * * * * ', function(){
             console.log('BTC feeding error  '+error);
           }
           });
-    
+    /* obsolete 
 
           dogecoinbalance(doge, function (error, response) { 
             try {
@@ -589,7 +591,7 @@ var checker = schedule.scheduleJob(' 30 * * * * * ', function(){
       console.log('eth feeding error  '+error);
       }
    });
-/*
+
 
       iotarequest(optionsbalance, function (error, response, data) {
         if (!error && response.statusCode == 200) {
