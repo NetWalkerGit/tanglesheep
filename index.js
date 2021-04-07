@@ -48,12 +48,6 @@ const opts = {
                   .setColor("#63B7AF")
                   .setText("Normal feeding happen");
 
-
-  const msgnpremium = new webhook.MessageBuilder()
-                  .setName("tanglesheep")
-                  .setColor("#BC658D")
-                  .setText("Premium feeding happen");
-
    const errormsg = new webhook.MessageBuilder()
                   .setName("tanglesheep")
                   .setColor("#FF0000")
@@ -95,16 +89,9 @@ const opts = {
 
  
 
-    // -----------------reset premium feeding------------------
-    var resetpremium = schedule.scheduleJob('*/5 * * * *', function(){
-      dbcon.query("UPDATE  twitchuser SET premiumfeed = 0 , premiumfeedtime = ' ' WHERE premiumfeedtime < (NOW() - INTERVAL 72 HOUR) AND premiumfeed = 1 ", function (err, result ) {}); //premium feed deleted every 3 days
-
-         });
-// -----------------reset premium feeding------------------
 
 
-
-// -----------------------------------------twitch chat feeding    !subfeedin and loyalty feeding--------------------------------------------------
+// -----------------------------------------twitch chat feeding    !subfeed and loyalty feeding--------------------------------------------------
 
   client.on ('chat', function(channel, userstate,  message) { 
    // console.log(userstate);
@@ -115,10 +102,8 @@ const opts = {
    var newuser = "INSERT INTO twitchuser (id,firstfeed,userid,username,message) VALUES ("+ dbcon.escape(uniqid()) +","+ dbcon.escape(date) +"," + dbcon.escape(userstate['user-id']) + "," + dbcon.escape(userstate['display-name']) + "," + dbcon.escape(message) + ")";
    var userfeed = "UPDATE  twitchuser SET fedtoday = '1', message = '"+message+"' WHERE userid = " +  dbcon.escape(userstate['user-id']);
    var checkfeed = 'SELECT userid,fedtoday FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']);
-   var checkpremiumfeed = 'SELECT userid,premiumfeed FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']);
-   var premiumfeed = "UPDATE  twitchuser SET premiumfeed = '1', message = '"+message+"' WHERE userid = " +  dbcon.escape(userstate['user-id']);
 
- if ((todayfeeds >= 100) && ((userstate['custom-reward-id'] === '5d77928f-00f7-4612-9ea6-2a64070b8902') || (message === "!subfeed") ||  (message === "!premiumfeed") ||  (userstate.bits >= 1)   )){                 // dayly feeding limit 
+ if ((todayfeeds >= 100) && ((userstate['custom-reward-id'] === '5d77928f-00f7-4612-9ea6-2a64070b8902') || (message === "!subfeed") ||  (userstate.bits >= 1)   )){                 // dayly feeding limit 
 
   client.action("tanglesheep", userstate['display-name'] + " Max day feeds limit reached , try tomorrow :(  Lets not overfeed sheep <3 Thx for cheering anyway. it support us. ");
  } else { 
@@ -149,7 +134,7 @@ const opts = {
                        for (var i in result)
                       if (result[i].fedtoday != 0) 
                       {
-                        client.action("tanglesheep", userstate['display-name'] + " You already fed today with !subfeed or !premiumfeed :( ");
+                        client.action("tanglesheep", userstate['display-name'] + " You already fed today with !subfeed  :( ");
                            } else {
                            dbcon.query(userfeed, function (err, result ) {  });     //set user feeding to 1
                          
@@ -174,55 +159,6 @@ const opts = {
   
            }
          
-    
-//-----------------------------------------------------------------------premiumfeed--------------------------------------------------
-
-if ((hour >= 20 || hour <= 6 ) &&   (message === "!premiumfeed") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder))  {
-
-  client.action("tanglesheep", userstate['display-name'] + " Sheep's sleeping  now. Check feeding hours on video :(  Sheep need some rest <3 Thx for understanding <3 ");
-
-  } else   if( (message === "!premiumfeed") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-
-       dbcon.query(checkpremiumfeed, function (err, result) {         // veryfi if user can feed
-
-   if (result.length == []) {                  // first time feeders not in DB
-      dbcon.query(newuser, function (err, result) {  });
-     
-      feedingpremium();
-      dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'premiumfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
-
-      client.action("tanglesheep", userstate['display-name'] + " Thx for first time premiumfeed feeding :) :) "); 
-      dbcon.query("UPDATE  twitchuser SET fedtoday=?,premiumfeed=?, premiumfeedtime=? WHERE userid=?",['1','1',(date), userstate['user-id'] ], function (err, result ) {});     //set first time feeder
-                         } 
-                                            });
-                dbcon.query(checkpremiumfeed, function (err, result ) {  // veryfi if user can feed
-                for (var i in result)
-               if (result[i].premiumfeed != 0) 
-               {
-                 client.action("tanglesheep", userstate['display-name'] + " You can feed with !premiumfeed once per 3 days :( ");
-                    } else {
-                      dbcon.query("UPDATE  twitchuser SET fedtoday=?,premiumfeed=?, premiumfeedtime=? WHERE userid=?",['1','1',(date), userstate['user-id'] ], function (err, result ) {});
-                   
-        dbcon.query('SELECT subfeeds FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result) {      //subfeeds counter 
-         for (var i in result)
-         sumsubfeeds = (result[i].subfeeds) + 1;                                                                                          //incrase counter in DB
-         dbcon.query("UPDATE  twitchuser SET subfeeds=? WHERE userid=? " ,[sumsubfeeds, userstate['user-id']], function (err, result ) {    //incrase counter in DB
-            });
-       });
-
-
-       feedingpremium();             //run feeder
-       dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'premiumfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
-
-        client.action("tanglesheep", userstate['display-name'] + " Premiumfeed feeding :) ");
-       }
-           });
-    }
-    else if( message === "!premiumfeed" ) {
- 
-      client.action("tanglesheep", userstate['display-name'] + " you need to be subscriber of tanglesheep channel or use bits");
-
-     }
 
 
 //----------------------------------------------------------------------------- Loyalty feeding--------------------------------------------------
@@ -261,15 +197,7 @@ if ((hour >= 20 || hour <= 6 ) &&   (message === "!premiumfeed") && userstate.ba
                                                               } 
       }
 
-//--------------- Slot machine game--------------
 
-if ((hour >= 20 || hour <= 6 ) && ( userstate['custom-reward-id'] === '69c85b34-2385-4f99-9e94-b6e751af55f3' )) {
-  client.action("tanglesheep", userstate['display-name'] + " Sheep's sleeping  now. Check feeding hours on video :(  Sheep need some rest <3 Thx for understanding <3 ");
-
-} else  if (userstate['custom-reward-id'] === '69c85b34-2385-4f99-9e94-b6e751af55f3')  {
-
-  client.action("tanglesheep","!slots show if " + userstate['display-name'] + " is lucky ?  ");
-};
 
 
 //Winner run
@@ -287,8 +215,8 @@ if ((hour >= 20 || hour <= 6 ) && ( userstate['custom-reward-id'] === '69c85b34-
       dbcon.query('SELECT userid FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result) {
         if ((result.length > 0 ) && ( message === "!myfeedingstats"))   // if user exist and mesage is  then print stats
           { 
-                 dbcon.query('SELECT username,subfeeds,pointfeeds,cheerfeeds,premiumfeedtime  FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result, fields){
-                 client.action("tanglesheep", "username:" +result[0].username + " subfeeds:" + result[0].subfeeds + " pointfeeds:" + result[0].pointfeeds + " cheerfeeds:" + result[0].cheerfeeds + " lastpremiumfeed:" + result[0].premiumfeedtime);
+                 dbcon.query('SELECT username,subfeeds,pointfeeds,cheerfeeds  FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result, fields){
+                 client.action("tanglesheep", "username:" +result[0].username + " subfeeds:" + result[0].subfeeds + " pointfeeds:" + result[0].pointfeeds + " cheerfeeds:" + result[0].cheerfeeds);
                  });     
                         
              }else if ( message === "!myfeedingstats")  {
@@ -316,37 +244,11 @@ client.on ("cheer", (channel, userstate, message) =>  {
       }  else if ( todayfeeds >= 100 ) {              // max feeding limit
         client.action("tanglesheep", userstate['display-name'] + " Max day feeds limit reached , try tomorrow :(  Lets not overfeed sheep <3 Thx for cheering anyway. it support us. ");
 
-    
-      } else  if    (userstate.bits == 5){                     //slot machine game bits amount
-        client.action("tanglesheep","!slots show if " + userstate['display-name'] + " is lucky ?  ");
 
         } else  if    (userstate.bits <= 49){
                  client.action("tanglesheep", userstate['display-name'] + " Thx for cheering <3 <3  If you want to feed our fluffy sheep, cheer more than 49 bits :) ");
     
-         
-                                        
-//--------------------------------------------------------cheeering Premium  feeding 80 bits-------------------------------------------------------------------------
-                 } else  if (userstate.bits == 80) {
-                
-                         dbcon.query('SELECT userid FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result ) {       
-                         if (result.length == []) {                  // first time feeders not in DB
-                           dbcon.query("INSERT INTO twitchuser (id,firstfeed,userid,username,message,cheerfeeds) VALUES ("+ dbcon.escape(uniqid()) +","+ dbcon.escape(date) +"," + dbcon.escape(userstate['user-id']) + "," + dbcon.escape(userstate['display-name']) + "," + dbcon.escape(message) + ",'1')");
-                                                
-                            feedingpremium();
-                            dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'cheerfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
-                          client.action("tanglesheep", userstate['display-name'] + " Thx for firs time  Premium feeding :)  ");
-                                    
-                           } else {
-                             dbcon.query('SELECT cheerfeeds FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result) {      //cheerfeeds counter
-                              for (var i in result)
-                               sumpocheerfeeds = (result[i].cheerfeeds) + 1;                                                                                          //update amount of cheerfeeds in user statas
-                               dbcon.query("UPDATE  twitchuser SET cheerfeeds=? WHERE userid=?",[sumpocheerfeeds, userstate['user-id']]);   
-                                 feedingpremium();
-                                 dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'cheerfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
-                                 client.action("tanglesheep", userstate['display-name'] + " Thx for Premium carrot feeding <3 <3   Sheep are happy :)  ");
-                                              });
-                                           }
-                                       });
+
                                     
               //cheering pellets amounr bigger than 50 but not 80
                  } else   {
@@ -816,32 +718,7 @@ function feedaniamtion () {
             });
     };
         
-// Function feeding premium
-          function feedingpremium () {
-              
-          
-              var options = { method: 'GET', url: (config.toolscontrol.dcmotor),headers:{ 'cache-control': 'no-cache' } };
-                request(options, function (error, response, body) {
-                  if (!error && response.statusCode == 200) {
-                // console.log("URL is OK")
-                           Hook.send(msgnpremium);
-                          dbcon.query("SELECT totalfeeds,todayfeeds,premiumfeeds FROM feedstat", function (err, result) {      //Feeding counters
-                          for (var i in result)
-                          totalfeeds = (result[i].totalfeeds) + 1;
-                          todayfeeds = (result[i].todayfeeds) + 1;
-                          premiumfeeds = (result[i].premiumfeeds) + 1;
-                          dbcon.query("UPDATE feedstat SET totalfeeds=?, todayfeeds=?, premiumfeeds=? WHERE id=?",[totalfeeds, todayfeeds, premiumfeeds, 1], function (err, result ) {             //incrase counter in DB
-                            if (err) throw err; });    
-                                feedaniamtion ();   // plasy sound during the feeding
-                        });
-          
-                      } else {
-                        HookAlert.send(errormsg);
-                        client.action("tanglesheep","CAN'T REACH FEEDER !!!, CONNECTION BROKEN , PLEASE CONTACT ADMIN ON DISCORD THX AND MY APOLOGIES tangle8Goatbits  tangle8Goatbits ");
-                        console.log("can't reach ESP32")  
-                                };
-                           });
-                   };
+
 
 
   
