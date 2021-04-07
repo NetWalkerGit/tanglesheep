@@ -36,7 +36,7 @@ const opts = {
 client.on ('chat', function(channel, userstate,  message, self) {
 //  console.log(message);
 //   console.log (userstate);
-if( message === "!sheepcam") {
+if( message === "!premiumfeed") {
   
 client.action("tanglesheep", userstate['display-name'] + " Premium Feeding was removed. :(  ");
 
