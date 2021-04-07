@@ -41,7 +41,8 @@ const opts = {
 
 //webhook to discord
   const Hook = new webhook.Webhook(config.webhook.discord);
-  
+  const HookAlert = new webhook.Webhook(config.webhook.discordalert);
+
   const msgnormal = new webhook.MessageBuilder()
                   .setName("tanglesheep")
                   .setColor("#63B7AF")
@@ -52,7 +53,11 @@ const opts = {
                   .setName("tanglesheep")
                   .setColor("#BC658D")
                   .setText("Premium feeding happen");
-              
+
+   const errormsg = new webhook.MessageBuilder()
+                  .setName("tanglesheep")
+                  .setColor("#FF0000")
+                  .setText("Connection from server to ESP32chip broken!!!");           
 
 //webhook to discord
  
@@ -376,19 +381,21 @@ client.on ("cheer", (channel, userstate, message) =>  {
 //---------------------------------------------cryptofeeding-----------------------------------------------------------
 
 
-  var ltcbalances = require('request');
+ 
   var btcbalances = require('request');
+  /*
+  var ltcbalances = require('request');
   var xrpbalances = require('request');
   var bchbalances = require('request');
   var ethbalances = require('request');
   var dogecoinbalance = require('request');
   //var iotarequest = require('request');
-
+*/
 var btc = {
   method: 'GET',
-  url: 'https://blockchain.info/rawaddr/37wQuQDXQvw8yLwPSmAjkuU8xgjqJycwBp?limit=1'
+  url: 'https://blockchain.info/rawaddr/3B3XuvnASgHo3KFx66aBau2sb6mssStjuw?limit=1'
 };
-
+/*
 var ltc = {
     method: 'GET',
     url: 'https://api.blockcypher.com/v1/ltc/main/addrs/MWvyvpnuW42vNRZT6BYC83J1RWNMtuxtPr?limit=1'
@@ -415,7 +422,7 @@ var ltc = {
     'method': 'GET',
     'url': 'https://sochain.com/api/v2/address/DOGE/DPNWMTWW3zWWucFRhmn3e2GS42LWHEeXDW'
   };
-/*
+
   //--------------iota-----------
   var commandtx = {
     "command": "findTransactions",
@@ -481,14 +488,14 @@ var checker = schedule.scheduleJob(' 30 * * * * * ', function(){
             console.log('BTC feeding error  '+error);
           }
           });
-    
+    /* obsolete 
 
           dogecoinbalance(doge, function (error, response) { 
             try {
              var jsonParsed = JSON.parse(response.body);
               dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.data.address), function (err, result) {  
                 for (var i in result)
-                if ((jsonParsed.data.balance - result[i].balance) > 100 )    //checking   new balance - balance from DB is bigger than 0.5 $ = 5000 satoshi
+                if ((jsonParsed.data.balance - result[i].balance) > 5 )    //checking   new balance - balance from DB is bigger than 0.5 $ = 5000 satoshi
                 {
                 
                 feeding();
@@ -584,7 +591,7 @@ var checker = schedule.scheduleJob(' 30 * * * * * ', function(){
       console.log('eth feeding error  '+error);
       }
    });
-/*
+
 
       iotarequest(optionsbalance, function (error, response, data) {
         if (!error && response.statusCode == 200) {
@@ -629,91 +636,64 @@ var qr = require('qr-image');
 var express = require('express');
 var app = express();
 
-
-function printQRimage () {
-  var endpoint = 'https://api.strike.acinq.co';
-  var api_key = (config.acinqapi.apikey);
-  
-  var options = {
-    method: 'GET',
-    url: endpoint + '/api/v1/charges?1',
-    headers: {
-      'cache-control': 'no-cache',
-      'Content-Type': 'application/json' },
-    json: true,
-    auth: {
-      user: api_key,
-      pass: '',
-    }
-  };
-  
-  request(options, function (error, response, body) {
-    if (error) throw new Error(error);
-    var qr_svg = qr.image(body[0].payment_request, { type: 'png' });
-  qr_svg.pipe(require('fs').createWriteStream('/var/www/html/tanglesheep/streamfeedcount/LNpayment.png'));
-  var svg_string = qr.imageSync(body[0].payment_request, { type: 'png' });
-  
-    //console.log(body);
-  });
-  
-  }
   
   //------------creating new charge---------
-  function createnewcharge () {
+  const opennode = require('opennode');
+  opennode.setCredentials(config.opennode.apikey, 'live');
   
-  
-  var endpoint = 'https://api.strike.acinq.co';
-  var api_key = (config.acinqapi.apikey);
-  
-  var options = {
-    method: 'POST',
-    url: endpoint + '/api/v1/charges',
-    headers: {
-      'cache-control': 'no-cache',
-      'Content-Type': 'application/json' },
-    body: {
-      amount: 3000,
-      description: 'feeding',
-      expiry_sec: 604000,
-      currency: 'btc'
-    },
-    json: true,
-    auth: {
-      user: api_key,
-      pass: '',
-    }
+  const charge = {
+    description: 'Feeding sheep',
+    amount: 0.5, // required
+    currency: 'USD',
+    callback_url: config.opennode.callbackurl,
+    auto_settle: false
   };
   
-  request(options, function (error, response, body) {
-    if (error) throw new Error(error);
-    printQRimage () ;   // create new qr code  with last payment request [0]
-   // console.log(body);
-  });
+  function createlnpay () {
+  opennode.createCharge(charge)
+      .then(charge => {
+       //        console.log(charge);
+     //create QR code      
+            var qr_svg = qr.image(charge.lightning_invoice.payreq, { type: 'png' });
+           qr_svg.pipe(require('fs').createWriteStream('/var/www/html/tanglesheep/streamfeedcount/LNpayment.png'));
+           var svg_string = qr.imageSync(charge.lightning_invoice.payreq, { type: 'png' });
+      
+         //   console.log(jsonParsed.payreq);
+       
+      })
+      .catch(error => {
+          console.error(`${error.status} | ${error.message}`);
+      });
   
-  }
+    };
   
-  var lnpayrequestcreator = schedule.scheduleJob({hour: 1, minute: 30, dayOfWeek: 0}, function(){  //create payment  every sunday at 1:20 am
-    createnewcharge ();         
+    
+
+  
+  var lnpayrequestcreator = schedule.scheduleJob('59 * * * *', function(){  //create LN invoice every hour
+    createlnpay ();      
   });
  
-  
-  app.use(express.json());
+  createlnpay ();;  // create new charge each time script start or restart
+
+  app.use(express.urlencoded({ extended: true }))
   app.post('/confirmation', function(request, response){
     const date = new Date();
     let hour = date.getHours();
 
     if ((hour >= 20 || hour <= 6 )  || ( todayfeeds >= 100 ) ){
 
-      client.action("tanglesheep"," Sorry sheep sleeping :( , Thx for yoru Bitcoin LN " +request.body.data.payment_hash+ " payment anyway it support us :) ");
+      client.action("tanglesheep"," Sorry sheep sleeping :( , Thx for yoru Bitcoin LN " +request.body.hashed_order+ " payment anyway it support us :) ");
 
-      createnewcharge ();    // if somebody pays after feeding hours  create new  QR anyway
+      createlnpay ();    // if somebody pays after feeding hours  create new  QR anyway
 
-     }else if (request.body.data.paid == true){
-      client.action("tanglesheep"," Thx for feeding via BITCOIN LN your payment hash is "+request.body.data.payment_hash);
-      createnewcharge ();
+     }else if (request.body.status == "paid"){
+      client.action("tanglesheep"," Thx for feeding via BITCOIN LN your payment hash is "+request.body.hashed_order);
+      createlnpay (); 
       feeding ();
-      dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BTCLN', '"+request.body.data.payment_hash+"')"); //feedingststat
+      dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BTCLN', '"+request.body.hashed_order+"')"); //feedingststat
      }
+     response.status(200).end();
   });
   app.listen(8899);
 
@@ -810,35 +790,42 @@ function feedaniamtion () {
 
 
 // Function calling feeder
-function feeding () {
-   Hook.send(msgnormal);
-
-    var options = { method: 'GET',url: (config.toolscontrol.dcmotor),headers:{ 'cache-control': 'no-cache' } };
-      request(options, function (error, response, body) {
-        console.log(error);
-    //    console.log(response);
-               });
-               dbcon.query("SELECT totalfeeds,todayfeeds FROM feedstat", function (err, result) {      //Feeding counters
-                for (var i in result)
-                totalfeeds = (result[i].totalfeeds) + 1;
-                todayfeeds = (result[i].todayfeeds) + 1;
-                dbcon.query("UPDATE feedstat SET totalfeeds=?, todayfeeds=? WHERE id=?",[totalfeeds, todayfeeds, 1], function (err, result ) {             //incrase counter in DB
-                  if (err) throw err; });    
-                  feedaniamtion ();   // plasy sound during the feeding
-              });
-
-          };
+ 
+  function feeding () {
+    
+  
+      var options = { method: 'GET',url: (config.toolscontrol.dcmotor),headers:{ 'cache-control': 'no-cache' } };
+        request(options, function (error, response, body) {
+         if (!error && response.statusCode == 200) {
+            // console.log("URL is OK") 
+                  Hook.send(msgnormal);
+                 dbcon.query("SELECT totalfeeds,todayfeeds FROM feedstat", function (err, result) {      //Feeding counters
+                  for (var i in result)
+                  totalfeeds = (result[i].totalfeeds) + 1;
+                  todayfeeds = (result[i].todayfeeds) + 1;
+                  dbcon.query("UPDATE feedstat SET totalfeeds=?, todayfeeds=? WHERE id=?",[totalfeeds, todayfeeds, 1], function (err, result ) {             //incrase counter in DB
+                    if (err) throw err; });    
+                    feedaniamtion ();   // plasy sound during the feeding
+                });
+          
+       } else {
+        HookAlert.send(errormsg);
+         client.action("tanglesheep","CAN'T REACH FEEDER !!!, CONNECTION BROKEN , PLEASE CONTACT ADMIN ON DISCORD THX AND MY APOLOGIES tangle8Goatbits  tangle8Goatbits");
+         console.log("can't reach ESP32")  
+                 };
+            });
+    };
+        
 // Function feeding premium
           function feedingpremium () {
-              Hook.send(msgnpremium);
+              
           
-              var options = { method: 'GET', url: (config.toolscontrol.dcmotor2),headers:{ 'cache-control': 'no-cache' } };
+              var options = { method: 'GET', url: (config.toolscontrol.dcmotor),headers:{ 'cache-control': 'no-cache' } };
                 request(options, function (error, response, body) {
-
-                  console.log(error);
-              //    console.log(response);
-                         });
-                         dbcon.query("SELECT totalfeeds,todayfeeds,premiumfeeds FROM feedstat", function (err, result) {      //Feeding counters
+                  if (!error && response.statusCode == 200) {
+                // console.log("URL is OK")
+                           Hook.send(msgnpremium);
+                          dbcon.query("SELECT totalfeeds,todayfeeds,premiumfeeds FROM feedstat", function (err, result) {      //Feeding counters
                           for (var i in result)
                           totalfeeds = (result[i].totalfeeds) + 1;
                           todayfeeds = (result[i].todayfeeds) + 1;
@@ -848,7 +835,13 @@ function feeding () {
                                 feedaniamtion ();   // plasy sound during the feeding
                         });
           
-                    };
+                      } else {
+                        HookAlert.send(errormsg);
+                        client.action("tanglesheep","CAN'T REACH FEEDER !!!, CONNECTION BROKEN , PLEASE CONTACT ADMIN ON DISCORD THX AND MY APOLOGIES tangle8Goatbits  tangle8Goatbits ");
+                        console.log("can't reach ESP32")  
+                                };
+                           });
+                   };
 
 
   
