@@ -427,7 +427,7 @@ var checkeriota = schedule.scheduleJob(' */10 * * * * * ', function(){
         {
         
       
-          client.action("tanglesheep"," HAHA YOU MUST BE iotA HOLDER WHO SEND US 1 MI  THX   CHECK ANIMATION");
+          client.action("tanglesheep"," HAHA YOU MUST BE IOTA HOLDER WHO SEND US 1 MI  THX   CHECK ANIMATION");
           dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance, "atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr"], function (err, result ) {}); 
           console.log("IOTA receive 1mi works");
         };
@@ -435,7 +435,7 @@ var checkeriota = schedule.scheduleJob(' */10 * * * * * ', function(){
         {
         
      
-          ("tanglesheep"," HAHA YOU MUST BE iotA HOLDER WHO SEND US 2 MI  THX   CHECK ANIMATION");
+          client.action("tanglesheep"," HAHA YOU MUST BE IOTA HOLDER WHO SEND US 2 MI  THX   CHECK ANIMATION");
           dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance, "atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr"], function (err, result ) {}); 
           console.log("IOTA receive 2mi works");
         };
