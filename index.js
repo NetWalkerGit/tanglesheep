@@ -285,83 +285,13 @@ client.on ("cheer", (channel, userstate, message) =>  {
 
  
   var btcbalances = require('request');
-  /*
-  var ltcbalances = require('request');
-  var xrpbalances = require('request');
-  var bchbalances = require('request');
-  var ethbalances = require('request');
-  var dogecoinbalance = require('request');
-  //var iotarequest = require('request');
-*/
+
 var btc = {
   method: 'GET',
   url: 'https://blockchain.info/rawaddr/3B3XuvnASgHo3KFx66aBau2sb6mssStjuw?limit=1'
 };
-/*
-var ltc = {
-    method: 'GET',
-    url: 'https://api.blockcypher.com/v1/ltc/main/addrs/MWvyvpnuW42vNRZT6BYC83J1RWNMtuxtPr?limit=1'
-  };
 
-  var xrp = {
-    method: 'GET',
-    url: 'https://api.xrpscan.com/api/v1/account/rMAZ8bBvyf5YsazFRs3Aj1So3dArcaJMXD'
-  };
-
-  var bch = {
-    method: 'GET',
-    url: 'https://bch-chain.api.btc.com/v3/address/1Pn2oQzbk2JaALdhsvtgyWAv49rdUxHyUF'
-  };
-
-  var eth = {
-    method: 'GET',
-    url: 'https://api.blockcypher.com/v1/eth/main/addrs/0x042CEE4E592a54F697620bC3090800cA180DBcBE?limit=1'
-  };
-
-
-
-  var doge = {
-    'method': 'GET',
-    'url': 'https://sochain.com/api/v2/address/DOGE/DPNWMTWW3zWWucFRhmn3e2GS42LWHEeXDW'
-  };
-
-  //--------------iota-----------
-  var commandtx = {
-    "command": "findTransactions",
-    "addresses": [
-      "RNHDJ9HBOBYCK9FAULCCBDPBYUPPEMHESSNNELHRXZNSQIHZEPYT9UZEOOAIPCVPFBJJCTBQWJIWQVGLB"
-    ]
-  };
-  
-  var commandbalance = {
-    "command": "getBalances",
-    "addresses": [
-      "RNHDJ9HBOBYCK9FAULCCBDPBYUPPEMHESSNNELHRXZNSQIHZEPYT9UZEOOAIPCVPFBJJCTBQWJIWQVGLB"
-    ],
-    "threshold": 100
-  };
-  
-  var optionstx = {
-    url: 'https://nodes.thetangle.org',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-IOTA-API-Version': '1'
-    },
-    json: commandtx
-  };
-  
-  var optionsbalance = {
-    url: 'https://nodes.thetangle.org',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-IOTA-API-Version': '1'
-    },
-    json: commandbalance
-  };
-//--------------iota-----------
-   */
+ 
 var checker = schedule.scheduleJob(' 30 * * * * * ', function(){         
   const date = new Date();
   let hour = date.getHours();
@@ -390,135 +320,6 @@ var checker = schedule.scheduleJob(' 30 * * * * * ', function(){
             console.log('BTC feeding error  '+error);
           }
           });
-    /* obsolete 
-
-          dogecoinbalance(doge, function (error, response) { 
-            try {
-             var jsonParsed = JSON.parse(response.body);
-              dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.data.address), function (err, result) {  
-                for (var i in result)
-                if ((jsonParsed.data.balance - result[i].balance) > 5 )    //checking   new balance - balance from DB is bigger than 0.5 $ = 5000 satoshi
-                {
-                
-                feeding();
-                dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'DOGE', '"+jsonParsed.data.txs[0].txid+"')"); //feedingststat
-                client.action("tanglesheep"," Thx for feeding using DOGE  your  TX https://blockchair.com/dogecoin/transaction/"+jsonParsed.data.txs[0].txid  );
-                  dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance, jsonParsed.data.address], function (err, result ) {}); 
-                  console.log("DOGE feeding works");
-                };
-              });
-            } catch(error) {
-              console.log('DOGE feeding error  '+error);
-            }
-            });
-    
-    ltcbalances(ltc, function (error, response) { 
-      try {
-      var jsonParsed = JSON.parse(response.body);
-     // console.log('statusCode:', response && response.statusCode);
-      dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.address), function (err, result) {  
-        for (var i in result)
-        if ((jsonParsed.final_balance - result[i].balance) > 200000 )    //checking   new balance - balance from DB is bigger than 0.5 $ 
-        {
-          
-        feeding();
-        dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'LTC', '"+jsonParsed.txrefs[0].tx_hash+"')"); //feedingststat
-        client.action("tanglesheep"," Thx feeding using LTC   your  TX https://blockchair.com/litecoin/transaction/"+jsonParsed.txrefs[0].tx_hash  );
-          dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.final_balance, jsonParsed.address], function (err, result ) {}); 
-          console.log("LTC feeding works");
-        };
-      });
-    } catch(error) {
-      console.log('ltc feeding error  '+error);
-      }
-    });
-  
-
-
-      xrpbalances(xrp, function (error, response) { 
-        try {
-        var jsonParsed = JSON.parse(response.body);
-        dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.account), function (err, result) {  
-          for (var i in result)
-          if ((jsonParsed.xrpBalance - result[i].balance) > 1 )    //checking   new balance - balance from DB is bigger than than 0.5 $ 
-          {
-            
-          feeding();
-          dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'XRP', '"+jsonParsed.previousAffectingTransactionID+"')"); //feedingststat
-          client.action("tanglesheep"," Thx for feeding using XRP your TX https://xrpscan.com/tx/"+jsonParsed.previousAffectingTransactionID );
-            dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.xrpBalance, jsonParsed.account], function (err, result ) {}); 
-            console.log("XRP feeding works");
-          };
-        });
-      } catch(error) {
-        console.log('xrp feeding error  '+error);
-      }
-      });
-
-      bchbalances(bch, function (error, response) { 
-        try {
-        var jsonParsed = JSON.parse(response.body);
-        dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.data.address), function (err, result) {  
-          for (var i in result)
-          if (((jsonParsed.data.balance + jsonParsed.data.unconfirmed_received ) - result[i].balance) > 10000 )    //checking   new balance - balance from DB is bigger  than 0.5 $ 
-          {
-           
-          feeding();
-          dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BCH', '"+jsonParsed.data.last_tx+"')"); //feedingststat
-          client.action("tanglesheep"," Thx for feeding using BCH " );
-            dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance + jsonParsed.data.unconfirmed_received,jsonParsed.data.address], function (err, result ) {}); 
-            console.log("BCH feeding works");
-          };
-        });
-      } catch(error) {
-        console.log('bch feeding error  '+error);
-        }
-      });
-
-      ethbalances(eth, function (error, response) { 
-        try {
-  var jsonParsed = JSON.parse(response.body);
-  dbcon.query('SELECT balance FROM balance WHERE  address = "0x042cee4e592a54f697620bc3090800ca180dbcbe"', function (err, result) {   
-    for (var i in result)
-    if ((jsonParsed.final_balance - result[i].balance) > 1000000000000000 )    //checking   new balance - balance from DB is bigger  than 0.5 $ 
-    {
-    feeding();
-    dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'ETH', '"+jsonParsed.txrefs[0].tx_hash+"')"); //feedingststat
-    client.action("tanglesheep"," Thx for feeding using ETH your TX https://live.blockcypher.com/eth/tx/"+jsonParsed.txrefs[0].tx_hash );
-    dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.final_balance,"0x042cee4e592a54f697620bc3090800ca180dbcbe"], function (err, result ) {}); 
-    console.log("ETH feeding works");
-        };
-      });
-    } catch(error) {
-      console.log('eth feeding error  '+error);
-      }
-   });
-
-
-      iotarequest(optionsbalance, function (error, response, data) {
-        if (!error && response.statusCode == 200) {
-    //      console.log(data.hashes[0]);
-          dbcon.query('SELECT balance FROM balance WHERE  address = "RNHDJ9HBOBYCK9FAULCCBDPBYUPPEMHESSNNELHRXZNSQIHZEPYT9UZEOOAIPCVPFBJJCTBQWJIWQVGLBTYNZUZVSZ"', function (err, result) {   
-            for (var i in result)
-            if ((data.balances[0] - result[i].balance) > 1500000 )    //checking   new balance - balance from DB is bigger  than 0.5 $ 
-            {
-              console.log("IOTA feeding works");
-            feeding();
-            iotarequest(optionstx, function (error, response, data) {
-              if (!error && response.statusCode == 200) {
-             //   console.log(data.balances[0]);
-                client.action("tanglesheep"," Thx for feeding using IOTA your tx is https://thetangle.org/transaction/"+data.hashes[0]);
-              }
-            });
-
-            
-            dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[data.balances[0],"RNHDJ9HBOBYCK9FAULCCBDPBYUPPEMHESSNNELHRXZNSQIHZEPYT9UZEOOAIPCVPFBJJCTBQWJIWQVGLBTYNZUZVSZ"], function (err, result ) {}); 
-            
-            };
-          });
-        }
-      });
-    */
 
     }
 }); 
@@ -603,6 +404,60 @@ var app = express();
 
 
 //--------------------------------------------------Bitocin LN  payment  end ------------------------------------------------------------------
+
+
+
+//----------------------------------------IOTA  payment and handling -------------------------------------------------------------------------
+
+
+var iota = require('request');
+var txoutput = {
+  method: 'GET',
+  url: 'https://chrysalis.hostmyapps.net:8080/api/v1/addresses/atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr'
+};
+
+var checkeriota = schedule.scheduleJob(' */10 * * * * * ', function(){  
+  iota(txoutput, function (error, response) { 
+    try {
+      var jsonParsed = JSON.parse(response.body);
+    
+      dbcon.query('SELECT balance FROM balance WHERE  address = "atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr" ', function (err, result) {  
+        for (var i in result)
+        if ((jsonParsed.data.balance - result[i].balance) == 1000000 )    //checking   new balance 
+        {
+        
+      
+          client.action("tanglesheep"," HAHA YOU MUST BE iotA HOLDER WHO SEND US 1 MI  THX   CHECK ANIMATION");
+          dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance, "atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr"], function (err, result ) {}); 
+          console.log("IOTA receive 1mi works");
+        };
+        if ((jsonParsed.data.balance - result[i].balance) == 2000000 )    //checking   new balance 
+        {
+        
+     
+          ("tanglesheep"," HAHA YOU MUST BE iotA HOLDER WHO SEND US 2 MI  THX   CHECK ANIMATION");
+          dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance, "atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr"], function (err, result ) {}); 
+          console.log("IOTA receive 2mi works");
+        };
+
+      });
+    } catch(error) {
+      console.log('IOTA feeding error  '+error);
+    }
+    });
+  }); 
+
+
+
+
+
+
+
+//----------------------------------------IOTA  payment and handling -------------------------------------------------------------------------
+
+
+
+
 
 
 
