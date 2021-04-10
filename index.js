@@ -5,7 +5,8 @@ const schedule = require('node-schedule');
 const request = require("request");
 const config = require('./config.js');
 const fs = require('fs');
-const webhook = require("webhook-discord")
+
+
 
 const dbcon = mysql.createConnection({
   host: (config.db.host),
@@ -40,18 +41,12 @@ const opts = {
 
 
 //webhook to discord
-  const Hook = new webhook.Webhook(config.webhook.discord);
-  const HookAlert = new webhook.Webhook(config.webhook.discordalert);
 
-  const msgnormal = new webhook.MessageBuilder()
-                  .setName("tanglesheep")
-                  .setColor("#63B7AF")
-                  .setText("Normal feeding happen");
 
-   const errormsg = new webhook.MessageBuilder()
-                  .setName("tanglesheep")
-                  .setColor("#FF0000")
-                  .setText("Connection from server to ESP32chip broken!!!");           
+  const { Webhook } = require('discord-webhook-node');
+  const Hook = new Webhook(config.webhook.discord);
+  const HookAlert = new Webhook(config.webhook.discordalert);
+         
 
 //webhook to discord
  
@@ -555,7 +550,7 @@ function feedaniamtion () {
         request(options, function (error, response, body) {
          if (!error && response.statusCode == 200) {
             // console.log("URL is OK") 
-                  Hook.send(msgnormal);
+                  Hook.send("Normal feeding happen");
                  dbcon.query("SELECT totalfeeds,todayfeeds FROM feedstat", function (err, result) {      //Feeding counters
                   for (var i in result)
                   totalfeeds = (result[i].totalfeeds) + 1;
@@ -566,7 +561,7 @@ function feedaniamtion () {
                 });
           
        } else {
-        HookAlert.send(errormsg);
+        HookAlert.send("Connection from server to ESP32chip broken!!!");
          client.action("tanglesheep","CAN'T REACH FEEDER !!!, CONNECTION BROKEN , PLEASE CONTACT ADMIN ON DISCORD THX AND MY APOLOGIES tangle8Goatbits  tangle8Goatbits");
          console.log("can't reach ESP32")  
                  };
