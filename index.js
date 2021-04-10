@@ -469,7 +469,7 @@ var checkeriota = schedule.scheduleJob(' */10 * * * * * ', function(){
                   "id": 10,
                   "method": "setVisibility",
                    "params": {
-                               "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\", \"7bb7eadc-215a-4678-a9a0-d9d33db1c593\", \"image_source_cdbaf39b-78f9-4637-9165-d35bb1c90211\"]",
+                               "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\", \"33093f68-209d-4192-ac15-384d7b3b3f8c\", \"ffmpeg_source_2bae79b0-7f7a-4459-8741-7a38df571735\"]",
                                 "args": [true]
                                        }            
                          }
