@@ -425,8 +425,8 @@ var checkeriota = schedule.scheduleJob(' */10 * * * * * ', function(){
           client.action("tanglesheep"," HAHA YOU MUST BE IOTA HOLDER WHO SEND US 1 MI  THX   CHECK ANIMATION");
           dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance, "atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr"], function (err, result ) {}); 
           console.log("IOTA receive 1mi works");
-        };
-        if ((jsonParsed.data.balance - result[i].balance) == 2000000 )    //checking   new balance 
+        }
+       else if ((jsonParsed.data.balance - result[i].balance) >= 2000000 )    //checking   new balance 
         {
         
             
@@ -434,7 +434,11 @@ var checkeriota = schedule.scheduleJob(' */10 * * * * * ', function(){
           dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance, "atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr"], function (err, result ) {}); 
           console.log("IOTA receive 2mi works");
           iota2mianime();
-        };
+        } else {
+          dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance, "atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr"], function (err, result ) {}); 
+
+          client.action("tanglesheep","Hey you sent less than 2 Mi !! fix it !!  :)");
+        }
 
       });
     } catch(error) {
