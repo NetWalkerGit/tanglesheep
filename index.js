@@ -434,12 +434,7 @@ var checkeriota = schedule.scheduleJob(' */10 * * * * * ', function(){
           dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance, "atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr"], function (err, result ) {}); 
           console.log("IOTA receive 2mi works");
           iota2mianime();
-        } else {
-          dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance, "atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr"], function (err, result ) {}); 
-
-          client.action("tanglesheep","Hey you sent less than 2 Mi !! fix it !!  :)");
-        }
-
+        } 
       });
     } catch(error) {
       console.log('IOTA feeding error  '+error);
