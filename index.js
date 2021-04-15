@@ -418,7 +418,7 @@ async function run() {
      // console.log(data.output.amount)  //get exact amount last ouput
      // console.log(data.transactionId) //get txnumber
       if(data.output.amount >= 1000000){
-      client.action("tanglesheep"," Hi IOTA hodler thx for your  tx " +data.transactionId+ " ,  CHECK ANIMATION");
+      client.action("tanglesheep"," Hi IOTA hodler thx for your  tx https://explorer.iota.org/chrysalis/message/"+data.messageId+ " ,  CHECK ANIMATION");
       
       iota2mianime();
                }
