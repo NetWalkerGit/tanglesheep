@@ -415,8 +415,7 @@ async function run() {
    
     mqttClient.addressOutputs("atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr", (topic,data) => {
     
-
-
+/*
       var iotausd = {
         method: 'GET',
         url: 'https://api.coingecko.com/api/v3/simple/price?ids=iota&vs_currencies=usd'
@@ -438,7 +437,7 @@ async function run() {
           console.log('coingecko erro'+error);
         }
         });
-
+*/
 
 
       if(data.output.amount >= 1000000){
