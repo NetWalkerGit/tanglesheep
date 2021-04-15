@@ -415,8 +415,32 @@ async function run() {
     //mqttClient.milestonesLatest((topic, data) => console.log(topic, data))
     mqttClient.addressOutputs("atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr", (topic,data) => {
     
-     // console.log(data.output.amount)  //get exact amount last ouput
-     // console.log(data.transactionId) //get txnumber
+
+
+      var iotausd = {
+        method: 'GET',
+        url: 'https://api.coingecko.com/api/v3/simple/price?ids=iota&vs_currencies=usd'
+      };
+      
+      iotapricecheck(iotausd, function (error, response) { 
+        try {
+          var iotaprice = JSON.parse(response.body);
+  
+           var tokens = ( (1000000/iotaprice.iota.usd) * 0.4);    //calculate amount of iota per 0.4$
+
+
+       if(data.output.amount >= tokens )   //feeding condition
+          
+          
+          else if (data.output.amount <= tokens) {console.log('Sorry , you sent less than 0.5$  Beeeee  try again.')}
+      
+        } catch(error) {
+          console.log('coingecko erro'+error);
+        }
+        });
+
+
+
       if(data.output.amount >= 1000000){
       client.action("tanglesheep"," Hi IOTA hodler thx for your  tx https://explorer.iota.org/chrysalis/message/"+data.messageId+ " ,  CHECK ANIMATION");
       
