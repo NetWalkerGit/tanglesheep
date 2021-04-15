@@ -404,7 +404,7 @@ var app = express();
 
 //----------------------------------------IOTA  payment and handling -------------------------------------------------------------------------
 
-var iotapricecheck = require('request');
+
 
 
 
@@ -418,8 +418,8 @@ async function run() {
   
    
     mqttClient.addressOutputs("atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr", (topic,data) => {
-    
-
+    /*
+      var iotapricecheck = require('request');
       var iotausd = {
         method: 'GET',
         url: 'https://api.coingecko.com/api/v3/simple/price?ids=iota&vs_currencies=usd'
@@ -433,15 +433,15 @@ async function run() {
 
 
        if(data.output.amount >= tokens )   //feeding condition
-          {console.log("Thx very much for  IOTA feeding your  tx https://explorer.iota.org/chrysalis/message/"+data.messageId) }
+          {client.action("tanglesheep","Thx very much for  IOTA feeding your  tx https://explorer.iota.org/chrysalis/message/"+data.messageId) }
           
-          else if (data.output.amount <= tokens) {console.log('Sorry , you sent less than 0.5$  Beeeee  try again.')}
+          else if (data.output.amount <= tokens) {client.action("tanglesheep","Sorry , you sent less than 0.5$  Beeeee  try again.")}
       
         } catch(error) {
           console.log('coingecko erro'+error);
         }
         });
-
+        */
 
 
       if(data.output.amount >= 1000000){
