@@ -430,7 +430,7 @@ async function run() {
 
 
        if(data.output.amount >= tokens )   //feeding condition
-          
+          {console.log("Thx very much for  IOTA feeding your  tx https://explorer.iota.org/chrysalis/message/"+data.messageId) }
           
           else if (data.output.amount <= tokens) {console.log('Sorry , you sent less than 0.5$  Beeeee  try again.')}
       
