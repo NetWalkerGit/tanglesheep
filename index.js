@@ -404,43 +404,32 @@ var app = express();
 
 //----------------------------------------IOTA  payment and handling -------------------------------------------------------------------------
 
+const { MqttClient } = require("@iota/iota.js");
 
-var iota = require('request');
-var txoutput = {
-  method: 'GET',
-  url: 'https://chrysalis.hostmyapps.net:8080/api/v1/addresses/atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr'
-};
+const MQTT_ENDPOINT = "mqtt://chrysalis.hostmyapps.net:1883";
 
-var checkeriota = schedule.scheduleJob(' */10 * * * * * ', function(){  
-  iota(txoutput, function (error, response) { 
-    try {
-      var jsonParsed = JSON.parse(response.body);
+async function run() {
+    const mqttClient = new MqttClient(MQTT_ENDPOINT);
+
+  
+    //mqttClient.milestonesLatest((topic, data) => console.log(topic, data))
+    mqttClient.addressOutputs("atoi1qrq94avhkjqul9cn7dfr8ucjp6cyu0wpqjlff7glz5d0hdlea4qectk3lpv", (topic,data) => {
     
-      dbcon.query('SELECT balance FROM balance WHERE  address = "atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr" ', function (err, result) {  
-        for (var i in result)
-        if ((jsonParsed.data.balance - result[i].balance) == 1000000 )    //checking   new balance 
-        {
-        
+     // console.log(data.output.amount)  //get exact amount last ouput
+     // console.log(data.transactionId) //get txnumber
+      if(data.output.amount >= 1000000){
+      client.action("tanglesheep"," Hi IOTA hodler thx for your  tx " +data.transactionId+ " ,  CHECK ANIMATION");
       
-          client.action("tanglesheep"," HAHA YOU MUST BE IOTA HOLDER WHO SEND US 1 MI  THX   CHECK ANIMATION");
-          dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance, "atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr"], function (err, result ) {}); 
-          console.log("IOTA receive 1mi works");
-        }
-       else if ((jsonParsed.data.balance - result[i].balance) >= 2000000 )    //checking   new balance 
-        {
-        
-            
-          client.action("tanglesheep"," HAHA YOU MUST BE IOTA HOLDER WHO SEND US SOME MI,  THX  , CHECK ANIMATION");
-          dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance, "atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr"], function (err, result ) {}); 
-          console.log("IOTA receive 2mi works");
-          iota2mianime();
-        } 
-      });
-    } catch(error) {
-      console.log('IOTA feeding error  '+error);
-    }
-    });
-  }); 
+      iota2mianime();
+               }
+
+    })
+  }
+run()
+    .then()
+    .catch((err) => console.error(err));
+
+
 
 
   function iota2mianime () {

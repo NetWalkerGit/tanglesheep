@@ -9,6 +9,7 @@
   "author": "Karel B.",
   "license": "ISC",
   "dependencies": {
+    "@iota/iota.js": "github:iotaledger/iota.js#chrysalis",
     "body-parser": "^1.19.0",
     "discord-webhook-node": "^1.1.8",
     "express": "^4.17.1",
