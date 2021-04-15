@@ -412,7 +412,7 @@ async function run() {
     const mqttClient = new MqttClient(MQTT_ENDPOINT);
 
   
-    //mqttClient.milestonesLatest((topic, data) => console.log(topic, data))
+   
     mqttClient.addressOutputs("atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr", (topic,data) => {
     
 
