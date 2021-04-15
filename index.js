@@ -418,7 +418,7 @@ async function run() {
   
    
     mqttClient.addressOutputs("atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr", (topic,data) => {
-    /*
+    
       var iotapricecheck = require('request');
       var iotausd = {
         method: 'GET',
@@ -429,11 +429,15 @@ async function run() {
         try {
           var iotaprice = JSON.parse(response.body);
   
-           var tokens = ( (1000000/iotaprice.iota.usd) * 0.4);    //calculate amount of iota per 0.4$
+           var senttokens = ( (1000000/iotaprice.iota.usd) * 0.4);    //calculate amount of iota per 0.4$
 
 
-       if(data.output.amount >= tokens )   //feeding condition
-          {client.action("tanglesheep","Thx very much for  IOTA feeding your  tx https://explorer.iota.org/chrysalis/message/"+data.messageId) }
+       if(data.output.amount >= senttokens )   //feeding condition
+             {
+            client.action("tanglesheep","Thx very much for  IOTA feeding your  tx https://explorer.iota.org/chrysalis/message/"+data.messageId)
+            dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'IOTA', '"+data.messageId+"')"); //feedingststat
+            feeding();
+               }
           
           else if (data.output.amount <= tokens) {client.action("tanglesheep","Sorry , you sent less than 0.5$  Beeeee  try again.")}
       
@@ -441,7 +445,7 @@ async function run() {
           console.log('coingecko erro'+error);
         }
         });
-        */
+        
 
 
       if(data.output.amount >= 1000000){
