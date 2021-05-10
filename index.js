@@ -5,7 +5,8 @@ const schedule = require('node-schedule');
 const request = require("request");
 const config = require('./config.js');
 const fs = require('fs');
-const webhook = require("webhook-discord")
+
+
 
 const dbcon = mysql.createConnection({
   host: (config.db.host),
@@ -40,24 +41,12 @@ const opts = {
 
 
 //webhook to discord
-  const Hook = new webhook.Webhook(config.webhook.discord);
-  const HookAlert = new webhook.Webhook(config.webhook.discordalert);
-
-  const msgnormal = new webhook.MessageBuilder()
-                  .setName("tanglesheep")
-                  .setColor("#63B7AF")
-                  .setText("Normal feeding happen");
 
 
-  const msgnpremium = new webhook.MessageBuilder()
-                  .setName("tanglesheep")
-                  .setColor("#BC658D")
-                  .setText("Premium feeding happen");
-
-   const errormsg = new webhook.MessageBuilder()
-                  .setName("tanglesheep")
-                  .setColor("#FF0000")
-                  .setText("Connection from server to ESP32chip broken!!!");           
+  const { Webhook } = require('discord-webhook-node');
+  const Hook = new Webhook(config.webhook.discord);
+  const HookAlert = new Webhook(config.webhook.discordalert);
+         
 
 //webhook to discord
  
@@ -95,16 +84,9 @@ const opts = {
 
  
 
-    // -----------------reset premium feeding------------------
-    var resetpremium = schedule.scheduleJob('*/5 * * * *', function(){
-      dbcon.query("UPDATE  twitchuser SET premiumfeed = 0 , premiumfeedtime = ' ' WHERE premiumfeedtime < (NOW() - INTERVAL 72 HOUR) AND premiumfeed = 1 ", function (err, result ) {}); //premium feed deleted every 3 days
-
-         });
-// -----------------reset premium feeding------------------
 
 
-
-// -----------------------------------------twitch chat feeding    !subfeedin and loyalty feeding--------------------------------------------------
+// -----------------------------------------twitch chat feeding    !subfeed and loyalty feeding--------------------------------------------------
 
   client.on ('chat', function(channel, userstate,  message) { 
    // console.log(userstate);
@@ -115,10 +97,8 @@ const opts = {
    var newuser = "INSERT INTO twitchuser (id,firstfeed,userid,username,message) VALUES ("+ dbcon.escape(uniqid()) +","+ dbcon.escape(date) +"," + dbcon.escape(userstate['user-id']) + "," + dbcon.escape(userstate['display-name']) + "," + dbcon.escape(message) + ")";
    var userfeed = "UPDATE  twitchuser SET fedtoday = '1', message = '"+message+"' WHERE userid = " +  dbcon.escape(userstate['user-id']);
    var checkfeed = 'SELECT userid,fedtoday FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']);
-   var checkpremiumfeed = 'SELECT userid,premiumfeed FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']);
-   var premiumfeed = "UPDATE  twitchuser SET premiumfeed = '1', message = '"+message+"' WHERE userid = " +  dbcon.escape(userstate['user-id']);
 
- if ((todayfeeds >= 100) && ((userstate['custom-reward-id'] === '5d77928f-00f7-4612-9ea6-2a64070b8902') || (message === "!subfeed") ||  (message === "!premiumfeed") ||  (userstate.bits >= 1)   )){                 // dayly feeding limit 
+ if ((todayfeeds >= 100) && ((userstate['custom-reward-id'] === '5d77928f-00f7-4612-9ea6-2a64070b8902') || (message === "!subfeed") ||  (userstate.bits >= 1)   )){                 // dayly feeding limit 
 
   client.action("tanglesheep", userstate['display-name'] + " Max day feeds limit reached , try tomorrow :(  Lets not overfeed sheep <3 Thx for cheering anyway. it support us. ");
  } else { 
@@ -149,7 +129,7 @@ const opts = {
                        for (var i in result)
                       if (result[i].fedtoday != 0) 
                       {
-                        client.action("tanglesheep", userstate['display-name'] + " You already fed today with !subfeed or !premiumfeed :( ");
+                        client.action("tanglesheep", userstate['display-name'] + " You already fed today with !subfeed  :( ");
                            } else {
                            dbcon.query(userfeed, function (err, result ) {  });     //set user feeding to 1
                          
@@ -174,55 +154,6 @@ const opts = {
   
            }
          
-    
-//-----------------------------------------------------------------------premiumfeed--------------------------------------------------
-
-if ((hour >= 20 || hour <= 6 ) &&   (message === "!premiumfeed") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder))  {
-
-  client.action("tanglesheep", userstate['display-name'] + " Sheep's sleeping  now. Check feeding hours on video :(  Sheep need some rest <3 Thx for understanding <3 ");
-
-  } else   if( (message === "!premiumfeed") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-
-       dbcon.query(checkpremiumfeed, function (err, result) {         // veryfi if user can feed
-
-   if (result.length == []) {                  // first time feeders not in DB
-      dbcon.query(newuser, function (err, result) {  });
-     
-      feedingpremium();
-      dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'premiumfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
-
-      client.action("tanglesheep", userstate['display-name'] + " Thx for first time premiumfeed feeding :) :) "); 
-      dbcon.query("UPDATE  twitchuser SET fedtoday=?,premiumfeed=?, premiumfeedtime=? WHERE userid=?",['1','1',(date), userstate['user-id'] ], function (err, result ) {});     //set first time feeder
-                         } 
-                                            });
-                dbcon.query(checkpremiumfeed, function (err, result ) {  // veryfi if user can feed
-                for (var i in result)
-               if (result[i].premiumfeed != 0) 
-               {
-                 client.action("tanglesheep", userstate['display-name'] + " You can feed with !premiumfeed once per 3 days :( ");
-                    } else {
-                      dbcon.query("UPDATE  twitchuser SET fedtoday=?,premiumfeed=?, premiumfeedtime=? WHERE userid=?",['1','1',(date), userstate['user-id'] ], function (err, result ) {});
-                   
-        dbcon.query('SELECT subfeeds FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result) {      //subfeeds counter 
-         for (var i in result)
-         sumsubfeeds = (result[i].subfeeds) + 1;                                                                                          //incrase counter in DB
-         dbcon.query("UPDATE  twitchuser SET subfeeds=? WHERE userid=? " ,[sumsubfeeds, userstate['user-id']], function (err, result ) {    //incrase counter in DB
-            });
-       });
-
-
-       feedingpremium();             //run feeder
-       dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'premiumfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
-
-        client.action("tanglesheep", userstate['display-name'] + " Premiumfeed feeding :) ");
-       }
-           });
-    }
-    else if( message === "!premiumfeed" ) {
- 
-      client.action("tanglesheep", userstate['display-name'] + " you need to be subscriber of tanglesheep channel or use bits");
-
-     }
 
 
 //----------------------------------------------------------------------------- Loyalty feeding--------------------------------------------------
@@ -261,15 +192,7 @@ if ((hour >= 20 || hour <= 6 ) &&   (message === "!premiumfeed") && userstate.ba
                                                               } 
       }
 
-//--------------- Slot machine game--------------
 
-if ((hour >= 20 || hour <= 6 ) && ( userstate['custom-reward-id'] === '69c85b34-2385-4f99-9e94-b6e751af55f3' )) {
-  client.action("tanglesheep", userstate['display-name'] + " Sheep's sleeping  now. Check feeding hours on video :(  Sheep need some rest <3 Thx for understanding <3 ");
-
-} else  if (userstate['custom-reward-id'] === '69c85b34-2385-4f99-9e94-b6e751af55f3')  {
-
-  client.action("tanglesheep","!slots show if " + userstate['display-name'] + " is lucky ?  ");
-};
 
 
 //Winner run
@@ -287,8 +210,8 @@ if ((hour >= 20 || hour <= 6 ) && ( userstate['custom-reward-id'] === '69c85b34-
       dbcon.query('SELECT userid FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result) {
         if ((result.length > 0 ) && ( message === "!myfeedingstats"))   // if user exist and mesage is  then print stats
           { 
-                 dbcon.query('SELECT username,subfeeds,pointfeeds,cheerfeeds,premiumfeedtime  FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result, fields){
-                 client.action("tanglesheep", "username:" +result[0].username + " subfeeds:" + result[0].subfeeds + " pointfeeds:" + result[0].pointfeeds + " cheerfeeds:" + result[0].cheerfeeds + " lastpremiumfeed:" + result[0].premiumfeedtime);
+                 dbcon.query('SELECT username,subfeeds,pointfeeds,cheerfeeds  FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result, fields){
+                 client.action("tanglesheep", "username:" +result[0].username + " subfeeds:" + result[0].subfeeds + " pointfeeds:" + result[0].pointfeeds + " cheerfeeds:" + result[0].cheerfeeds);
                  });     
                         
              }else if ( message === "!myfeedingstats")  {
@@ -316,37 +239,11 @@ client.on ("cheer", (channel, userstate, message) =>  {
       }  else if ( todayfeeds >= 100 ) {              // max feeding limit
         client.action("tanglesheep", userstate['display-name'] + " Max day feeds limit reached , try tomorrow :(  Lets not overfeed sheep <3 Thx for cheering anyway. it support us. ");
 
-    
-      } else  if    (userstate.bits == 5){                     //slot machine game bits amount
-        client.action("tanglesheep","!slots show if " + userstate['display-name'] + " is lucky ?  ");
 
         } else  if    (userstate.bits <= 49){
                  client.action("tanglesheep", userstate['display-name'] + " Thx for cheering <3 <3  If you want to feed our fluffy sheep, cheer more than 49 bits :) ");
     
-         
-                                        
-//--------------------------------------------------------cheeering Premium  feeding 80 bits-------------------------------------------------------------------------
-                 } else  if (userstate.bits == 80) {
-                
-                         dbcon.query('SELECT userid FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result ) {       
-                         if (result.length == []) {                  // first time feeders not in DB
-                           dbcon.query("INSERT INTO twitchuser (id,firstfeed,userid,username,message,cheerfeeds) VALUES ("+ dbcon.escape(uniqid()) +","+ dbcon.escape(date) +"," + dbcon.escape(userstate['user-id']) + "," + dbcon.escape(userstate['display-name']) + "," + dbcon.escape(message) + ",'1')");
-                                                
-                            feedingpremium();
-                            dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'cheerfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
-                          client.action("tanglesheep", userstate['display-name'] + " Thx for firs time  Premium feeding :)  ");
-                                    
-                           } else {
-                             dbcon.query('SELECT cheerfeeds FROM twitchuser WHERE  userid = ' +  dbcon.escape(userstate['user-id']), function (err, result) {      //cheerfeeds counter
-                              for (var i in result)
-                               sumpocheerfeeds = (result[i].cheerfeeds) + 1;                                                                                          //update amount of cheerfeeds in user statas
-                               dbcon.query("UPDATE  twitchuser SET cheerfeeds=? WHERE userid=?",[sumpocheerfeeds, userstate['user-id']]);   
-                                 feedingpremium();
-                                 dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'cheerfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
-                                 client.action("tanglesheep", userstate['display-name'] + " Thx for Premium carrot feeding <3 <3   Sheep are happy :)  ");
-                                              });
-                                           }
-                                       });
+
                                     
               //cheering pellets amounr bigger than 50 but not 80
                  } else   {
@@ -383,83 +280,13 @@ client.on ("cheer", (channel, userstate, message) =>  {
 
  
   var btcbalances = require('request');
-  /*
-  var ltcbalances = require('request');
-  var xrpbalances = require('request');
-  var bchbalances = require('request');
-  var ethbalances = require('request');
-  var dogecoinbalance = require('request');
-  //var iotarequest = require('request');
-*/
+
 var btc = {
   method: 'GET',
   url: 'https://blockchain.info/rawaddr/3B3XuvnASgHo3KFx66aBau2sb6mssStjuw?limit=1'
 };
-/*
-var ltc = {
-    method: 'GET',
-    url: 'https://api.blockcypher.com/v1/ltc/main/addrs/MWvyvpnuW42vNRZT6BYC83J1RWNMtuxtPr?limit=1'
-  };
 
-  var xrp = {
-    method: 'GET',
-    url: 'https://api.xrpscan.com/api/v1/account/rMAZ8bBvyf5YsazFRs3Aj1So3dArcaJMXD'
-  };
-
-  var bch = {
-    method: 'GET',
-    url: 'https://bch-chain.api.btc.com/v3/address/1Pn2oQzbk2JaALdhsvtgyWAv49rdUxHyUF'
-  };
-
-  var eth = {
-    method: 'GET',
-    url: 'https://api.blockcypher.com/v1/eth/main/addrs/0x042CEE4E592a54F697620bC3090800cA180DBcBE?limit=1'
-  };
-
-
-
-  var doge = {
-    'method': 'GET',
-    'url': 'https://sochain.com/api/v2/address/DOGE/DPNWMTWW3zWWucFRhmn3e2GS42LWHEeXDW'
-  };
-
-  //--------------iota-----------
-  var commandtx = {
-    "command": "findTransactions",
-    "addresses": [
-      "RNHDJ9HBOBYCK9FAULCCBDPBYUPPEMHESSNNELHRXZNSQIHZEPYT9UZEOOAIPCVPFBJJCTBQWJIWQVGLB"
-    ]
-  };
-  
-  var commandbalance = {
-    "command": "getBalances",
-    "addresses": [
-      "RNHDJ9HBOBYCK9FAULCCBDPBYUPPEMHESSNNELHRXZNSQIHZEPYT9UZEOOAIPCVPFBJJCTBQWJIWQVGLB"
-    ],
-    "threshold": 100
-  };
-  
-  var optionstx = {
-    url: 'https://nodes.thetangle.org',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-IOTA-API-Version': '1'
-    },
-    json: commandtx
-  };
-  
-  var optionsbalance = {
-    url: 'https://nodes.thetangle.org',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-IOTA-API-Version': '1'
-    },
-    json: commandbalance
-  };
-//--------------iota-----------
-   */
+ 
 var checker = schedule.scheduleJob(' 30 * * * * * ', function(){         
   const date = new Date();
   let hour = date.getHours();
@@ -488,135 +315,6 @@ var checker = schedule.scheduleJob(' 30 * * * * * ', function(){
             console.log('BTC feeding error  '+error);
           }
           });
-    /* obsolete 
-
-          dogecoinbalance(doge, function (error, response) { 
-            try {
-             var jsonParsed = JSON.parse(response.body);
-              dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.data.address), function (err, result) {  
-                for (var i in result)
-                if ((jsonParsed.data.balance - result[i].balance) > 5 )    //checking   new balance - balance from DB is bigger than 0.5 $ = 5000 satoshi
-                {
-                
-                feeding();
-                dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'DOGE', '"+jsonParsed.data.txs[0].txid+"')"); //feedingststat
-                client.action("tanglesheep"," Thx for feeding using DOGE  your  TX https://blockchair.com/dogecoin/transaction/"+jsonParsed.data.txs[0].txid  );
-                  dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance, jsonParsed.data.address], function (err, result ) {}); 
-                  console.log("DOGE feeding works");
-                };
-              });
-            } catch(error) {
-              console.log('DOGE feeding error  '+error);
-            }
-            });
-    
-    ltcbalances(ltc, function (error, response) { 
-      try {
-      var jsonParsed = JSON.parse(response.body);
-     // console.log('statusCode:', response && response.statusCode);
-      dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.address), function (err, result) {  
-        for (var i in result)
-        if ((jsonParsed.final_balance - result[i].balance) > 200000 )    //checking   new balance - balance from DB is bigger than 0.5 $ 
-        {
-          
-        feeding();
-        dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'LTC', '"+jsonParsed.txrefs[0].tx_hash+"')"); //feedingststat
-        client.action("tanglesheep"," Thx feeding using LTC   your  TX https://blockchair.com/litecoin/transaction/"+jsonParsed.txrefs[0].tx_hash  );
-          dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.final_balance, jsonParsed.address], function (err, result ) {}); 
-          console.log("LTC feeding works");
-        };
-      });
-    } catch(error) {
-      console.log('ltc feeding error  '+error);
-      }
-    });
-  
-
-
-      xrpbalances(xrp, function (error, response) { 
-        try {
-        var jsonParsed = JSON.parse(response.body);
-        dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.account), function (err, result) {  
-          for (var i in result)
-          if ((jsonParsed.xrpBalance - result[i].balance) > 1 )    //checking   new balance - balance from DB is bigger than than 0.5 $ 
-          {
-            
-          feeding();
-          dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'XRP', '"+jsonParsed.previousAffectingTransactionID+"')"); //feedingststat
-          client.action("tanglesheep"," Thx for feeding using XRP your TX https://xrpscan.com/tx/"+jsonParsed.previousAffectingTransactionID );
-            dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.xrpBalance, jsonParsed.account], function (err, result ) {}); 
-            console.log("XRP feeding works");
-          };
-        });
-      } catch(error) {
-        console.log('xrp feeding error  '+error);
-      }
-      });
-
-      bchbalances(bch, function (error, response) { 
-        try {
-        var jsonParsed = JSON.parse(response.body);
-        dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.data.address), function (err, result) {  
-          for (var i in result)
-          if (((jsonParsed.data.balance + jsonParsed.data.unconfirmed_received ) - result[i].balance) > 10000 )    //checking   new balance - balance from DB is bigger  than 0.5 $ 
-          {
-           
-          feeding();
-          dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BCH', '"+jsonParsed.data.last_tx+"')"); //feedingststat
-          client.action("tanglesheep"," Thx for feeding using BCH " );
-            dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.data.balance + jsonParsed.data.unconfirmed_received,jsonParsed.data.address], function (err, result ) {}); 
-            console.log("BCH feeding works");
-          };
-        });
-      } catch(error) {
-        console.log('bch feeding error  '+error);
-        }
-      });
-
-      ethbalances(eth, function (error, response) { 
-        try {
-  var jsonParsed = JSON.parse(response.body);
-  dbcon.query('SELECT balance FROM balance WHERE  address = "0x042cee4e592a54f697620bc3090800ca180dbcbe"', function (err, result) {   
-    for (var i in result)
-    if ((jsonParsed.final_balance - result[i].balance) > 1000000000000000 )    //checking   new balance - balance from DB is bigger  than 0.5 $ 
-    {
-    feeding();
-    dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'ETH', '"+jsonParsed.txrefs[0].tx_hash+"')"); //feedingststat
-    client.action("tanglesheep"," Thx for feeding using ETH your TX https://live.blockcypher.com/eth/tx/"+jsonParsed.txrefs[0].tx_hash );
-    dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.final_balance,"0x042cee4e592a54f697620bc3090800ca180dbcbe"], function (err, result ) {}); 
-    console.log("ETH feeding works");
-        };
-      });
-    } catch(error) {
-      console.log('eth feeding error  '+error);
-      }
-   });
-
-
-      iotarequest(optionsbalance, function (error, response, data) {
-        if (!error && response.statusCode == 200) {
-    //      console.log(data.hashes[0]);
-          dbcon.query('SELECT balance FROM balance WHERE  address = "RNHDJ9HBOBYCK9FAULCCBDPBYUPPEMHESSNNELHRXZNSQIHZEPYT9UZEOOAIPCVPFBJJCTBQWJIWQVGLBTYNZUZVSZ"', function (err, result) {   
-            for (var i in result)
-            if ((data.balances[0] - result[i].balance) > 1500000 )    //checking   new balance - balance from DB is bigger  than 0.5 $ 
-            {
-              console.log("IOTA feeding works");
-            feeding();
-            iotarequest(optionstx, function (error, response, data) {
-              if (!error && response.statusCode == 200) {
-             //   console.log(data.balances[0]);
-                client.action("tanglesheep"," Thx for feeding using IOTA your tx is https://thetangle.org/transaction/"+data.hashes[0]);
-              }
-            });
-
-            
-            dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[data.balances[0],"RNHDJ9HBOBYCK9FAULCCBDPBYUPPEMHESSNNELHRXZNSQIHZEPYT9UZEOOAIPCVPFBJJCTBQWJIWQVGLBTYNZUZVSZ"], function (err, result ) {}); 
-            
-            };
-          });
-        }
-      });
-    */
 
     }
 }); 
@@ -701,6 +399,132 @@ var app = express();
 
 
 //--------------------------------------------------Bitocin LN  payment  end ------------------------------------------------------------------
+
+
+
+//----------------------------------------IOTA  payment and handling -------------------------------------------------------------------------
+
+
+
+
+
+const { MqttClient } = require("@iota/iota.js");
+
+const MQTT_ENDPOINT = "mqtt://chrysalis.hostmyapps.net:1883";
+
+async function run() {
+    const mqttClient = new MqttClient(MQTT_ENDPOINT);
+
+   
+    mqttClient.addressOutputs("atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr", (topic,data) => {
+    
+      var iotapricecheck = require('request');
+      var iotausd = {
+        method: 'GET',
+        url: 'https://api.coingecko.com/api/v3/simple/price?ids=iota&vs_currencies=usd'
+      };
+      
+      iotapricecheck(iotausd, function (error, response) { 
+        try {
+          var iotaprice = JSON.parse(response.body);
+  
+           var senttokens = ( (1000000/iotaprice.iota.usd) * 0.4);    //calculate amount of iota per 0.4$
+
+
+       if(data.output.amount >= senttokens )   //feeding condition
+             {
+            client.action("tanglesheep","Thx very much for  IOTA feeding your  tx https://explorer.iota.org/chrysalis/message/"+data.messageId)
+            dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'IOTA', '"+data.messageId+"')"); //feedingststat
+            feeding();
+               }
+          
+          else if (data.output.amount <= tokens) {client.action("tanglesheep","Sorry , you sent less than 0.5$  Beeeee  try again.")}
+      
+        } catch(error) {
+          console.log('coingecko erro'+error);
+        }
+        });
+        
+
+
+      if(data.output.amount >= 1000000){
+      client.action("tanglesheep"," Hi IOTA hodler thx for your  tx https://explorer.iota.org/chrysalis/message/"+data.messageId+ " ,  CHECK ANIMATION")
+      iota2mianime();
+               }
+
+    })
+  }
+run()
+    .then()
+    .catch((err) => console.error(err));
+
+
+
+
+
+  function iota2mianime () {
+    const SockJS = require('sockjs-client');
+    const sleep = (milliseconds) => {
+      return new Promise(resolve => setTimeout(resolve, milliseconds))
+    }
+    var sock = SockJS('http://95.85.254.86:59650/api');
+    
+
+        
+          var iota2mioff = {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "setVisibility",
+      "params": {
+                      "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\", \"33093f68-209d-4192-ac15-384d7b3b3f8c\", \"ffmpeg_source_2bae79b0-7f7a-4459-8741-7a38df571735\"]",
+                      "args": [false]
+                  }
+                 }
+
+
+                 var iota2mion = {
+                  "jsonrpc": "2.0",
+                  "id": 10,
+                  "method": "setVisibility",
+                   "params": {
+                               "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\", \"33093f68-209d-4192-ac15-384d7b3b3f8c\", \"ffmpeg_source_2bae79b0-7f7a-4459-8741-7a38df571735\"]",
+                                "args": [true]
+                                       }            
+                         }
+
+                         sock.onopen =  function() {
+                          console.log('open');
+                                var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
+                                      sock.send(req);
+          
+                        
+          
+                     sock.send(JSON.stringify(iota2mion));
+                     
+          
+                  sleep(61000).then(() => {
+          
+                         sock.send(JSON.stringify(iota2mioff));
+                        sock.close();
+                   
+                      })
+                   }
+              }       
+          
+
+
+
+
+
+
+
+
+
+//----------------------------------------IOTA  payment and handling -------------------------------------------------------------------------
+
+
+
+
 
 
 
@@ -798,7 +622,7 @@ function feedaniamtion () {
         request(options, function (error, response, body) {
          if (!error && response.statusCode == 200) {
             // console.log("URL is OK") 
-                  Hook.send(msgnormal);
+                  Hook.send("Normal feeding happen");
                  dbcon.query("SELECT totalfeeds,todayfeeds FROM feedstat", function (err, result) {      //Feeding counters
                   for (var i in result)
                   totalfeeds = (result[i].totalfeeds) + 1;
@@ -809,39 +633,14 @@ function feedaniamtion () {
                 });
           
        } else {
-        HookAlert.send(errormsg);
+        HookAlert.send("Connection from server to ESP32chip broken!!!");
          client.action("tanglesheep","CAN'T REACH FEEDER !!!, CONNECTION BROKEN , PLEASE CONTACT ADMIN ON DISCORD THX AND MY APOLOGIES tangle8Goatbits  tangle8Goatbits");
          console.log("can't reach ESP32")  
                  };
             });
     };
         
-// Function feeding premium
-          function feedingpremium () {
-              
-          
-              var options = { method: 'GET', url: (config.toolscontrol.dcmotor),headers:{ 'cache-control': 'no-cache' } };
-                request(options, function (error, response, body) {
-                  if (!error && response.statusCode == 200) {
-                // console.log("URL is OK")
-                           Hook.send(msgnpremium);
-                          dbcon.query("SELECT totalfeeds,todayfeeds,premiumfeeds FROM feedstat", function (err, result) {      //Feeding counters
-                          for (var i in result)
-                          totalfeeds = (result[i].totalfeeds) + 1;
-                          todayfeeds = (result[i].todayfeeds) + 1;
-                          premiumfeeds = (result[i].premiumfeeds) + 1;
-                          dbcon.query("UPDATE feedstat SET totalfeeds=?, todayfeeds=?, premiumfeeds=? WHERE id=?",[totalfeeds, todayfeeds, premiumfeeds, 1], function (err, result ) {             //incrase counter in DB
-                            if (err) throw err; });    
-                                feedaniamtion ();   // plasy sound during the feeding
-                        });
-          
-                      } else {
-                        HookAlert.send(errormsg);
-                        client.action("tanglesheep","CAN'T REACH FEEDER !!!, CONNECTION BROKEN , PLEASE CONTACT ADMIN ON DISCORD THX AND MY APOLOGIES tangle8Goatbits  tangle8Goatbits ");
-                        console.log("can't reach ESP32")  
-                                };
-                           });
-                   };
+
 
 
   

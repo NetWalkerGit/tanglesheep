@@ -36,7 +36,12 @@ const opts = {
 client.on ('chat', function(channel, userstate,  message, self) {
 //  console.log(message);
 //   console.log (userstate);
- 
+if( message === "!premiumfeed") {
+  
+client.action("tanglesheep", userstate['display-name'] + " Premium Feeding was removed. :(  ");
+
+} 
+
   
   // switch cams
                if( (message === "!birdcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
