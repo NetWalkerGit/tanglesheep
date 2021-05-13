@@ -410,7 +410,7 @@ var app = express();
 
 const { MqttClient } = require("@iota/iota.js");
 
-const MQTT_ENDPOINT = "mqtt://chrysalis.hostmyapps.net:1883";
+const MQTT_ENDPOINT = "mqtt://localhost:1883";
 
 async function run() {
     const mqttClient = new MqttClient(MQTT_ENDPOINT);
