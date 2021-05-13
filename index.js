@@ -433,7 +433,7 @@ async function run() {
 
        if(data.output.amount >= senttokens )   //feeding condition
              {
-            client.action("tanglesheep","Thx very much for  IOTA feeding your  tx https://explorer.iota.org/chrysalis/message/"+data.messageId)
+            client.action("tanglesheep","Thx very much for  IOTA feeding your  tx https://explorer.iota.org/mainnet/message/"+data.messageId)
             dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'IOTA', '"+data.messageId+"')"); //feedingststat
             feeding();
                }
@@ -444,13 +444,6 @@ async function run() {
           console.log('coingecko erro'+error);
         }
         });
-        
-
-
-      if(data.output.amount >= 1000000){
-      client.action("tanglesheep"," Hi IOTA hodler thx for your  tx https://explorer.iota.org/chrysalis/message/"+data.messageId+ " ,  CHECK ANIMATION")
-      iota2mianime();
-               }
 
     })
   }
