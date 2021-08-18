@@ -383,8 +383,7 @@ var app = express();
 
       client.action("tanglesheep"," Sorry sheep sleeping :( , Thx for yoru Bitcoin LN " +request.body.hashed_order+ " payment anyway it support us :) ");
 
-      createlnpay ();    // if somebody pays after feeding hours  create new  QR anyway
-
+     
      }else if (request.body.status == "paid"){
       client.action("tanglesheep"," Thx for feeding via BITCOIN LN your payment hash is "+request.body.hashed_order);
       createlnpay (); 
