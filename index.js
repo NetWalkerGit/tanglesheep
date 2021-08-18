@@ -381,7 +381,7 @@ var app = express();
 
     if ((hour >= 20 || hour <= 6 )  || ( todayfeeds >= 100 ) ){
 
-      client.action("tanglesheep"," Sorry sheep sleeping :( , Thx for yoru Bitcoin LN " +request.body.hashed_order+ " payment anyway it support us :) ");
+     // client.action("tanglesheep"," Sorry sheep sleeping :( , Thx for yoru Bitcoin LN " +request.body.hashed_order+ " payment anyway it support us :) ");
 
      
      }else if (request.body.status == "paid"){
