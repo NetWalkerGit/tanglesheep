@@ -368,7 +368,7 @@ var app = express();
     
 
   
-  var lnpayrequestcreator = schedule.scheduleJob('59 * * * *', function(){  //create LN invoice every hour
+  var lnpayrequestcreator = schedule.scheduleJob('*/10 * * * *', function(){  //create LN invoice every hour
     createlnpay ();      
   });
  
@@ -381,10 +381,9 @@ var app = express();
 
     if ((hour >= 20 || hour <= 6 )  || ( todayfeeds >= 100 ) ){
 
-      client.action("tanglesheep"," Sorry sheep sleeping :( , Thx for yoru Bitcoin LN " +request.body.hashed_order+ " payment anyway it support us :) ");
+     // client.action("tanglesheep"," Sorry sheep sleeping :( , Thx for yoru Bitcoin LN " +request.body.hashed_order+ " payment anyway it support us :) ");
 
-      createlnpay ();    // if somebody pays after feeding hours  create new  QR anyway
-
+     
      }else if (request.body.status == "paid"){
       client.action("tanglesheep"," Thx for feeding via BITCOIN LN your payment hash is "+request.body.hashed_order);
       createlnpay (); 
@@ -399,132 +398,6 @@ var app = express();
 
 
 //--------------------------------------------------Bitocin LN  payment  end ------------------------------------------------------------------
-
-
-
-//----------------------------------------IOTA  payment and handling -------------------------------------------------------------------------
-
-
-
-
-
-const { MqttClient } = require("@iota/iota.js");
-
-const MQTT_ENDPOINT = "mqtt://chrysalis.hostmyapps.net:1883";
-
-async function run() {
-    const mqttClient = new MqttClient(MQTT_ENDPOINT);
-
-   
-    mqttClient.addressOutputs("atoi1qpcn7wj0tepy0mxq0lajjwvpn86vyrec5aazvyfh6jv3mgkmpjq7zu0wegr", (topic,data) => {
-    
-      var iotapricecheck = require('request');
-      var iotausd = {
-        method: 'GET',
-        url: 'https://api.coingecko.com/api/v3/simple/price?ids=iota&vs_currencies=usd'
-      };
-      
-      iotapricecheck(iotausd, function (error, response) { 
-        try {
-          var iotaprice = JSON.parse(response.body);
-  
-           var senttokens = ( (1000000/iotaprice.iota.usd) * 0.4);    //calculate amount of iota per 0.4$
-
-
-       if(data.output.amount >= senttokens )   //feeding condition
-             {
-            client.action("tanglesheep","Thx very much for  IOTA feeding your  tx https://explorer.iota.org/chrysalis/message/"+data.messageId)
-            dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'IOTA', '"+data.messageId+"')"); //feedingststat
-            feeding();
-               }
-          
-          else if (data.output.amount <= tokens) {client.action("tanglesheep","Sorry , you sent less than 0.5$  Beeeee  try again.")}
-      
-        } catch(error) {
-          console.log('coingecko erro'+error);
-        }
-        });
-        
-
-
-      if(data.output.amount >= 1000000){
-      client.action("tanglesheep"," Hi IOTA hodler thx for your  tx https://explorer.iota.org/chrysalis/message/"+data.messageId+ " ,  CHECK ANIMATION")
-      iota2mianime();
-               }
-
-    })
-  }
-run()
-    .then()
-    .catch((err) => console.error(err));
-
-
-
-
-
-  function iota2mianime () {
-    const SockJS = require('sockjs-client');
-    const sleep = (milliseconds) => {
-      return new Promise(resolve => setTimeout(resolve, milliseconds))
-    }
-    var sock = SockJS('http://95.85.254.86:59650/api');
-    
-
-        
-          var iota2mioff = {
-      "jsonrpc": "2.0",
-      "id": 10,
-      "method": "setVisibility",
-      "params": {
-                      "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\", \"33093f68-209d-4192-ac15-384d7b3b3f8c\", \"ffmpeg_source_2bae79b0-7f7a-4459-8741-7a38df571735\"]",
-                      "args": [false]
-                  }
-                 }
-
-
-                 var iota2mion = {
-                  "jsonrpc": "2.0",
-                  "id": 10,
-                  "method": "setVisibility",
-                   "params": {
-                               "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\", \"33093f68-209d-4192-ac15-384d7b3b3f8c\", \"ffmpeg_source_2bae79b0-7f7a-4459-8741-7a38df571735\"]",
-                                "args": [true]
-                                       }            
-                         }
-
-                         sock.onopen =  function() {
-                          console.log('open');
-                                var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
-                                      sock.send(req);
-          
-                        
-          
-                     sock.send(JSON.stringify(iota2mion));
-                     
-          
-                  sleep(61000).then(() => {
-          
-                         sock.send(JSON.stringify(iota2mioff));
-                        sock.close();
-                   
-                      })
-                   }
-              }       
-          
-
-
-
-
-
-
-
-
-
-//----------------------------------------IOTA  payment and handling -------------------------------------------------------------------------
-
-
-
-
 
 
 
