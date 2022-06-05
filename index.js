@@ -301,7 +301,7 @@ var checker = schedule.scheduleJob(' 30 * * * * * ', function(){
             var jsonParsed = JSON.parse(response.body);
             dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.address), function (err, result) {  
               for (var i in result)
-              if ((jsonParsed.final_balance - result[i].balance) > 2000 )    //checking   new balance - balance from DB is bigger than 0.5 $ = 5000 satoshi
+              if ((jsonParsed.final_balance - result[i].balance) > 1000 )    //checking   new balance - balance from DB is bigger than 0.5 $ = 5000 satoshi
               {
               
               feeding();
