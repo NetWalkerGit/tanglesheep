@@ -461,13 +461,13 @@ function feedaniamtion () {
               
 
            sock.send(JSON.stringify(animgifreq1));
-           sock.send(JSON.stringify(soundalertreq1));
+  /*         sock.send(JSON.stringify(soundalertreq1));
 
           sleep(1500).then(() => {
 
                  sock.send(JSON.stringify(soundalertreq2));
 
-              })
+              })   */
         sleep(4500).then(() => {
 
                sock.send(JSON.stringify(animgifreq2));
