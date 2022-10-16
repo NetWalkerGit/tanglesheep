@@ -216,7 +216,7 @@ client.action("tanglesheep", userstate['display-name'] + " Premium Feeding was r
 //dravci on
 function birdcam () {
 const SockJS = require('sockjs-client');
-var sock = SockJS('http://95.85.254.86:59650/api');
+var sock = SockJS('http://192.168.1.60:59650/api');
  sock.onopen = function() {
               console.log('open');
                     var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
@@ -295,7 +295,7 @@ sock.send(JSON.stringify(req));
 
 function sheepcam () {
 const SockJS = require('sockjs-client');
-var sock = SockJS('http://95.85.254.86:59650/api');
+var sock = SockJS('http://192.168.1.60:59650/api');
  sock.onopen = function() {
               console.log('open');
                     var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
@@ -363,7 +363,7 @@ sock.send(JSON.stringify(req));
 
 function goatshedcam () {
   const SockJS = require('sockjs-client');
-  var sock = SockJS('http://95.85.254.86:59650/api');
+  var sock = SockJS('http://192.168.1.60:59650/api');
    sock.onopen = function() {
                 console.log('open');
                       var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
@@ -436,7 +436,7 @@ sock.send(JSON.stringify(req));
 //camera entry
 function camentry () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@95.85.254.86:82/ISAPI/PTZCtrl/channels/1/presets/1/goto",
+  url: "http://"+config.camera.pass+"@192.168.1.12/ISAPI/PTZCtrl/channels/1/presets/1/goto",
   headers:
    { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
      'cache-control': 'no-cache' } }; request(options, function (error) {
@@ -448,7 +448,7 @@ var request = require("request"); var options = { method: 'PUT',
 //camera garden
 function camgarden () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@95.85.254.86:82/ISAPI/PTZCtrl/channels/1/presets/2/goto",
+  url: "http://"+config.camera.pass+"@192.168.1.12/ISAPI/PTZCtrl/channels/1/presets/2/goto",
   headers:
    { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
      'cache-control': 'no-cache' } }; request(options, function (error) {
@@ -460,7 +460,7 @@ var request = require("request"); var options = { method: 'PUT',
 //camera aroundshed
 function camfargarden () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@95.85.254.86:82/ISAPI/PTZCtrl/channels/1/presets/3/goto",
+  url: "http://"+config.camera.pass+"@192.168.1.12/ISAPI/PTZCtrl/channels/1/presets/3/goto",
   headers:
    { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
      'cache-control': 'no-cache' } }; request(options, function (error) {
@@ -472,7 +472,7 @@ var request = require("request"); var options = { method: 'PUT',
 //camera fargarden
 function camaroundshed () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@95.85.254.86:82/ISAPI/PTZCtrl/channels/1/presets/4/goto",
+  url: "http://"+config.camera.pass+"@192.168.1.12/ISAPI/PTZCtrl/channels/1/presets/4/goto",
   headers:
    { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
      'cache-control': 'no-cache' } }; request(options, function (error) {
@@ -485,7 +485,7 @@ var request = require("request"); var options = { method: 'PUT',
 //camera sheep Patrol
 function camsheeppatrol() {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@95.85.254.86:82/ISAPI/PTZCtrl/channels/1/presets/45/goto",
+  url: "http://"+config.camera.pass+"@192.168.1.12/ISAPI/PTZCtrl/channels/1/presets/45/goto",
   headers:
    { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
      'cache-control': 'no-cache' } }; request(options, function (error) {
@@ -499,7 +499,7 @@ var request = require("request"); var options = { method: 'PUT',
 //camera cambirdmain Preset 1
 function cambirdmain () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@95.85.254.86:83/ISAPI/PTZCtrl/channels/1/presets/1/goto",
+  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/1/goto",
   headers:
    { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
      'cache-control': 'no-cache' } }; request(options, function (error) {
@@ -512,7 +512,7 @@ var request = require("request"); var options = { method: 'PUT',
 //camera cambirdrest Preset 2
 function cambirdrest () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@95.85.254.86:83/ISAPI/PTZCtrl/channels/1/presets/2/goto",
+  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/2/goto",
   headers:
    { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
      'cache-control': 'no-cache' } }; request(options, function (error) {
@@ -527,7 +527,7 @@ var request = require("request"); var options = { method: 'PUT',
 //camera cambirdfeeding Preset 3
 function cambirdfeeding () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@95.85.254.86:83/ISAPI/PTZCtrl/channels/1/presets/3/goto",
+  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/3/goto",
   headers:
    { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
      'cache-control': 'no-cache' } }; request(options, function (error) {
@@ -540,7 +540,7 @@ var request = require("request"); var options = { method: 'PUT',
 //camera cambirdfeeding2 Preset 4
 function cambirdfeeding2 () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@95.85.254.86:83/ISAPI/PTZCtrl/channels/1/presets/4/goto",
+  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/4/goto",
   headers:
    { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
      'cache-control': 'no-cache' } }; request(options, function (error) {
@@ -553,7 +553,7 @@ var request = require("request"); var options = { method: 'PUT',
 //camera cambird2main Preset 5
 function cambird2main () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@95.85.254.86:83/ISAPI/PTZCtrl/channels/1/presets/5/goto",
+  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/5/goto",
   headers:
    { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
      'cache-control': 'no-cache' } }; request(options, function (error) {
@@ -565,7 +565,7 @@ var request = require("request"); var options = { method: 'PUT',
 //camera cambird2feeding Preset 6
 function cambird2feeding () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@95.85.254.86:83/ISAPI/PTZCtrl/channels/1/presets/6/goto",
+  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/6/goto",
   headers:
    { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
      'cache-control': 'no-cache' } }; request(options, function (error) {
@@ -577,7 +577,7 @@ var request = require("request"); var options = { method: 'PUT',
 //camera cambird2feeding Preset 7
 function cambird2rest() {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@95.85.254.86:83/ISAPI/PTZCtrl/channels/1/presets/7/goto",
+  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/7/goto",
   headers:
    { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
      'cache-control': 'no-cache' } }; request(options, function (error) {
@@ -592,7 +592,7 @@ function sheepptzfree () {
   var request = require('request');
    var options = {
   'method': 'PUT',
-  'url': 'http://'+config.camera.pass+'@95.85.254.86:82/ISAPI/PTZCtrl/channels/1/absolute',
+  'url': 'http://'+config.camera.pass+'@192.168.1.12/ISAPI/PTZCtrl/channels/1/absolute',
   'headers': {
     'Content-Type': 'application/xml'
   },
@@ -611,7 +611,7 @@ function birdptzfree () {
   var request = require('request');
    var options = {
   'method': 'PUT',
-  'url': 'http://'+config.camera.pass+'@95.85.254.86:83/ISAPI/PTZCtrl/channels/1/absolute',
+  'url': 'http://'+config.camera.pass+'@192.168.1.14/ISAPI/PTZCtrl/channels/1/absolute',
   'headers': {
     'Content-Type': 'application/xml'
   },
@@ -637,7 +637,7 @@ function showstat () {
   const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
   }
-  var sock = SockJS('http://95.85.254.86:59650/api');
+  var sock = SockJS('http://192.168.1.60:59650/api');
    sock.onopen =  function() {
                 console.log('open');
                       var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
@@ -694,7 +694,7 @@ function switchscene () {
   const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
   }
-  var sock = SockJS('http://95.85.254.86:59650/api');
+  var sock = SockJS('http://192.168.1.60:59650/api');
    sock.onopen =  function() {
                 console.log('open');
                       var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
