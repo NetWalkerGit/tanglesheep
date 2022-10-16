@@ -411,7 +411,7 @@ function feedaniamtion () {
   const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
   }
-  var sock = SockJS('http://95.85.254.86:59650/api');
+  var sock = SockJS('http://192.168.1.60:59650/api');
 
 
   var animgifreq2 = {
