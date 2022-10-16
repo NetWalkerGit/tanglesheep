@@ -84,28 +84,28 @@ client.action("tanglesheep", userstate['display-name'] + " Premium Feeding was r
 
                                 } 
                                 
-                                if (( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "bigbirdcam")) {
+                                if ((( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "bigbirdcam")) || ((userstate.badges.subscriber || userstate.badges.founder))) {
                                   global.scena = "scene_0d23c014-d824-4172-a0bd-560b84e060e7";
                                   switchscene();
                                   client.action("tanglesheep","woooow big birds cam");
 
                                 } 
                                 
-                                if(( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "biggoatcam")) {
+                                if((( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "biggoatcam")) || ((userstate.badges.subscriber || userstate.badges.founder))) {
                                   global.scena = "scene_7f387d78-3019-4394-bcc2-4182d1ecabbc";
                                   switchscene();
                                   client.action("tanglesheep","woooow big goat cam");
 
                                 } 
                                 
-                                if(( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652')  && (message === "bigsheepcam")) {
+                                if((( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652')  && (message === "bigsheepcam")) || ((userstate.badges.subscriber || userstate.badges.founder))){
                                   global.scena = "scene_68c54b98-b21d-4c22-aaff-fd40eee037f4";
                                   switchscene();
                                   client.action("tanglesheep","woooow big sheep outside cam");
 
                                 } 
                                 
-                                if(( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "bigsheepshed")) {
+                                if((( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "bigsheepshed")) || ((userstate.badges.subscriber || userstate.badges.founder))) {
                                    global.scena = "scene_655ebfbe-1998-4755-808d-4d1b032b11b1";
                                   switchscene();
                                   client.action("tanglesheep","woooow big sheep shed cam");
