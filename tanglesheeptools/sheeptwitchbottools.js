@@ -2,6 +2,9 @@ const tmi = require('tmi.js');
 var schedule = require('node-schedule');
 const fs = require('fs');
 const config = require('./configtools.js');
+const { Configuration, OpenAIApi } = require("openai");
+
+
 
 // Define configuration options
 const opts = {
@@ -17,6 +20,13 @@ const opts = {
     }
   };
 
+//openai Define configuration options
+  const configuration = new Configuration({
+    apiKey: (config.openai.api),
+  });
+  const openai = new OpenAIApi(configuration)
+//openai Define configuration options
+
 
 //  var scena = "scene_655ebfbe-1998-4755-808d-4d1b032b11b1" ;
 
@@ -29,6 +39,37 @@ const opts = {
    console.log(`* Connected to ${addr}:${port}`);
  } 
  //twitch tmi connection
+
+
+
+
+
+//OPENAI chatgpt  
+
+client.on ('message', function(channel, userstate,  message, self) {
+
+  if (self) return;
+  if ( userstate ['custom-reward-id'] === '1f835010-ee82-45c0-934a-b8326979b793') {
+
+const completion = openai.createCompletion({
+  model: "text-davinci-003",
+  prompt: message,
+  max_tokens: 1000
+});
+
+
+//console.info("Searching for answer...");
+completion.then((result) => {
+  client.say(channel, result.data.choices[0].text);
+});
+
+} 
+
+});
+
+
+//OPENAI chatgpt  
+
 
 
 

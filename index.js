@@ -368,7 +368,7 @@ var app = express();
     
 
   
-  var lnpayrequestcreator = schedule.scheduleJob('*/10 * * * *', function(){  //create LN invoice every hour
+  var lnpayrequestcreator = schedule.scheduleJob('*/10 * * * *', function(){  //create LN invoice every 10 minutes
     createlnpay ();      
   });
  
