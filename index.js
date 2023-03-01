@@ -492,9 +492,7 @@ function feedaniamtion () {
 //activate broekn feeder notice on the stream
 function feedingbroken () {
   const SockJS = require('sockjs-client');
-  const sleep = (milliseconds) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds))
-  }
+  
   var sock = SockJS('http://192.168.1.60:59650/api');
 
    var feederbroken = {
@@ -502,7 +500,7 @@ function feedingbroken () {
          "id": 10,
          "method": "setVisibility",
           "params": {
-                      "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\", \"41474212-e9e3-4868-95a6-91a93341d484\", \"text_gdiplus_ae50699e-52c9-4283-814f-7f7458fd669e\"]",
+                      "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"41474212-e9e3-4868-95a6-91a93341d484\",\"text_gdiplus_ae50699e-52c9-4283-814f-7f7458fd669e\"]",
                        "args": [true]
                               }            
                 }
@@ -520,7 +518,7 @@ function feedingbroken () {
               sock.close();
  
          }
-         sock.close();
+         
     }   
 
 //activate broekn feeder notice on the stream
