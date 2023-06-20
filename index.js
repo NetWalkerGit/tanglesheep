@@ -368,7 +368,7 @@ var app = express();
     
 
   
-  var lnpayrequestcreator = schedule.scheduleJob('*/10 * * * *', function(){  //create LN invoice every hour
+  var lnpayrequestcreator = schedule.scheduleJob('*/10 * * * *', function(){  //create LN invoice every 10 minutes
     createlnpay ();      
   });
  
@@ -453,6 +453,11 @@ function feedaniamtion () {
                              }            
                }
 
+       
+
+
+
+
    sock.onopen =  function() {
                 console.log('open');
                       var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
@@ -484,6 +489,42 @@ function feedaniamtion () {
 
 
 
+//activate broekn feeder notice on the stream
+function feedingbroken () {
+  const SockJS = require('sockjs-client');
+  
+  var sock = SockJS('http://192.168.1.60:59650/api');
+
+   var feederbroken = {
+         "jsonrpc": "2.0",
+         "id": 10,
+         "method": "setVisibility",
+          "params": {
+                      "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"41474212-e9e3-4868-95a6-91a93341d484\",\"text_gdiplus_ae50699e-52c9-4283-814f-7f7458fd669e\"]",
+                       "args": [true]
+                              }            
+                }
+
+
+   sock.onopen =  function() {
+                console.log('open');
+                      var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
+                            sock.send(req);
+
+              
+
+           sock.send(JSON.stringify(feederbroken));
+          
+              sock.close();
+ 
+         }
+         
+    }   
+
+//activate broekn feeder notice on the stream
+
+
+
 
 
 // Function calling feeder
@@ -507,6 +548,7 @@ function feedaniamtion () {
           
        } else {
         HookAlert.send("Connection from server to ESP32chip broken!!!");
+        feedingbroken () ;
          client.action("tanglesheep","CAN'T REACH FEEDER !!!, CONNECTION BROKEN , PLEASE CONTACT ADMIN ON DISCORD THX AND MY APOLOGIES tangle8Goatbits  tangle8Goatbits");
          console.log("can't reach ESP32")  
                  };
