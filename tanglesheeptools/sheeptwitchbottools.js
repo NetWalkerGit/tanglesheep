@@ -670,7 +670,7 @@ request(options, function (error, response) {
 
 
 
-// show statistic for points
+// show radar widget
 
 
 function showradar () {
