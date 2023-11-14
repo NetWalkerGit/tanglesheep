@@ -29,15 +29,13 @@ function parseTokens(str) {
   return tokens;
 }
 
-const isValidHeaderName = (str) => /^[-_a-zA-Z0-9^`|~,!#$%&'*+.]+$/.test(str.trim());
+function isValidHeaderName(str) {
+  return /^[-_a-zA-Z]+$/.test(str.trim());
+}
 
-function matchHeaderValue(context, value, header, filter, isHeaderNameFilter) {
+function matchHeaderValue(context, value, header, filter) {
   if (utils.isFunction(filter)) {
     return filter.call(this, value, header);
-  }
-
-  if (isHeaderNameFilter) {
-    value = header;
   }
 
   if (!utils.isString(value)) return;
@@ -143,7 +141,7 @@ class AxiosHeaders {
     if (header) {
       const key = utils.findKey(this, header);
 
-      return !!(key && this[key] !== undefined && (!matcher || matchHeaderValue(this, this[key], key, matcher)));
+      return !!(key && (!matcher || matchHeaderValue(this, this[key], key, matcher)));
     }
 
     return false;
@@ -176,20 +174,8 @@ class AxiosHeaders {
     return deleted;
   }
 
-  clear(matcher) {
-    const keys = Object.keys(this);
-    let i = keys.length;
-    let deleted = false;
-
-    while (i--) {
-      const key = keys[i];
-      if(!matcher || matchHeaderValue(this, this[key], key, matcher, true)) {
-        delete this[key];
-        deleted = true;
-      }
-    }
-
-    return deleted;
+  clear() {
+    return Object.keys(this).forEach(this.delete.bind(this));
   }
 
   normalize(format) {
@@ -280,19 +266,9 @@ class AxiosHeaders {
   }
 }
 
-AxiosHeaders.accessor(['Content-Type', 'Content-Length', 'Accept', 'Accept-Encoding', 'User-Agent', 'Authorization']);
+AxiosHeaders.accessor(['Content-Type', 'Content-Length', 'Accept', 'Accept-Encoding', 'User-Agent']);
 
-// reserved names hotfix
-utils.reduceDescriptors(AxiosHeaders.prototype, ({value}, key) => {
-  let mapped = key[0].toUpperCase() + key.slice(1); // map `set` => `Set`
-  return {
-    get: () => value,
-    set(headerValue) {
-      this[mapped] = headerValue;
-    }
-  }
-});
-
+utils.freezeMethods(AxiosHeaders.prototype);
 utils.freezeMethods(AxiosHeaders);
 
 export default AxiosHeaders;
