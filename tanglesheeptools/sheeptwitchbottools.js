@@ -119,9 +119,9 @@ client.action("tanglesheep", userstate['display-name'] + " Premium Feeding was r
 
                                 } 
                                 
-                                if( userstate['custom-reward-id'] === '44fe302e-9369-49db-bb48-f9c9fb80e128') {
-                                  showstat();
-                                  client.action("tanglesheep","woooow check stats  for today");
+                                if( (message === "!radar") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                  showradar();
+                                  client.action("tanglesheep","do you see any storm?");
 
                                 } 
                                 
@@ -670,10 +670,10 @@ request(options, function (error, response) {
 
 
 
-// show statistic for points
+// show radar widget
 
 
-function showstat () {
+function showradar () {
   const SockJS = require('sockjs-client');
   const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))

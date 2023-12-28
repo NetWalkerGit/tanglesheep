@@ -275,56 +275,6 @@ client.on ("cheer", (channel, userstate, message) =>  {
 
 
  
-//---------------------------------------------cryptofeeding-----------------------------------------------------------
-
-
- 
-  var btcbalances = require('request');
-
-var btc = {
-  method: 'GET',
-  url: 'https://blockchain.info/rawaddr/bc1q9e54a35294yerlptr5wxtgn9mf3uvszlwqd7r7?limit=1'
-};
-
- 
-var checker = schedule.scheduleJob(' 30 * * * * * ', function(){         
-  const date = new Date();
-  let hour = date.getHours();
-
-  if ((hour >= 20 || hour <= 6 )  || ( todayfeeds >= 100 ) ){
-
-            //nothing will happen       
-           // console.log("feeding limit reached");
-       } else {
-        btcbalances(btc, function (error, response) { 
-          try {
-            var jsonParsed = JSON.parse(response.body);
-            dbcon.query('SELECT balance FROM balance WHERE  address = ' +  dbcon.escape(jsonParsed.address), function (err, result) {  
-              for (var i in result)
-              if ((jsonParsed.final_balance - result[i].balance) > 1000 )    //checking   new balance - balance from DB is bigger than 0.5 $ = 5000 satoshi
-              {
-              
-              feeding();
-              dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BTC', '"+jsonParsed.txs[0].hash+"')"); //feedingststat
-              client.action("tanglesheep"," Thx for feeding using BTC  your  TX https://blockchair.com/bitcoin/transaction/"+jsonParsed.txs[0].hash  );
-                dbcon.query("UPDATE  balance SET balance=? WHERE address=?",[jsonParsed.final_balance, jsonParsed.address], function (err, result ) {}); 
-                console.log("BTC feeding works");
-              };
-            });
-          } catch(error) {
-            console.log('BTC feeding error  '+error);
-          }
-          });
-
-    }
-}); 
-
-
-//--------------------------------END-------------cryptofeeding---------------------------------------------------------------------------------
-
-
-
-
 
 //--------------------------------------------------Bitocin LN  payment ------------------------------------------------------------------
 
