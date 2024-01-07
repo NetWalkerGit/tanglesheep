@@ -274,11 +274,11 @@ function birdcam () {
           sceneName: 'Main',
           sceneItemId: 4,
           sceneItemEnabled: false 
-        });
-        
-  });
-
-}
+        }).then(() => {
+          obs.disconnect();
+         });
+      }
+  )}
 
  //ovce on
 
@@ -302,10 +302,11 @@ function sheepcam () {
           sceneName: 'Main',
           sceneItemId: 4,
           sceneItemEnabled: false 
-        });       
-        
-  });
-}
+        }).then(() => {
+          obs.disconnect();
+         });
+      }
+  )}
 
 
 
@@ -331,10 +332,11 @@ function goatshedcam () {
           sceneName: 'Main',
           sceneItemId: 4,
           sceneItemEnabled: true 
-        });       
-        
-  });
-}
+        }).then(() => {
+          obs.disconnect();
+         });
+      }
+  )}
 
 
 
@@ -560,11 +562,13 @@ function showradar () {
               sceneName: 'Main',
               sceneItemId: 22,
               sceneItemEnabled: false 
-            });
+            }).then(() => {
+              obs.disconnect();
+             });
 
           }, 10000); // 10000 milliseconds = 10 seconds       
-      }); 
-}       
+      })
+    }
 
 
 
@@ -585,8 +589,10 @@ function sceneswitch () {
               // Switch back to SheepshedBig
               obs.call('SetCurrentProgramScene', { sceneName: 'Main' }).then(() => {
                   console.log('Switched back to Main');
+                  obs.disconnect();
               }).catch(err => {
                   console.error('Error switching back to Main:', err);
+                  obs.disconnect();
               });
           }, 30000); // 30000 milliseconds = 30 seconds       
       }); 

@@ -375,11 +375,13 @@ function feedaniamtion () {
               sceneName: 'Main',
               sceneItemId: 23,
               sceneItemEnabled: false 
-            });
+            }).then(() => {
+              obs.disconnect();
+             });
 
           }, 4500); // 4500 milliseconds = 4,5 seconds       
-      }); 
-    }       
+      })
+    }
 
 
 
@@ -397,9 +399,11 @@ function feedingbroken () {
           sceneName: 'Main',
           sceneItemId: 24,
           sceneItemEnabled: true 
-        });   
-  });
-}
+        }).then(() => {
+          obs.disconnect();
+         });
+      }
+  )}
 //activate broekn feeder notice on the stream
 
 
