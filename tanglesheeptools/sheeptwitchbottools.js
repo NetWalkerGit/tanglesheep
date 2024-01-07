@@ -544,31 +544,43 @@ request(options, function (error, response) {
 // show radar widget
 
 
-function showradar () {
-  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
-  obs.on('Identified', () => {
-     // console.log('Identified, good to go!')
-
-     obs.call('SetSceneItemEnabled', {
-      sceneName: 'Main',
-      sceneItemId: 22,
-      sceneItemEnabled: true 
-    });
-          
-          // Wait for 10 seconds
-          setTimeout(() => {
-
-            obs.call('SetSceneItemEnabled', {
+function showradar() {
+  // Connect to OBS WebSocket
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew)
+      .then(() => {
+          console.log('Connected to OBS WebSocket');
+          // Enable the scene item
+          return obs.call('SetSceneItemEnabled', {
               sceneName: 'Main',
               sceneItemId: 22,
-              sceneItemEnabled: false 
-            }).then(() => {
-              obs.disconnect();
-             });
-
-          }, 10000); // 10000 milliseconds = 10 seconds       
+              sceneItemEnabled: true
+          });
       })
-    }
+      .then(() => {
+          console.log('Scene item enabled');
+          // Wait for 10 seconds before disabling the scene item
+          return new Promise(resolve => setTimeout(resolve, 10000)); // 10000 milliseconds = 10 seconds
+      })
+      .then(() => {
+          // Disable the scene item
+          return obs.call('SetSceneItemEnabled', {
+              sceneName: 'Main',
+              sceneItemId: 22,
+              sceneItemEnabled: false
+          });
+      })
+      .then(() => {
+          console.log('Scene item disabled');
+          // Disconnect from OBS WebSocket
+       
+      })
+      .catch(err => {
+          console.error('Error occurred:', err);
+          // Ensure disconnection in case of error
+          obs.disconnect();
+      });
+}
+
 
 
 
@@ -602,10 +614,11 @@ function switchBackToMain() {
       })
       .catch(err => {
           console.error('Error switching back to Main:', err);
+          obs.disconnect();
       })
       .finally(() => {
           // Disconnect from OBS WebSocket after switching back or if an error occurs
-          obs.disconnect();
+       
       });
 }
 
