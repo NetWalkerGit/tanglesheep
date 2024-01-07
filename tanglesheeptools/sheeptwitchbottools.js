@@ -3,7 +3,8 @@ var schedule = require('node-schedule');
 const fs = require('fs');
 const config = require('./configtools.js');
 const { Configuration, OpenAIApi } = require("openai");
-
+const { default: OBSWebSocket } = require('obs-websocket-js');
+const obs = new OBSWebSocket();
 
 
 // Define configuration options
@@ -27,8 +28,6 @@ const opts = {
   const openai = new OpenAIApi(configuration)
 //openai Define configuration options
 
-
-//  var scena = "scene_655ebfbe-1998-4755-808d-4d1b032b11b1" ;
 
  //twitch tmi connection
  const client = new tmi.client(opts);
@@ -126,29 +125,29 @@ client.action("tanglesheep", userstate['display-name'] + " Premium Feeding was r
                                 } 
                                 
                                       if ((( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "bigbirdcam")) || ((userstate['badge-info'] != null) && (message === "bigbirdcam"))) {
-                                      global.scena = "scene_0d23c014-d824-4172-a0bd-560b84e060e7";
-                                       switchscene();
+                                      global.scena = "BirdBigCam";
+                                      sceneswitch();
                                        client.action("tanglesheep","woooow big birds cam");
 
                                 } 
                                 
                                 if((( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "biggoatcam")) || ((userstate['badge-info'] != null) && (message === "biggoatcam"))) {
-                                  global.scena = "scene_7f387d78-3019-4394-bcc2-4182d1ecabbc";
-                                  switchscene();
+                                  global.scena = "GoatBigCam";
+                                  sceneswitch();
                                   client.action("tanglesheep","woooow big goat cam");
 
                                 } 
                                 
                                 if((( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652')  && (message === "bigsheepcam")) || ((userstate['badge-info'] != null) && (message === "bigsheepcam"))){
-                                  global.scena = "scene_68c54b98-b21d-4c22-aaff-fd40eee037f4";
-                                  switchscene();
+                                  global.scena = "SheepBigOutsideCam";
+                                  sceneswitch();
                                   client.action("tanglesheep","woooow big sheep outside cam");
 
                                 } 
                                 
                                 if((( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "bigsheepshed")) || ((userstate['badge-info'] != null) && (message === "bigsheepshed"))) {
-                                   global.scena = "scene_655ebfbe-1998-4755-808d-4d1b032b11b1";
-                                  switchscene();
+                                   global.scena = "SheepshedBig";
+                                   sceneswitch();
                                   client.action("tanglesheep","woooow big sheep shed cam");
                                  } 
                                  
@@ -256,217 +255,89 @@ client.action("tanglesheep", userstate['display-name'] + " Premium Feeding was r
 
 //dravci on
 function birdcam () {
-const SockJS = require('sockjs-client');
-var sock = SockJS('http://192.168.1.60:59650/api');
- sock.onopen = function() {
-              console.log('open');
-                    var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
-                          sock.send(req);
-//ovce off
-               var req = {
-                     "jsonrpc": "2.0",
-                     "id": 10,
-                     "method": "setVisibility",
-                     "params": {
-                                     "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"d73bb435-0675-4754-93f4-e32414e85657\",\"vlc_source_37f2c3f5-d5d1-4c0b-b48e-787fea5958c7\"]",
-                                     "args": [false]
-                                 }
-         }
-              sock.send(JSON.stringify(req));
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
+  obs.on('Identified', () => {
+   
+        obs.call('SetSceneItemEnabled', {
+          sceneName: 'Main',
+          sceneItemId: 3,
+          sceneItemEnabled: true 
+        });
 
-
-
-
-  //dravci on
-                             var req = {
-                     "jsonrpc": "2.0",
-                     "id": 10,
-                     "method": "setVisibility",
-                     "params": {
-                                     "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"cc5c1a40-7761-49f7-b5f7-a2f24d73eff6\",\"vlc_source_4f468466-fa9c-4d48-bf98-869e7fb5c56c\"]",
-                                     "args": [true]
-                                 }
-         }
-              sock.send(JSON.stringify(req));
-
-
-//dravci on
-                             var req = {
-                     "jsonrpc": "2.0",
-                     "id": 10,
-                     "method": "setVisibility",
-                     "params": {
-                                     "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"cc5c1a40-7761-49f7-b5f7-a2f24d73eff6\",\"vlc_source_4f468466-fa9c-4d48-bf98-869e7fb5c56c\"]",
-                                     "args": [true]
-                                 }
-         }
-              sock.send(JSON.stringify(req));
-
-
-
-
-//goat off
-var req = {
-  "jsonrpc": "2.0",
-  "id": 10,
-  "method": "setVisibility",
-  "params": {
-                  "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"4cdb9f11-d7ee-4f04-8f3b-4bdd7f841d81\",\"vlc_source_c948cad3-cd7c-42dc-b554-5d472b1ac522\"]",
-                  "args": [false]
-              }
-}
-sock.send(JSON.stringify(req));
-
-
-
-          };
-
- sock.onmessage = function(e) {
-              console.log('message', e.data);
-              sock.close();
-          };
-
- sock.onclose = function() {
-              console.log('close');
-          };
-
-}
+        obs.call('SetSceneItemEnabled', {  
+          sceneName: 'Main',
+          sceneItemId: 2,
+          sceneItemEnabled: false 
+        });   
+        
+        obs.call('SetSceneItemEnabled', {  
+          sceneName: 'Main',
+          sceneItemId: 4,
+          sceneItemEnabled: false 
+        }).then(() => {
+          obs.disconnect();
+         });
+      }
+  )}
 
  //ovce on
 
 function sheepcam () {
-const SockJS = require('sockjs-client');
-var sock = SockJS('http://192.168.1.60:59650/api');
- sock.onopen = function() {
-              console.log('open');
-                    var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
-                          sock.send(req);
-//ovce on
-               var req = {
-                     "jsonrpc": "2.0",
-                     "id": 10,
-                     "method": "setVisibility",
-                     "params": {
-                                     "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"d73bb435-0675-4754-93f4-e32414e85657\",\"vlc_source_37f2c3f5-d5d1-4c0b-b48e-787fea5958c7\"]",
-                                     "args": [true]
-                                 }
-         }
-              sock.send(JSON.stringify(req));
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
+  obs.on('Identified', () => {
+   
+        obs.call('SetSceneItemEnabled', {
+          sceneName: 'Main',
+          sceneItemId: 2,
+          sceneItemEnabled: true 
+        });
 
+        obs.call('SetSceneItemEnabled', {  
+          sceneName: 'Main',
+          sceneItemId: 3,
+          sceneItemEnabled: false 
+        });  
 
-
-
-  //dravci off
-                             var req = {
-                     "jsonrpc": "2.0",
-                     "id": 10,
-                     "method": "setVisibility",
-                     "params": {
-                                     "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"cc5c1a40-7761-49f7-b5f7-a2f24d73eff6\",\"vlc_source_4f468466-fa9c-4d48-bf98-869e7fb5c56c\"]",
-                                     "args": [false]
-                                 }
-         }
-              sock.send(JSON.stringify(req));
-
-
-
-//goat off
-var req = {
-  "jsonrpc": "2.0",
-  "id": 10,
-  "method": "setVisibility",
-  "params": {
-                  "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"4cdb9f11-d7ee-4f04-8f3b-4bdd7f841d81\",\"vlc_source_c948cad3-cd7c-42dc-b554-5d472b1ac522\"]",
-                  "args": [false]
-              }
-}
-sock.send(JSON.stringify(req));
-
-
-
-
-          };
-
- sock.onmessage = function(e) {
-              console.log('message', e.data);
-              sock.close();
-          };
-
- sock.onclose = function() {
-              console.log('close');
-          };
-
-}
+        obs.call('SetSceneItemEnabled', {  
+          sceneName: 'Main',
+          sceneItemId: 4,
+          sceneItemEnabled: false 
+        }).then(() => {
+          obs.disconnect();
+         });
+      }
+  )}
 
 
 
 //goats on
 
 function goatshedcam () {
-  const SockJS = require('sockjs-client');
-  var sock = SockJS('http://192.168.1.60:59650/api');
-   sock.onopen = function() {
-                console.log('open');
-                      var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
-                            sock.send(req);
-  //ovce off
-                 var req = {
-                       "jsonrpc": "2.0",
-                       "id": 10,
-                       "method": "setVisibility",
-                       "params": {
-                                       "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"d73bb435-0675-4754-93f4-e32414e85657\",\"vlc_source_37f2c3f5-d5d1-4c0b-b48e-787fea5958c7\"]",
-                                       "args": [false]
-                                   }
-           }
-                sock.send(JSON.stringify(req));
-  
-  
-  
-  
-    //dravci off
-                               var req = {
-                       "jsonrpc": "2.0",
-                       "id": 10,
-                       "method": "setVisibility",
-                       "params": {
-                                       "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"cc5c1a40-7761-49f7-b5f7-a2f24d73eff6\",\"vlc_source_4f468466-fa9c-4d48-bf98-869e7fb5c56c\"]",
-                                       "args": [false]
-                                   }
-           }
-                sock.send(JSON.stringify(req));
-  
-  
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
+  obs.on('Identified', () => {
+   
+        obs.call('SetSceneItemEnabled', {
+          sceneName: 'Main',
+          sceneItemId: 2,
+          sceneItemEnabled: false 
+        });
 
+        obs.call('SetSceneItemEnabled', {  
+          sceneName: 'Main',
+          sceneItemId: 3,
+          sceneItemEnabled: false 
+        });  
 
-//goat on
-var req = {
-  "jsonrpc": "2.0",
-  "id": 10,
-  "method": "setVisibility",
-  "params": {
-                  "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"4cdb9f11-d7ee-4f04-8f3b-4bdd7f841d81\",\"vlc_source_c948cad3-cd7c-42dc-b554-5d472b1ac522\"]",
-                  "args": [true]
-              }
-}
-sock.send(JSON.stringify(req));
+        obs.call('SetSceneItemEnabled', {  
+          sceneName: 'Main',
+          sceneItemId: 4,
+          sceneItemEnabled: true 
+        }).then(() => {
+          obs.disconnect();
+         });
+      }
+  )}
 
-
-
-
-            };
-
-  
-   sock.onmessage = function(e) {
-                console.log('message', e.data);
-                sock.close();
-            };
-  
-   sock.onclose = function() {
-                console.log('close');
-            };
-  
-  }
 
 
 
@@ -674,110 +545,57 @@ request(options, function (error, response) {
 
 
 function showradar () {
-  const SockJS = require('sockjs-client');
-  const sleep = (milliseconds) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds))
-  }
-  var sock = SockJS('http://192.168.1.60:59650/api');
-   sock.onopen =  function() {
-                console.log('open');
-                      var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
-                            sock.send(req);
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
+  obs.on('Identified', () => {
+     // console.log('Identified, good to go!')
 
-                 var req1 = {
-                       "jsonrpc": "2.0",
-                       "id": 10,
-                       "method": "setVisibility",
-                       "params": {
-                                       "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\", \"6b386ed5-8418-405c-88d8-90d432f6bfa5\", \"browser_source_c4f354c3-dfd0-45ee-b269-5fbb2e60a1ba\"]",
-                                       "args": [true]
-                                   }
-                                   
-           }
-           
-           sock.send(JSON.stringify(req1));
-           sock.onmessage = function(e) {
-            console.log('message deactive', e.data);
-          };
-          sleep(15000).then(() => {
-           var req2 = {
-            "jsonrpc": "2.0",
-            "id": 10,
-            "method": "setVisibility",
-            "params": {
-                            "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\", \"6b386ed5-8418-405c-88d8-90d432f6bfa5\", \"browser_source_c4f354c3-dfd0-45ee-b269-5fbb2e60a1ba\"]",
-                            "args": [false]
-                        }
-                       }
-                     
-                 sock.send(JSON.stringify(req2));
-                sock.onmessage = function(e) {
-                  console.log('message active', e.data);
-                  sock.close();
-                  console.log('close');
-              }
-            })
-            }
-      
-    }       
+     obs.call('SetSceneItemEnabled', {
+      sceneName: 'Main',
+      sceneItemId: 22,
+      sceneItemEnabled: true 
+    });
+          
+          // Wait for 10 seconds
+          setTimeout(() => {
 
+            obs.call('SetSceneItemEnabled', {
+              sceneName: 'Main',
+              sceneItemId: 22,
+              sceneItemEnabled: false 
+            }).then(() => {
+              obs.disconnect();
+             });
 
+          }, 10000); // 10000 milliseconds = 10 seconds       
+      })
+    }
 
 
 
 
 // scene switching
 
+function sceneswitch () {
 
-function switchscene () {
-  const SockJS = require('sockjs-client');
-  console.log(scena);
-  const sleep = (milliseconds) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds))
-  }
-  var sock = SockJS('http://192.168.1.60:59650/api');
-   sock.onopen =  function() {
-                console.log('open');
-                      var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
-                            sock.send(req);
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
+  obs.on('Identified', () => {
+     // console.log('Identified, good to go!')
 
-                 var req1 = {
-                       "jsonrpc": "2.0",
-                       "id": 10,
-                       "method": "makeSceneActive",
-                       "params": {
-                        "resource": "ScenesService",
-                                       "args": [scena]
-                                   }
-                                   
-           }
-           
-           sock.send(JSON.stringify(req1));
-           sock.onmessage = function(e) {
-            console.log('message deactive', e.data);
-          };
-          sleep(30000).then(() => {
-           var req2 = {
-            "jsonrpc": "2.0",
-            "id": 10,
-            "method": "makeSceneActive",
-            "params": {
-              "resource": "ScenesService",
-                            "args": ["scene_33f33347-27af-4aec-86b2-e8650e33003f"]
-                        }
-                       }
-                     
-                 sock.send(JSON.stringify(req2));
-                sock.onmessage = function(e) {
-                  console.log('message active', e.data);
-                  sock.close();
-                  console.log('close');
-              }
-            })
-            }
-      
-    }       
+      obs.call('SetCurrentProgramScene', { sceneName: scena }).then(() => {
+          console.log('Switched to '+scena+' ');
+          
+          // Wait for 10 seconds
+          setTimeout(() => {
+              // Switch back to SheepshedBig
+              obs.call('SetCurrentProgramScene', { sceneName: 'Main' }).then(() => {
+                  console.log('Switched back to Main');
+                  obs.disconnect();
+              }).catch(err => {
+                  console.error('Error switching back to Main:', err);
+                  obs.disconnect();
+              });
+          }, 30000); // 30000 milliseconds = 30 seconds       
+      }); 
+  });
 
-
-
-// scene switching
+}
