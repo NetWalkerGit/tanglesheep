@@ -575,27 +575,38 @@ function showradar () {
 
 // scene switching
 
-function sceneswitch () {
-
-  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
-  obs.on('Identified', () => {
-     // console.log('Identified, good to go!')
-
-      obs.call('SetCurrentProgramScene', { sceneName: scena }).then(() => {
-          console.log('Switched to '+scena+' ');
-          
-          // Wait for 10 seconds
-          setTimeout(() => {
-              // Switch back to SheepshedBig
-              obs.call('SetCurrentProgramScene', { sceneName: 'Main' }).then(() => {
-                  console.log('Switched back to Main');
-                  obs.disconnect();
-              }).catch(err => {
-                  console.error('Error switching back to Main:', err);
-                  obs.disconnect();
-              });
-          }, 30000); // 30000 milliseconds = 30 seconds       
-      }); 
-  });
-
+function sceneswitch() {
+  // Connect to OBS WebSocket
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew)
+      .then(() => {
+          console.log('Connected to OBS WebSocket');
+          // Switch to the desired scene
+          return obs.call('SetCurrentProgramScene', { sceneName: scena });
+      })
+      .then(() => {
+          console.log('Switched to ' + scena);
+          // Set a timeout for 30 seconds before switching back
+          setTimeout(() => switchBackToMain(), 30000); // 30000 milliseconds = 30 seconds
+      })
+      .catch(err => {
+          console.error('Error occurred:', err);
+          // Disconnect in case of an error
+          obs.disconnect();
+      });
 }
+
+function switchBackToMain() {
+  obs.call('SetCurrentProgramScene', { sceneName: 'Main' })
+      .then(() => {
+          console.log('Switched back to Main');
+      })
+      .catch(err => {
+          console.error('Error switching back to Main:', err);
+      })
+      .finally(() => {
+          // Disconnect from OBS WebSocket after switching back or if an error occurs
+          obs.disconnect();
+      });
+}
+
+
