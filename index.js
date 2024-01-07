@@ -5,7 +5,8 @@ const schedule = require('node-schedule');
 const request = require("request");
 const config = require('./config.js');
 const fs = require('fs');
-
+const { default: OBSWebSocket } = require('obs-websocket-js');
+const obs = new OBSWebSocket();
 
 
 const dbcon = mysql.createConnection({
@@ -357,79 +358,27 @@ var app = express();
 
 
 function feedaniamtion () {
-  const SockJS = require('sockjs-client');
-  const sleep = (milliseconds) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds))
-  }
-  var sock = SockJS('http://192.168.1.60:59650/api');
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
+  obs.on('Identified', () => {
+     // console.log('Identified, good to go!')
 
+     obs.call('SetSceneItemEnabled', {
+      sceneName: 'Main',
+      sceneItemId: 23,
+      sceneItemEnabled: true 
+    });
+          
+          // Wait for 10 seconds
+          setTimeout(() => {
 
-  var animgifreq2 = {
-    "jsonrpc": "2.0",
-    "id": 10,
-    "method": "setVisibility",
-    "params": {
-                    "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\", \"7bb7eadc-215a-4678-a9a0-d9d33db1c593\", \"image_source_cdbaf39b-78f9-4637-9165-d35bb1c90211\"]",
-                    "args": [false]
-                }
-               }
+            obs.call('SetSceneItemEnabled', {
+              sceneName: 'Main',
+              sceneItemId: 23,
+              sceneItemEnabled: false 
+            });
 
-  var soundalertreq2 = {
-      "jsonrpc": "2.0",
-       "id": 10,
-       "method": "setVisibility",
-        "params": {
-                   "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"b2893761-fd07-4f3f-a7f6-fd3bdcc974e1\",\"ffmpeg_source_e15cc494-7aa4-4ea0-8bcc-0464acf9ee86\"]",
-                      "args": [true]
-                      }
-                 }
-
-        var animgifreq1 = {
-         "jsonrpc": "2.0",
-         "id": 10,
-         "method": "setVisibility",
-          "params": {
-                      "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\", \"7bb7eadc-215a-4678-a9a0-d9d33db1c593\", \"image_source_cdbaf39b-78f9-4637-9165-d35bb1c90211\"]",
-                       "args": [true]
-                              }            
-                }
-                var soundalertreq1 = {
-                 "jsonrpc": "2.0",
-                 "id": 10,
-                 "method": "setVisibility",
-                 "params": {
-                                 "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"b2893761-fd07-4f3f-a7f6-fd3bdcc974e1\",\"ffmpeg_source_e15cc494-7aa4-4ea0-8bcc-0464acf9ee86\"]",
-                                 "args": [false]
-                             }            
-               }
-
-       
-
-
-
-
-   sock.onopen =  function() {
-                console.log('open');
-                      var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
-                            sock.send(req);
-
-              
-
-           sock.send(JSON.stringify(animgifreq1));
-  /*         sock.send(JSON.stringify(soundalertreq1));
-
-          sleep(1500).then(() => {
-
-                 sock.send(JSON.stringify(soundalertreq2));
-
-              })   */
-        sleep(4500).then(() => {
-
-               sock.send(JSON.stringify(animgifreq2));
-              sock.close();
-         
-            })
-         }
+          }, 4500); // 4500 milliseconds = 4,5 seconds       
+      }); 
     }       
 
 
@@ -441,36 +390,16 @@ function feedaniamtion () {
 
 //activate broekn feeder notice on the stream
 function feedingbroken () {
-  const SockJS = require('sockjs-client');
-  
-  var sock = SockJS('http://192.168.1.60:59650/api');
-
-   var feederbroken = {
-         "jsonrpc": "2.0",
-         "id": 10,
-         "method": "setVisibility",
-          "params": {
-                      "resource": "SceneItem[\"scene_33f33347-27af-4aec-86b2-e8650e33003f\",\"41474212-e9e3-4868-95a6-91a93341d484\",\"text_gdiplus_ae50699e-52c9-4283-814f-7f7458fd669e\"]",
-                       "args": [true]
-                              }            
-                }
-
-
-   sock.onopen =  function() {
-                console.log('open');
-                      var req = '{"jsonrpc": "2.0","id": 8,"method": "auth","params": {"resource": "TcpServerService","args": ["'+config.obscontrol.api+'"]}}';
-                            sock.send(req);
-
-              
-
-           sock.send(JSON.stringify(feederbroken));
-          
-              sock.close();
- 
-         }
-         
-    }   
-
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
+  obs.on('Identified', () => {
+           
+        obs.call('SetSceneItemEnabled', {
+          sceneName: 'Main',
+          sceneItemId: 24,
+          sceneItemEnabled: true 
+        });   
+  });
+}
 //activate broekn feeder notice on the stream
 
 
