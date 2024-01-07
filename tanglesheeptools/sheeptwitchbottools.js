@@ -126,28 +126,28 @@ client.action("tanglesheep", userstate['display-name'] + " Premium Feeding was r
                                 
                                       if ((( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "bigbirdcam")) || ((userstate['badge-info'] != null) && (message === "bigbirdcam"))) {
                                       global.scena = "BirdBigCam";
-                                      switchscene();
+                                      sceneswitch();
                                        client.action("tanglesheep","woooow big birds cam");
 
                                 } 
                                 
                                 if((( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "biggoatcam")) || ((userstate['badge-info'] != null) && (message === "biggoatcam"))) {
                                   global.scena = "GoatBigCam";
-                                  switchscene();
+                                  sceneswitch();
                                   client.action("tanglesheep","woooow big goat cam");
 
                                 } 
                                 
                                 if((( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652')  && (message === "bigsheepcam")) || ((userstate['badge-info'] != null) && (message === "bigsheepcam"))){
                                   global.scena = "SheepBigOutsideCam";
-                                  switchscene();
+                                  sceneswitch();
                                   client.action("tanglesheep","woooow big sheep outside cam");
 
                                 } 
                                 
                                 if((( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "bigsheepshed")) || ((userstate['badge-info'] != null) && (message === "bigsheepshed"))) {
                                    global.scena = "SheepshedBig";
-                                   switchscene();
+                                   sceneswitch();
                                   client.action("tanglesheep","woooow big sheep shed cam");
                                  } 
                                  
