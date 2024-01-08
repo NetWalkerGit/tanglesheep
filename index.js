@@ -358,30 +358,35 @@ var app = express();
 
 
 function feedaniamtion () {
-  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
-  obs.on('Identified', () => {
-     // console.log('Identified, good to go!')
-
-     obs.call('SetSceneItemEnabled', {
-      sceneName: 'Main',
-      sceneItemId: 23,
-      sceneItemEnabled: true 
-    });
-          
-          // Wait for 10 seconds
-          setTimeout(() => {
-
-            obs.call('SetSceneItemEnabled', {
+  // Connect to OBS WebSocket
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew)
+      .then(() => {
+        //  console.log('Connected to OBS WebSocket, Identified');
+          // Enable the scene item
+          return obs.call('SetSceneItemEnabled', {
               sceneName: 'Main',
               sceneItemId: 23,
-              sceneItemEnabled: false 
-            }).then(() => {
-              obs.disconnect();
-             });
-
-          }, 4500); // 4500 milliseconds = 4,5 seconds       
+              sceneItemEnabled: true
+          });
       })
-    }
+      .then(() => {
+          console.log('Scene item enabled');
+          // Wait for 4.5 seconds before disabling the scene item
+          return new Promise(resolve => setTimeout(resolve, 4500)); // 4500 milliseconds = 4.5 seconds
+      })
+      .then(() => {
+          // Disable the scene item
+          return obs.call('SetSceneItemEnabled', {
+              sceneName: 'Main',
+              sceneItemId: 23,
+              sceneItemEnabled: false
+          });
+      })
+      .catch(err => {
+          console.error('Error occurred:', err);
+         
+      });
+}
 
 
 
@@ -399,8 +404,7 @@ function feedingbroken () {
           sceneName: 'Main',
           sceneItemId: 24,
           sceneItemEnabled: true 
-        }).then(() => {
-          obs.disconnect();
+        
          });
       }
   )}
