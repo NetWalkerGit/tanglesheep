@@ -608,7 +608,10 @@ function sceneswitch() {
 }
 
 function switchBackToMain() {
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew)
+  .then(() => {
   obs.call('SetCurrentProgramScene', { sceneName: 'Main' })
+    })
       .then(() => {
           console.log('Switched back to Main');
       })
