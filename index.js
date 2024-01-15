@@ -370,17 +370,20 @@ function feedaniamtion () {
           });
       })
       .then(() => {
-          console.log('Scene item enabled');
+        //  console.log('Scene item enabled');
           // Wait for 4.5 seconds before disabling the scene item
           return new Promise(resolve => setTimeout(resolve, 4500)); // 4500 milliseconds = 4.5 seconds
       })
       .then(() => {
           // Disable the scene item
+          obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew)
+          .then(() => {
           return obs.call('SetSceneItemEnabled', {
               sceneName: 'Main',
               sceneItemId: 23,
               sceneItemEnabled: false
-          });
+            });
+          })
       })
       .catch(err => {
           console.error('Error occurred:', err);
