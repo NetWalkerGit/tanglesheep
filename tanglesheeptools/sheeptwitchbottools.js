@@ -563,6 +563,7 @@ async function showradar() {
       // Wait for 10 seconds before disabling the scene item
       await wait(10000); // 10000 milliseconds = 10 seconds
 
+     await obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
       // Disable the scene item
       await obs.call('SetSceneItemEnabled', {
           sceneName: 'Main',
@@ -598,7 +599,8 @@ async function sceneswitch() {
 
       // Wait for 30 seconds
       await new Promise(resolve => setTimeout(resolve, 30000));
-
+      
+     await obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
       // Switch back to the Main scene
       await obs.call('SetCurrentProgramScene', { sceneName: 'Main' });
       console.log('Switched back to Main');

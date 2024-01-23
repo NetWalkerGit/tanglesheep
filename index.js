@@ -357,38 +357,34 @@ var app = express();
 // feeding gif animation and sound
 
 
-function feedaniamtion () {
-  // Connect to OBS WebSocket
-  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew)
-      .then(() => {
-        //  console.log('Connected to OBS WebSocket, Identified');
-          // Enable the scene item
-          return obs.call('SetSceneItemEnabled', {
-              sceneName: 'Main',
-              sceneItemId: 23,
-              sceneItemEnabled: true
-          });
-      })
-      .then(() => {
-        //  console.log('Scene item enabled');
-          // Wait for 4.5 seconds before disabling the scene item
-          return new Promise(resolve => setTimeout(resolve, 4500)); // 4500 milliseconds = 4.5 seconds
-      })
-      .then(() => {
-          // Disable the scene item
-          obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew)
-          .then(() => {
-          return obs.call('SetSceneItemEnabled', {
-              sceneName: 'Main',
-              sceneItemId: 23,
-              sceneItemEnabled: false
-            });
-          })
-      })
-      .catch(err => {
-          console.error('Error occurred:', err);
-         
+async function feedaniamtion() {
+  try {
+      // Connect to OBS WebSocket
+      await obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
+      // console.log('Connected to OBS WebSocket, Identified');
+
+      // Enable the scene item
+      await obs.call('SetSceneItemEnabled', {
+          sceneName: 'Main',
+          sceneItemId: 23,
+          sceneItemEnabled: true
       });
+      // console.log('Scene item enabled');
+
+      // Wait for 4.5 seconds before disabling the scene item
+      await new Promise(resolve => setTimeout(resolve, 4500)); // 4500 milliseconds = 4.5 seconds
+
+      // Disable the scene item
+      await obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
+      await obs.call('SetSceneItemEnabled', {
+          sceneName: 'Main',
+          sceneItemId: 23,
+          sceneItemEnabled: false
+      });
+
+  } catch (err) {
+      console.error('Error occurred:', err);
+  }
 }
 
 
