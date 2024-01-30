@@ -254,99 +254,90 @@ client.action("tanglesheep", userstate['display-name'] + " Premium Feeding was r
 //camera handling
 
 //dravci on
-function birdcam() {
-  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
+function birdcam () {
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
   obs.on('Identified', () => {
-    Promise.all([
-      obs.call('SetSceneItemEnabled', {
-        sceneName: 'Main',
-        sceneItemId: 36,
-        sceneItemEnabled: true
-      }),
-      obs.call('SetSceneItemEnabled', {
-        sceneName: 'Main',
-        sceneItemId: 37,
-        sceneItemEnabled: false
-      }),
-      obs.call('SetSceneItemEnabled', {
-        sceneName: 'Main',
-        sceneItemId: 38,
-        sceneItemEnabled: false
-      })
-    ]).then(() => {
-      console.log('birdcam switch');
-      // obs.disconnect(); (if you need to disconnect after calls)
-    }).catch((error) => {
-      // Handle error if any of the calls fail
-      console.error('Error:', error);
-    });
-  });
-}
+   
+        obs.call('SetSceneItemEnabled', {
+          sceneName: 'Main',
+          sceneItemId: 36,
+          sceneItemEnabled: true 
+        });
 
+        obs.call('SetSceneItemEnabled', {  
+          sceneName: 'Main',
+          sceneItemId: 37,
+          sceneItemEnabled: false 
+        });   
+        
+        obs.call('SetSceneItemEnabled', {  
+          sceneName: 'Main',
+          sceneItemId: 38,
+          sceneItemEnabled: false 
+        }).then(() => {
+        //  obs.disconnect();
+         });
+      }
+  )}
 
  //ovce on
 
- function sheepcam() {
-  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
+function sheepcam () {
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
   obs.on('Identified', () => {
-    Promise.all([
-      obs.call('SetSceneItemEnabled', {
-        sceneName: 'Main',
-        sceneItemId: 37,
-        sceneItemEnabled: true
-      }),
-      obs.call('SetSceneItemEnabled', {
-        sceneName: 'Main',
-        sceneItemId: 36,
-        sceneItemEnabled: false
-      }),
-      obs.call('SetSceneItemEnabled', {
-        sceneName: 'Main',
-        sceneItemId: 38,
-        sceneItemEnabled: false
-      })
-    ]).then(() => {
-      console.log('sheepcam  switch');
-      // obs.disconnect(); (if you need to disconnect after calls)
-    }).catch((error) => {
-      // Handle error if any of the calls fail
-      console.error('Error:', error);
-    });
-  });
-}
+   
+        obs.call('SetSceneItemEnabled', {
+          sceneName: 'Main',
+          sceneItemId: 37,
+          sceneItemEnabled: true 
+        });
+
+        obs.call('SetSceneItemEnabled', {  
+          sceneName: 'Main',
+          sceneItemId: 36,
+          sceneItemEnabled: false 
+        });  
+
+        obs.call('SetSceneItemEnabled', {  
+          sceneName: 'Main',
+          sceneItemId: 38,
+          sceneItemEnabled: false 
+        }).then(() => {
+       //   obs.disconnect();
+         });
+      }
+  )}
 
 
 
 //goats on
 
-function goatshedcam() {
-  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
+function goatshedcam () {
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
   obs.on('Identified', () => {
-    Promise.all([
-      obs.call('SetSceneItemEnabled', {
-        sceneName: 'Main',
-        sceneItemId: 36,
-        sceneItemEnabled: false
-      }),
-      obs.call('SetSceneItemEnabled', {
-        sceneName: 'Main',
-        sceneItemId: 37,
-        sceneItemEnabled: false
-      }),
-      obs.call('SetSceneItemEnabled', {
-        sceneName: 'Main',
-        sceneItemId: 38,
-        sceneItemEnabled: true
-      })
-    ]).then(() => {
-      console.log('goatcam switch');
-      // obs.disconnect(); (if you need to disconnect after calls)
-    }).catch((error) => {
-      // Handle error if any of the calls fail
-      console.error('Error:', error);
-    });
-  });
-}
+   
+        obs.call('SetSceneItemEnabled', {
+          sceneName: 'Main',
+          sceneItemId: 36,
+          sceneItemEnabled: false 
+        });
+
+        obs.call('SetSceneItemEnabled', {  
+          sceneName: 'Main',
+          sceneItemId: 37,
+          sceneItemEnabled: false 
+        });  
+
+        obs.call('SetSceneItemEnabled', {  
+          sceneName: 'Main',
+          sceneItemId: 38,
+          sceneItemEnabled: true 
+        }).then(() => {
+//obs.disconnect();
+         });
+      }
+  )}
+
 
 
 
