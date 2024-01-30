@@ -96,7 +96,7 @@ client.action("tanglesheep", userstate['display-name'] + " Premium Feeding was r
   
                                   } 
                                   
-                                  if( (message === "!goatshedcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
+                                  if( (message === "!goatcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
                                      goatshedcam();
                                    client.action("tanglesheep", userstate['display-name'] + " switching to goat shed cam ");
                                
@@ -260,22 +260,22 @@ function birdcam () {
    
         obs.call('SetSceneItemEnabled', {
           sceneName: 'Main',
-          sceneItemId: 3,
+          sceneItemId: 36,
           sceneItemEnabled: true 
         });
 
         obs.call('SetSceneItemEnabled', {  
           sceneName: 'Main',
-          sceneItemId: 2,
+          sceneItemId: 37,
           sceneItemEnabled: false 
         });   
         
         obs.call('SetSceneItemEnabled', {  
           sceneName: 'Main',
-          sceneItemId: 4,
+          sceneItemId: 38,
           sceneItemEnabled: false 
         }).then(() => {
-          obs.disconnect();
+        //  obs.disconnect();
          });
       }
   )}
@@ -288,22 +288,22 @@ function sheepcam () {
    
         obs.call('SetSceneItemEnabled', {
           sceneName: 'Main',
-          sceneItemId: 2,
+          sceneItemId: 37,
           sceneItemEnabled: true 
         });
 
         obs.call('SetSceneItemEnabled', {  
           sceneName: 'Main',
-          sceneItemId: 3,
+          sceneItemId: 36,
           sceneItemEnabled: false 
         });  
 
         obs.call('SetSceneItemEnabled', {  
           sceneName: 'Main',
-          sceneItemId: 4,
+          sceneItemId: 38,
           sceneItemEnabled: false 
         }).then(() => {
-          obs.disconnect();
+       //   obs.disconnect();
          });
       }
   )}
@@ -318,22 +318,22 @@ function goatshedcam () {
    
         obs.call('SetSceneItemEnabled', {
           sceneName: 'Main',
-          sceneItemId: 2,
+          sceneItemId: 36,
           sceneItemEnabled: false 
         });
 
         obs.call('SetSceneItemEnabled', {  
           sceneName: 'Main',
-          sceneItemId: 3,
+          sceneItemId: 37,
           sceneItemEnabled: false 
         });  
 
         obs.call('SetSceneItemEnabled', {  
           sceneName: 'Main',
-          sceneItemId: 4,
+          sceneItemId: 38,
           sceneItemEnabled: true 
         }).then(() => {
-          obs.disconnect();
+//obs.disconnect();
          });
       }
   )}
