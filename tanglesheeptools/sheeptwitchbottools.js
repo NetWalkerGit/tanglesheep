@@ -254,90 +254,99 @@ client.action("tanglesheep", userstate['display-name'] + " Premium Feeding was r
 //camera handling
 
 //dravci on
-function birdcam () {
-  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
+function birdcam() {
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
   obs.on('Identified', () => {
-   
-        obs.call('SetSceneItemEnabled', {
-          sceneName: 'Main',
-          sceneItemId: 36,
-          sceneItemEnabled: true 
-        });
+    Promise.all([
+      obs.call('SetSceneItemEnabled', {
+        sceneName: 'Main',
+        sceneItemId: 36,
+        sceneItemEnabled: true
+      }),
+      obs.call('SetSceneItemEnabled', {
+        sceneName: 'Main',
+        sceneItemId: 37,
+        sceneItemEnabled: false
+      }),
+      obs.call('SetSceneItemEnabled', {
+        sceneName: 'Main',
+        sceneItemId: 38,
+        sceneItemEnabled: false
+      })
+    ]).then(() => {
+      console.log('birdcam switch');
+      // obs.disconnect(); (if you need to disconnect after calls)
+    }).catch((error) => {
+      // Handle error if any of the calls fail
+      console.error('Error:', error);
+    });
+  });
+}
 
-        obs.call('SetSceneItemEnabled', {  
-          sceneName: 'Main',
-          sceneItemId: 37,
-          sceneItemEnabled: false 
-        });   
-        
-        obs.call('SetSceneItemEnabled', {  
-          sceneName: 'Main',
-          sceneItemId: 38,
-          sceneItemEnabled: false 
-        }).then(() => {
-        //  obs.disconnect();
-         });
-      }
-  )}
 
  //ovce on
 
-function sheepcam () {
-  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
+ function sheepcam() {
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
   obs.on('Identified', () => {
-   
-        obs.call('SetSceneItemEnabled', {
-          sceneName: 'Main',
-          sceneItemId: 37,
-          sceneItemEnabled: true 
-        });
-
-        obs.call('SetSceneItemEnabled', {  
-          sceneName: 'Main',
-          sceneItemId: 36,
-          sceneItemEnabled: false 
-        });  
-
-        obs.call('SetSceneItemEnabled', {  
-          sceneName: 'Main',
-          sceneItemId: 38,
-          sceneItemEnabled: false 
-        }).then(() => {
-       //   obs.disconnect();
-         });
-      }
-  )}
+    Promise.all([
+      obs.call('SetSceneItemEnabled', {
+        sceneName: 'Main',
+        sceneItemId: 37,
+        sceneItemEnabled: true
+      }),
+      obs.call('SetSceneItemEnabled', {
+        sceneName: 'Main',
+        sceneItemId: 36,
+        sceneItemEnabled: false
+      }),
+      obs.call('SetSceneItemEnabled', {
+        sceneName: 'Main',
+        sceneItemId: 38,
+        sceneItemEnabled: false
+      })
+    ]).then(() => {
+      console.log('sheepcam  switch');
+      // obs.disconnect(); (if you need to disconnect after calls)
+    }).catch((error) => {
+      // Handle error if any of the calls fail
+      console.error('Error:', error);
+    });
+  });
+}
 
 
 
 //goats on
 
-function goatshedcam () {
-  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
+function goatshedcam() {
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
   obs.on('Identified', () => {
-   
-        obs.call('SetSceneItemEnabled', {
-          sceneName: 'Main',
-          sceneItemId: 36,
-          sceneItemEnabled: false 
-        });
-
-        obs.call('SetSceneItemEnabled', {  
-          sceneName: 'Main',
-          sceneItemId: 37,
-          sceneItemEnabled: false 
-        });  
-
-        obs.call('SetSceneItemEnabled', {  
-          sceneName: 'Main',
-          sceneItemId: 38,
-          sceneItemEnabled: true 
-        }).then(() => {
-//obs.disconnect();
-         });
-      }
-  )}
-
+    Promise.all([
+      obs.call('SetSceneItemEnabled', {
+        sceneName: 'Main',
+        sceneItemId: 36,
+        sceneItemEnabled: false
+      }),
+      obs.call('SetSceneItemEnabled', {
+        sceneName: 'Main',
+        sceneItemId: 37,
+        sceneItemEnabled: false
+      }),
+      obs.call('SetSceneItemEnabled', {
+        sceneName: 'Main',
+        sceneItemId: 38,
+        sceneItemEnabled: true
+      })
+    ]).then(() => {
+      console.log('goatcam switch');
+      // obs.disconnect(); (if you need to disconnect after calls)
+    }).catch((error) => {
+      // Handle error if any of the calls fail
+      console.error('Error:', error);
+    });
+  });
+}
 
 
 
@@ -348,11 +357,8 @@ function goatshedcam () {
 //camera entry
 function camentry () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@192.168.1.12/ISAPI/PTZCtrl/channels/1/presets/1/goto",
-  headers:
-   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
-     'cache-control': 'no-cache' } }; request(options, function (error) {
-
+  url: "http://"+config.camera.pass+"@192.168.1.12/ISAPI/PTZCtrl/channels/1/presets/1/goto"
+   }; request(options, function (error) {
   console.log(error);
 });
 }
@@ -360,10 +366,8 @@ var request = require("request"); var options = { method: 'PUT',
 //camera garden
 function camgarden () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@192.168.1.12/ISAPI/PTZCtrl/channels/1/presets/2/goto",
-  headers:
-   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
-     'cache-control': 'no-cache' } }; request(options, function (error) {
+  url: "http://"+config.camera.pass+"@192.168.1.12/ISAPI/PTZCtrl/channels/1/presets/2/goto"
+   }; request(options, function (error) {
 
   console.log(error);
 });
@@ -372,10 +376,8 @@ var request = require("request"); var options = { method: 'PUT',
 //camera aroundshed
 function camfargarden () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@192.168.1.12/ISAPI/PTZCtrl/channels/1/presets/3/goto",
-  headers:
-   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
-     'cache-control': 'no-cache' } }; request(options, function (error) {
+  url: "http://"+config.camera.pass+"@192.168.1.12/ISAPI/PTZCtrl/channels/1/presets/3/goto"
+  }; request(options, function (error) {
 
   console.log(error);
 });
@@ -384,10 +386,8 @@ var request = require("request"); var options = { method: 'PUT',
 //camera fargarden
 function camaroundshed () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@192.168.1.12/ISAPI/PTZCtrl/channels/1/presets/4/goto",
-  headers:
-   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
-     'cache-control': 'no-cache' } }; request(options, function (error) {
+  url: "http://"+config.camera.pass+"@192.168.1.12/ISAPI/PTZCtrl/channels/1/presets/4/goto"
+   }; request(options, function (error) {
 
   console.log(error);
 });
@@ -397,10 +397,8 @@ var request = require("request"); var options = { method: 'PUT',
 //camera sheep Patrol
 function camsheeppatrol() {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@192.168.1.12/ISAPI/PTZCtrl/channels/1/presets/45/goto",
-  headers:
-   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
-     'cache-control': 'no-cache' } }; request(options, function (error) {
+  url: "http://"+config.camera.pass+"@192.168.1.12/ISAPI/PTZCtrl/channels/1/presets/45/goto"
+   }; request(options, function (error) {
 
   console.log(error);
 });
@@ -411,10 +409,8 @@ var request = require("request"); var options = { method: 'PUT',
 //camera cambirdmain Preset 1
 function cambirdmain () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/1/goto",
-  headers:
-   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
-     'cache-control': 'no-cache' } }; request(options, function (error) {
+  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/1/goto"
+  }; request(options, function (error) {
 
   console.log(error);
 });
@@ -424,10 +420,8 @@ var request = require("request"); var options = { method: 'PUT',
 //camera cambirdrest Preset 2
 function cambirdrest () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/2/goto",
-  headers:
-   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
-     'cache-control': 'no-cache' } }; request(options, function (error) {
+  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/2/goto"
+  }; request(options, function (error) {
 
   console.log(error);
 });
@@ -439,10 +433,8 @@ var request = require("request"); var options = { method: 'PUT',
 //camera cambirdfeeding Preset 3
 function cambirdfeeding () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/3/goto",
-  headers:
-   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
-     'cache-control': 'no-cache' } }; request(options, function (error) {
+  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/3/goto"
+   }; request(options, function (error) {
 
   console.log(error);
 });
@@ -452,10 +444,8 @@ var request = require("request"); var options = { method: 'PUT',
 //camera cambirdfeeding2 Preset 4
 function cambirdfeeding2 () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/4/goto",
-  headers:
-   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
-     'cache-control': 'no-cache' } }; request(options, function (error) {
+  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/4/goto"
+  }; request(options, function (error) {
 
   console.log(error);
 });
@@ -465,10 +455,8 @@ var request = require("request"); var options = { method: 'PUT',
 //camera cambird2main Preset 5
 function cambird2main () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/5/goto",
-  headers:
-   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
-     'cache-control': 'no-cache' } }; request(options, function (error) {
+  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/5/goto"
+   }; request(options, function (error) {
 
   console.log(error);
 });
@@ -477,10 +465,8 @@ var request = require("request"); var options = { method: 'PUT',
 //camera cambird2feeding Preset 6
 function cambird2feeding () {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/6/goto",
-  headers:
-   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
-     'cache-control': 'no-cache' } }; request(options, function (error) {
+  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/6/goto"
+   }; request(options, function (error) {
 
   console.log(error);
 });
@@ -489,10 +475,8 @@ var request = require("request"); var options = { method: 'PUT',
 //camera cambird2feeding Preset 7
 function cambird2rest() {
 var request = require("request"); var options = { method: 'PUT',
-  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/7/goto",
-  headers:
-   { 'Postman-Token': '7d077821-b40b-4268-a8d7-110f504600c7',
-     'cache-control': 'no-cache' } }; request(options, function (error) {
+  url: "http://"+config.camera.pass+"@192.168.1.14/ISAPI/PTZCtrl/channels/1/presets/7/goto"
+  }; request(options, function (error) {
 
   console.log(error);
 });
