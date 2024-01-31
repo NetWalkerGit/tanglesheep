@@ -6,7 +6,6 @@ const request = require("request");
 const config = require('./config.js');
 const fs = require('fs');
 const { default: OBSWebSocket } = require('obs-websocket-js');
-const obs = new OBSWebSocket();
 const axios = require('axios');
 
 
@@ -358,33 +357,44 @@ var app = express();
 // feeding gif animation and sound
 
 
-async function feedaniamtion() {
+async function feedanimation() {
+  const obs = new OBSWebSocket();
+
   try {
-      // Connect to OBS WebSocket
-      await obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
-      // console.log('Connected to OBS WebSocket, Identified');
+    // Connect to OBS WebSocket
+    await obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
+   // console.log('Connected to OBS WebSocket');
 
-      // Enable the scene item
-      await obs.call('SetSceneItemEnabled', {
-          sceneName: 'Main',
-          sceneItemId: 23,
-          sceneItemEnabled: true
-      });
-      // console.log('Scene item enabled');
+    // Enable the scene item
+    await obs.call('SetSceneItemEnabled', {
+      sceneName: 'Main',
+      sceneItemId: 23,
+      sceneItemEnabled: true
+    });
+   // console.log('Scene item enabled');
 
-      // Wait for 4.5 seconds before disabling the scene item
-      await new Promise(resolve => setTimeout(resolve, 4500)); // 4500 milliseconds = 4.5 seconds
+    // Wait for 4.5 seconds before disabling the scene item
+    await new Promise(resolve => setTimeout(resolve, 4500)); // 4500 milliseconds = 4.5 seconds
+   // console.log('Waited for 4.5 seconds');
 
-      // Disable the scene item
-      await obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
-      await obs.call('SetSceneItemEnabled', {
-          sceneName: 'Main',
-          sceneItemId: 23,
-          sceneItemEnabled: false
-      });
+    // Disable the scene item
+    await obs.call('SetSceneItemEnabled', {
+      sceneName: 'Main',
+      sceneItemId: 23,
+      sceneItemEnabled: false
+    });
+   // console.log('Scene item disabled');
 
   } catch (err) {
-      console.error('Error occurred:', err);
+    console.error('Error occurred:', err);
+  } finally {
+    // Disconnect from OBS WebSocket
+    try {
+      obs.disconnect();
+   //   console.log('Disconnected from OBS WebSocket');
+    } catch (disconnectError) {
+      console.error('Error while disconnecting:', disconnectError);
+    }
   }
 }
 
@@ -396,18 +406,31 @@ async function feedaniamtion() {
 
 
 //activate broekn feeder notice on the stream
-function feedingbroken () {
-  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
-  obs.on('Identified', () => {
-           
-        obs.call('SetSceneItemEnabled', {
-          sceneName: 'Main',
-          sceneItemId: 24,
-          sceneItemEnabled: true 
-        
-         });
-      }
-  )}
+async function feedingbroken() {
+  const obs = new OBSWebSocket();
+
+  try {
+    // Connect to OBS WebSocket
+    await obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
+    console.log('Connected to OBS WebSocket for feedingbroken');
+
+    // Enable the scene item
+    await obs.call('SetSceneItemEnabled', {
+      sceneName: 'Main',
+      sceneItemId: 24,
+      sceneItemEnabled: true
+    });
+   // console.log('Scene item enabled for feedingbroken');
+
+  } catch (error) {
+    console.error('Error occurred in feedingbroken:', error);
+  } finally {
+    // Disconnect from OBS WebSocket
+    obs.disconnect();
+  //  console.log('Disconnected from OBS WebSocket for feedingbroken');
+  }
+}
+
 //activate broekn feeder notice on the stream
 
 
@@ -441,7 +464,7 @@ async function feeding() {
       });
 
       // Assuming feedanimation is an async function
-      await feedaniamtion(); // Corrected syntax
+      await feedanimation(); // Corrected syntax
   } catch (error) {
       // Consolidate error handling
          HookAlert.send("Connection from server to ESP32chip broken!!!");

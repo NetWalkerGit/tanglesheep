@@ -4,7 +4,7 @@ const fs = require('fs');
 const config = require('./configtools.js');
 const { Configuration, OpenAIApi } = require("openai");
 const { default: OBSWebSocket } = require('obs-websocket-js');
-const obs = new OBSWebSocket();
+
 
 
 // Define configuration options
@@ -254,93 +254,152 @@ client.action("tanglesheep", userstate['display-name'] + " Premium Feeding was r
 //camera handling
 
 //dravci on
-function birdcam () {
-  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
-  obs.on('Identified', () => {
-   
-        obs.call('SetSceneItemEnabled', {
+function birdcam() {
+  const obs = new OBSWebSocket();
+
+  // Connect to OBS WebSocket
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew).then(() => {
+    console.log("Successfully connected to OBS WebSocket");
+
+    // Batch of commands to be executed after successful connection
+    return obs.callBatch([
+      {
+        requestType: 'SetSceneItemEnabled',
+        requestData: {
           sceneName: 'Main',
           sceneItemId: 36,
           sceneItemEnabled: true 
-        });
-
-        obs.call('SetSceneItemEnabled', {  
+        }
+      },
+      {
+        requestType: 'SetSceneItemEnabled',
+        requestData: {
           sceneName: 'Main',
           sceneItemId: 37,
           sceneItemEnabled: false 
-        });   
-        
-        obs.call('SetSceneItemEnabled', {  
+        }
+      },
+      {
+        requestType: 'SetSceneItemEnabled',
+        requestData: {
           sceneName: 'Main',
           sceneItemId: 38,
           sceneItemEnabled: false 
-        }).then(() => {
-        //  obs.disconnect();
-         });
+        } 
       }
-  )}
+    ]);
+  }).then(() => {
+    console.log("Commands executed successfully");
+    // Disconnect after executing commands
+    obs.disconnect();
+  }).catch((error) => {
+    console.error("Error occurred:", error);
+    // Disconnect in case of error
+    obs.disconnect();
+  });
+}
+
+
+
+
+
+
+
+
+
 
  //ovce on
 
-function sheepcam () {
-  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
-  obs.on('Identified', () => {
-   
-        obs.call('SetSceneItemEnabled', {
+ function sheepcam() {
+  const obs = new OBSWebSocket();
+
+  // Connect to OBS WebSocket
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew).then(() => {
+    console.log("Successfully connected to OBS WebSocket for sheepcam");
+
+    // Batch of commands for sheepcam
+    return obs.callBatch([
+      {
+        requestType: 'SetSceneItemEnabled',
+        requestData: {
           sceneName: 'Main',
           sceneItemId: 37,
           sceneItemEnabled: true 
-        });
-
-        obs.call('SetSceneItemEnabled', {  
+        }
+      },
+      {
+        requestType: 'SetSceneItemEnabled',
+        requestData: {
           sceneName: 'Main',
           sceneItemId: 36,
           sceneItemEnabled: false 
-        });  
-
-        obs.call('SetSceneItemEnabled', {  
+        }
+      },
+      {
+        requestType: 'SetSceneItemEnabled',
+        requestData: {
           sceneName: 'Main',
           sceneItemId: 38,
           sceneItemEnabled: false 
-        }).then(() => {
-       //   obs.disconnect();
-         });
+        } 
       }
-  )}
+    ]);
+  }).then(() => {
+    console.log("Commands executed successfully for sheepcam");
+    obs.disconnect();
+  }).catch((error) => {
+    console.error("Error occurred in sheepcam:", error);
+    obs.disconnect();
+  });
+}
 
+  
 
 
 //goats on
 
-function goatshedcam () {
-  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
-  obs.on('Identified', () => {
-   
-        obs.call('SetSceneItemEnabled', {
+function goatshedcam() {
+  const obs = new OBSWebSocket();
+
+  // Connect to OBS WebSocket
+  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew).then(() => {
+    console.log("Successfully connected to OBS WebSocket for goatshedcam");
+
+    // Batch of commands for goatshedcam
+    return obs.callBatch([
+      {
+        requestType: 'SetSceneItemEnabled',
+        requestData: {
           sceneName: 'Main',
           sceneItemId: 36,
           sceneItemEnabled: false 
-        });
-
-        obs.call('SetSceneItemEnabled', {  
+        }
+      },
+      {
+        requestType: 'SetSceneItemEnabled',
+        requestData: {
           sceneName: 'Main',
           sceneItemId: 37,
           sceneItemEnabled: false 
-        });  
-
-        obs.call('SetSceneItemEnabled', {  
+        }
+      },
+      {
+        requestType: 'SetSceneItemEnabled',
+        requestData: {
           sceneName: 'Main',
           sceneItemId: 38,
           sceneItemEnabled: true 
-        }).then(() => {
-//obs.disconnect();
-         });
+        } 
       }
-  )}
-
-
-
-
+    ]);
+  }).then(() => {
+    console.log("Commands executed successfully for goatshedcam");
+    obs.disconnect();
+  }).catch((error) => {
+    console.error("Error occurred in goatshedcam:", error);
+    obs.disconnect();
+  });
+}
 
 
 
@@ -517,15 +576,16 @@ request(options, function (error, response) {
 
 
 // show radar widget
-function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 async function showradar() {
+  const obs = new OBSWebSocket();
+
+  // Helper function to wait for a specified amount of time
+  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
   try {
       // Connect to OBS WebSocket
       await obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
-    //  console.log('Connected to OBS WebSocket');
+      console.log('Connected to OBS WebSocket');
 
       // Enable the scene item
       await obs.call('SetSceneItemEnabled', {
@@ -538,7 +598,6 @@ async function showradar() {
       // Wait for 10 seconds before disabling the scene item
       await wait(10000); // 10000 milliseconds = 10 seconds
 
-     await obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
       // Disable the scene item
       await obs.call('SetSceneItemEnabled', {
           sceneName: 'Main',
@@ -547,15 +606,15 @@ async function showradar() {
       });
       console.log('Scene item disabled');
 
-      // Disconnect from OBS WebSocket
-      
-      console.log('Disconnected from OBS WebSocket');
   } catch (err) {
       console.error('Error occurred:', err);
-      // Ensure disconnection in case of error
-     
+  } finally {
+      // Disconnect from OBS WebSocket in both success and error cases
+      obs.disconnect();
+      console.log('Disconnected from OBS WebSocket');
   }
 }
+
 
 
 
@@ -565,6 +624,7 @@ async function showradar() {
 async function sceneswitch() {
   try {
       // Connect to OBS WebSocket
+      const obs = new OBSWebSocket();
       await obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
       console.log('Connected to OBS WebSocket');
 
@@ -579,7 +639,7 @@ async function sceneswitch() {
       // Switch back to the Main scene
       await obs.call('SetCurrentProgramScene', { sceneName: 'Main' });
       console.log('Switched back to Main');
-
+      obs.disconnect();
   } catch (err) {
       console.error('Error occurred:', err);
   } 
