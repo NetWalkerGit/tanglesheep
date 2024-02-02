@@ -1,6 +1,7 @@
 const tmi = require('tmi.js');
 var schedule = require('node-schedule');
 const fs = require('fs');
+const request = require('request');
 const config = require('./configtools.js');
 const { Configuration, OpenAIApi } = require("openai");
 const { default: OBSWebSocket } = require('obs-websocket-js');
@@ -70,182 +71,122 @@ completion.then((result) => {
 //OPENAI chatgpt  
 
 
-
-
-
-client.on ('chat', function(channel, userstate,  message, self) {
-//  console.log(message);
-//   console.log (userstate);
-if( message === "!premiumfeed") {
-  
-client.action("tanglesheep", userstate['display-name'] + " Premium Feeding was removed. :(  ");
-
-} 
-
-  
   // switch cams
-               if( (message === "!birdcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                 birdcam();
-                                   client.action("tanglesheep", userstate['display-name'] + " switching to bird cam ");
-  
-                                  } 
-                                  
-                                  if( (message === "!sheepcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                     sheepcam();
-                                   client.action("tanglesheep", userstate['display-name'] + " switching to sheep cam ");
-  
-                                  } 
-                                  
-                                  if( (message === "!goatcam") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                     goatshedcam();
-                                   client.action("tanglesheep", userstate['display-name'] + " switching to goat shed cam ");
-                               
-                                  } 
-                                  
-                                  if(( userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221') && (message === "switchtosheepcam")) {
-                                    sheepcam();
-                                       client.action("tanglesheep", userstate['display-name'] + " switching to sheep cam ");
-                     
-                                   } 
-                                    if(( userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221') && (message === "switchtobirdcam")) {
-                                      birdcam();
-                                    client.action("tanglesheep", userstate['display-name'] + " switching to bird cam ");
+  client.on('chat', (channel, userstate, message, self) => {
+    // Helper function to check if a user is a subscriber or founder
+    const isSubscriberOrFounder = userstate.badges && (userstate.badges.subscriber || userstate.badges.founder);
 
-                                  } 
-                                    if( userstate['custom-reward-id'] === '65263b98-c85f-4905-b35a-a965eca3cba7') {
-                                   
-                                  client.action("tanglesheep","!8ball Answer " + userstate['display-name'] + " question..  ");
+    // Function to handle camera switch commands directly
+    const switchCameraCommand = (cameraType) => {
+        switchCamera(cameraType);
+        client.action("tanglesheep", `${userstate['display-name']} switching to ${cameraType} cam`);
+    };
 
-                                } 
-                                
-                                if( (message === "!radar") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                  showradar();
-                                  client.action("tanglesheep","do you see any storm?");
+    // Helper function to set the scene and announce camera switch for big camera commands
+    const setSceneAndAnnounce = (scene, announcement) => {
+        global.scena = scene;
+        sceneswitch();
+        client.action("tanglesheep", announcement);
+    };
 
-                                } 
-                                
-                                      if ((( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "bigbirdcam")) || ((userstate['badge-info'] != null) && (message === "bigbirdcam"))) {
-                                      global.scena = "BirdBigCam";
-                                      sceneswitch();
-                                       client.action("tanglesheep","woooow big birds cam");
+    // Mapping for commands that require subscriber or founder status, including camera entry and movement commands
+    const subscriberCommands = {
+        "!sheepentry": () => camentry(),
+        "!sheepgarden": () => camgarden(),
+        "!goat": () => camaroundshep(),
+        "!sheepfargarden": () => camfargarden(),
+        "!sheeppatrol": () => camsheeppatrol(),
+        "!birdmain": () => cambirdmain(),
+        "!birdrest": () => cambirdrest(),
+        "!birdfeeding": () => cambirdfeeding(),
+        "!birdfeeding2": () => cambirdfeeding2(),
+        "!bird2main": () => cambird2main(),
+        "!bird2feeding": () => cambird2feeding(),
+        "!bird2rest": () => cambird2rest(),
+        "switchtosheepcam": () => userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221' && switchCameraCommand('sheep'),
+        "switchtobirdcam": () => userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221' && switchCamera('bird'), // Assuming birdcam is similar to switchCamera
+        // Merge switch camera commands for better organization
+        "!birdcam": () => switchCameraCommand('bird'),
+        "!sheepcam": () => switchCameraCommand('sheep'),
+        "!goatcam": () => switchCameraCommand('goat'),
+        "!radar": () => showRadar(),
+    };
 
-                                } 
-                                
-                                if((( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "biggoatcam")) || ((userstate['badge-info'] != null) && (message === "biggoatcam"))) {
-                                  global.scena = "GoatBigCam";
-                                  sceneswitch();
-                                  client.action("tanglesheep","woooow big goat cam");
+    // Command mapping for custom rewards and big camera commands
+    const customRewardCommands = {
+        "65263b98-c85f-4905-b35a-a965eca3cba7": () => client.action("tanglesheep", `!8ball Answer ${userstate['display-name']}'s question..`),
+        "switchtosheepcam": () => switchCameraCommand('sheep'),
+        "switchtobirdcam": () => switchCamera('bird'), // Assuming birdcam is similar to switchCamera
+        
+    };
 
-                                } 
-                                
-                                if((( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652')  && (message === "bigsheepcam")) || ((userstate['badge-info'] != null) && (message === "bigsheepcam"))){
-                                  global.scena = "SheepBigOutsideCam";
-                                  sceneswitch();
-                                  client.action("tanglesheep","woooow big sheep outside cam");
+    // Handling for big camera commands with custom rewards or badge info
+    const bigCameraCommands = {
+        "bigbirdcam": ["BirdBigCam", "woooow big birds cam"],
+        "biggoatcam": ["GoatBigCam", "woooow big goat cam"],
+        "bigsheepcam": ["SheepBigOutsideCam", "woooow big sheep outside cam"],
+        "bigsheepshed": ["SheepshedBig", "woooow big sheep shed cam"],
+    };
 
-                                } 
-                                
-                                if((( userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652') && (message === "bigsheepshed")) || ((userstate['badge-info'] != null) && (message === "bigsheepshed"))) {
-                                   global.scena = "SheepshedBig";
-                                   sceneswitch();
-                                  client.action("tanglesheep","woooow big sheep shed cam");
-                                 } 
-                                 
-                                 if( (message === "!sheepentry" ) && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                              camentry();
-                                   client.action("tanglesheep", userstate['display-name'] + " camera moving to sheep shed entry ");
-  
-                                   } 
-                                  
-                              if( (message === "!sheepgarden") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                              camgarden();
-                                   client.action("tanglesheep", userstate['display-name'] + " camera moving to sheep's garden ");
-  
-                   } 
-                     if( (message === "!goat") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                              camaroundshed();
-                                   client.action("tanglesheep", userstate['display-name'] + " camera moving to check goats area ");
-  
-                    } 
-                      if( (message === "!sheepfargarden") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                               camfargarden();
-                                   client.action("tanglesheep", userstate['display-name'] + " camera moving to check far away sheep ");
-                     }
-  
-                       if( (message === "!sheeppatrol") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                                 camsheeppatrol();
-                                   client.action("tanglesheep", userstate['display-name'] + " camera starting to patrol ");
-                     }
+    // Execute command if it's a subscriber command or a big camera command
+    if (isSubscriberOrFounder && subscriberCommands[message]) {
+        subscriberCommands[message]();
+        return;
+    }
 
-                       if( (message === "!birdmain") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                                cambirdmain();
-                                   client.action("tanglesheep", userstate['display-name'] + " Cage of Lary and Roby ");
-                     }
-  
-                      if( (message === "!birdrest") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                                 cambirdrest();
-                                   client.action("tanglesheep", userstate['display-name'] + " Resting place view ");
-                     }
-  
-                      if( (message === "!birdfeeding") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                               cambirdfeeding();
-                                   client.action("tanglesheep", userstate['display-name'] + " Feeding place view ");
-                     }
-  
-                       if( (message === "!birdfeeding2") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                              cambirdfeeding2();
-                                   client.action("tanglesheep", userstate['display-name'] + " Lary's feeding place ");
-                     }
-  
-                      if( (message === "!bird2main") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                               cambird2main();
-                                   client.action("tanglesheep", userstate['display-name'] + " Second cage all view ");
-                     }
-                    if( (message === "!bird2feeding") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                              cambird2feeding();
-                                   client.action("tanglesheep", userstate['display-name'] + " Second cage feeding place view ");
-                     }
-                     if( (message === "!bird2rest") && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                                          cambird2rest();
-                                   client.action("tanglesheep", userstate['display-name'] + " Second cage rest place view ");
+    // Check and execute big camera commands
+    const bigCameraCommand = bigCameraCommands[message];
+    if (bigCameraCommand && (userstate['custom-reward-id'] === '9e47f62a-a26c-46c3-8eda-affb9124e652' || userstate['badge-info'] != null)) {
+        setSceneAndAnnounce(bigCameraCommand[0], bigCameraCommand[1]);
+        return;
+    }
 
-                     }  
-                     
-                     if((( message === "!birdcam" ) || (message === "!sheepcam") || (message === "!goatshedcam") || (message === "!goat")) && (userstate['badge-info'] === null) ){
- 
-                      client.action("tanglesheep", userstate['display-name'] + " you need to be subscriber of tanglesheep channel");
-            
-                     }
+    // Special handling for custom reward ID with no direct mapping to switchCamera
+    if (customRewardCommands[userstate['custom-reward-id']]) {
+        customRewardCommands[userstate['custom-reward-id']]();
+        return;
+    }
 
+    // Inform users without badge info about subscription requirement for specific commands
+    if (["!birdcam", "!sheepcam", "!goatshedcam", "!goat"].includes(message) && !userstate['badge-info']) {
+        client.action("tanglesheep", `${userstate['display-name']} you need to be a subscriber of tanglesheep channel`);
+    }
+});
 
+//PTZ MOVE
 
-                 // sheep free ptz move    
-                     var movevalue = message.match(/\d+/g);
-     
-                     if (movevalue === null){
-                       return false;
-                      }
-                     else if
-                     ( (message == "!sheepcam x"+movevalue[0]+" y"+movevalue[1]+" zoom"+movevalue[2] ) && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                       x = movevalue[0] * 10;
-                       y = movevalue[1] * 10;
-                       zoom = movevalue[2] * 10;
-                        sheepptzfree();
-                    //  client.action("tanglesheep", userstate['display-name'] + " camera moving  ");
-                     }
-                     else if
-                     ( (message == "!birdcam x"+movevalue[0]+" y"+movevalue[1]+" zoom"+movevalue[2] ) && userstate.badges && (userstate.badges.subscriber || userstate.badges.founder)) {
-                       x = movevalue[0] * 10;;
-                       y = movevalue[1] * 10;;
-                       zoom = movevalue[2] * 10;
-                       birdptzfree();
-                    //  client.action("tanglesheep", userstate['display-name'] + " camera moving  ");
-                     } 
-  
-  });
+client.on('chat', (channel, userstate, message, self) => {
+    // Extract movement values from the message
+    const moveValue = message.match(/\d+/g);
 
+    if (!moveValue || !(userstate.badges && (userstate.badges.subscriber || userstate.badges.founder))) {
+        return false; // Exit if there are no movement values or the user is not authorized
+    }
 
+    const [x, y, zoom] = moveValue.map(v => v * 10);
 
+    if (message.startsWith("!sheepcam")) {
+        sendPTZCommand(x, y, zoom, 'sheep');
+    } else if (message.startsWith("!birdcam")) {
+        sendPTZCommand(x, y, zoom, 'bird');
+    }
+});
+
+// Generalized PTZ control function
+function sendPTZCommand(x, y, zoom, type) {
+    const cameraIp = type === 'sheep' ? '192.168.1.12' : '192.168.1.14';
+    const options = {
+        method: 'PUT',
+        url: `http://${config.camera.pass}@${cameraIp}/ISAPI/PTZCtrl/channels/1/absolute`,
+        headers: { 'Content-Type': 'application/xml' },
+        body: `<PTZData>\n<AbsoluteHigh>\n<elevation> ${y} </elevation>\n<azimuth> ${x} </azimuth>\n<absoluteZoom>${zoom}</absoluteZoom>\n</AbsoluteHigh> \n</PTZData>`
+    };
+
+    request(options, (error, response) => {
+        if (error) console.log(error);
+        // Optionally handle response or log success message
+    });
+}
 
 
 
@@ -253,150 +194,53 @@ client.action("tanglesheep", userstate['display-name'] + " Premium Feeding was r
 
 //camera handling
 
-//dravci on
-function birdcam() {
+function switchCamera(cameraType) {
   const obs = new OBSWebSocket();
-
-  // Connect to OBS WebSocket
-  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew).then(() => {
-    console.log("Successfully connected to OBS WebSocket");
-
-    // Batch of commands to be executed after successful connection
-    return obs.callBatch([
-      {
-        requestType: 'SetSceneItemEnabled',
-        requestData: {
-          sceneName: 'Main',
-          sceneItemId: 36,
-          sceneItemEnabled: true 
-        }
-      },
-      {
-        requestType: 'SetSceneItemEnabled',
-        requestData: {
-          sceneName: 'Main',
-          sceneItemId: 37,
-          sceneItemEnabled: false 
-        }
-      },
-      {
-        requestType: 'SetSceneItemEnabled',
-        requestData: {
-          sceneName: 'Main',
-          sceneItemId: 38,
-          sceneItemEnabled: false 
-        } 
-      }
-    ]);
-  }).then(() => {
-    console.log("Commands executed successfully");
-    // Disconnect after executing commands
-    obs.disconnect();
-  }).catch((error) => {
-    console.error("Error occurred:", error);
-    // Disconnect in case of error
-    obs.disconnect();
-  });
-}
-
-
-
-
-
-
-
-
-
-
- //ovce on
-
- function sheepcam() {
-  const obs = new OBSWebSocket();
-
-  // Connect to OBS WebSocket
-  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew).then(() => {
-    console.log("Successfully connected to OBS WebSocket for sheepcam");
-
-    // Batch of commands for sheepcam
-    return obs.callBatch([
-      {
-        requestType: 'SetSceneItemEnabled',
-        requestData: {
-          sceneName: 'Main',
-          sceneItemId: 37,
-          sceneItemEnabled: true 
-        }
-      },
-      {
-        requestType: 'SetSceneItemEnabled',
-        requestData: {
-          sceneName: 'Main',
-          sceneItemId: 36,
-          sceneItemEnabled: false 
-        }
-      },
-      {
-        requestType: 'SetSceneItemEnabled',
-        requestData: {
-          sceneName: 'Main',
-          sceneItemId: 38,
-          sceneItemEnabled: false 
-        } 
-      }
-    ]);
-  }).then(() => {
-    console.log("Commands executed successfully for sheepcam");
-    obs.disconnect();
-  }).catch((error) => {
-    console.error("Error occurred in sheepcam:", error);
-    obs.disconnect();
-  });
-}
-
   
-
-
-//goats on
-
-function goatshedcam() {
-  const obs = new OBSWebSocket();
-
+  // Define scene item IDs for each camera type
+  const cameraSettings = {
+    bird: { enable: 36, disable: [37, 38] },
+    sheep: { enable: 37, disable: [36, 38] },
+    goat: { enable: 38, disable: [36, 37] },
+  };
+  
+  const settings = cameraSettings[cameraType];
+  if (!settings) {
+    console.error('Invalid camera type specified');
+    return;
+  }
+  
   // Connect to OBS WebSocket
   obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew).then(() => {
-    console.log("Successfully connected to OBS WebSocket for goatshedcam");
+    console.log(`Successfully connected to OBS WebSocket for ${cameraType} camera`);
 
-    // Batch of commands for goatshedcam
-    return obs.callBatch([
+    // Generate batch commands based on the camera type
+    const batchCommands = [
       {
         requestType: 'SetSceneItemEnabled',
         requestData: {
           sceneName: 'Main',
-          sceneItemId: 36,
-          sceneItemEnabled: false 
+          sceneItemId: settings.enable,
+          sceneItemEnabled: true
         }
       },
-      {
+      ...settings.disable.map(sceneItemId => ({
         requestType: 'SetSceneItemEnabled',
         requestData: {
           sceneName: 'Main',
-          sceneItemId: 37,
-          sceneItemEnabled: false 
+          sceneItemId,
+          sceneItemEnabled: false
         }
-      },
-      {
-        requestType: 'SetSceneItemEnabled',
-        requestData: {
-          sceneName: 'Main',
-          sceneItemId: 38,
-          sceneItemEnabled: true 
-        } 
-      }
-    ]);
+      }))
+    ];
+
+    // Execute batch commands
+    return obs.callBatch(batchCommands);
   }).then(() => {
-    console.log("Commands executed successfully for goatshedcam");
+    console.log(`Commands executed successfully for ${cameraType} camera`);
     obs.disconnect();
   }).catch((error) => {
-    console.error("Error occurred in goatshedcam:", error);
+    console.error(`Error occurred in ${cameraType} camera:`, error);
     obs.disconnect();
   });
 }
@@ -532,51 +376,11 @@ var request = require("request"); var options = { method: 'PUT',
 });
 }
 
-//sheep freeeptz
-function sheepptzfree () {
-               
-  var request = require('request');
-   var options = {
-  'method': 'PUT',
-  'url': 'http://'+config.camera.pass+'@192.168.1.12/ISAPI/PTZCtrl/channels/1/absolute',
-  'headers': {
-    'Content-Type': 'application/xml'
-  },
-  body: "<PTZData>\n<AbsoluteHigh>\n<elevation> "+y+" </elevation>\n<azimuth> "+x+" </azimuth>\n<absoluteZoom>"+zoom+"</absoluteZoom>\n</AbsoluteHigh> \n</PTZData>"
-
-};
-
-request(options, function (error, response) { 
-  console.log(error);
-});
-}
-
-//birds freeeptz
-function birdptzfree () {
-               
-  var request = require('request');
-   var options = {
-  'method': 'PUT',
-  'url': 'http://'+config.camera.pass+'@192.168.1.14/ISAPI/PTZCtrl/channels/1/absolute',
-  'headers': {
-    'Content-Type': 'application/xml'
-  },
-  body: "<PTZData>\n<AbsoluteHigh>\n<elevation> "+y+" </elevation>\n<azimuth> "+x+" </azimuth>\n<absoluteZoom>"+zoom+"</absoluteZoom>\n</AbsoluteHigh> \n</PTZData>"
-
-};
-
-request(options, function (error, response) { 
-  console.log(error);
-});
-}
-
-
-
 
 
 
 // show radar widget
-async function showradar() {
+async function showRadar() {
   const obs = new OBSWebSocket();
 
   // Helper function to wait for a specified amount of time
@@ -614,8 +418,6 @@ async function showradar() {
       console.log('Disconnected from OBS WebSocket');
   }
 }
-
-
 
 
 
