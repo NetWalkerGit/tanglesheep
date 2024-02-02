@@ -104,8 +104,7 @@ completion.then((result) => {
         "!bird2feeding": () => cambird2feeding(),
         "!bird2rest": () => cambird2rest(),
         "switchtosheepcam": () => userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221' && switchCameraCommand('sheep'),
-        "switchtobirdcam": () => userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221' && switchCamera('bird'), // Assuming birdcam is similar to switchCamera
-        // Merge switch camera commands for better organization
+        "switchtobirdcam": () => userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221' && switchCamera('bird'), 
         "!birdcam": () => switchCameraCommand('bird'),
         "!sheepcam": () => switchCameraCommand('sheep'),
         "!goatcam": () => switchCameraCommand('goat'),
@@ -192,7 +191,7 @@ function sendPTZCommand(x, y, zoom, type) {
 
 
 
-//camera handling
+//small camera switching obs
 
 function switchCamera(cameraType) {
   const obs = new OBSWebSocket();
