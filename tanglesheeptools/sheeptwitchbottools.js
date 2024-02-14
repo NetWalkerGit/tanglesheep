@@ -198,9 +198,9 @@ function switchCamera(cameraType) {
   
   // Define scene item IDs for each camera type
   const cameraSettings = {
-    bird: { enable: 36, disable: [37, 38] },
-    sheep: { enable: 37, disable: [36, 38] },
-    goat: { enable: 38, disable: [36, 37] },
+    bird: { enable: 45, disable: [46, 47] },
+    sheep: { enable: 46, disable: [45, 47] },
+    goat: { enable: 47, disable: [45, 46] },
   };
   
   const settings = cameraSettings[cameraType];
