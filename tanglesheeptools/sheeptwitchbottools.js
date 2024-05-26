@@ -454,7 +454,7 @@ async function emptybin() {
     // Enable the scene item
     await obs.call('SetSceneItemEnabled', {
       sceneName: 'Main',
-      sceneItemId: 24,
+      sceneItemId: 53,
       sceneItemEnabled: true
     });
  
@@ -479,7 +479,7 @@ const headers = {
     'Content-Type': 'application/json'
 };
 
-function checkData() {
+function checkbin() {
     axios.get(`${apiEndpoint}/states/${entityId}`, { headers })
         .then(response => {
             const data = response.data;
@@ -496,4 +496,4 @@ function checkData() {
 }
 
 // Run the checkData function every 1 minutes
-setInterval(checkData, 60000);
+setInterval(checkbin, 60000);
