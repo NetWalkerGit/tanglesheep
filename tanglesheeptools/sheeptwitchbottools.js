@@ -3,8 +3,9 @@ var schedule = require('node-schedule');
 const fs = require('fs');
 const request = require('request');
 const config = require('./configtools.js');
-const { Configuration, OpenAIApi } = require("openai");
+
 const { default: OBSWebSocket } = require('obs-websocket-js');
+const axios = require('axios');
 
 
 
@@ -22,12 +23,7 @@ const opts = {
     }
   };
 
-//openai Define configuration options
-  const configuration = new Configuration({
-    apiKey: (config.openai.api),
-  });
-  const openai = new OpenAIApi(configuration)
-//openai Define configuration options
+
 
 
  //twitch tmi connection
@@ -445,3 +441,59 @@ async function sceneswitch() {
       console.error('Error occurred:', err);
   } 
 }
+
+//activate empty bin notice on the stream
+async function emptybin() {
+  const obs = new OBSWebSocket();
+
+  try {
+    // Connect to OBS WebSocket
+    await obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
+    console.log('Connected to OBS WebSocket for empy bin');
+
+    // Enable the scene item
+    await obs.call('SetSceneItemEnabled', {
+      sceneName: 'Main',
+      sceneItemId: 24,
+      sceneItemEnabled: true
+    });
+ 
+
+  } catch (error) {
+    console.error('Error occurred in feedingbroken:', error);
+  } finally {
+    // Disconnect from OBS WebSocket
+    obs.disconnect();
+  //  console.log('Disconnected from OBS WebSocket for feedingbroken');
+  }
+}
+
+
+//reading data from HA for peelets sensor
+const apiEndpoint = 'https://home.tanglesheep.com:8123/api';
+const accessToken = config.ha.accessToken;
+const entityId = 'sensor.tanglesheepesp_pellets_sensor';
+
+const headers = {
+    'Authorization': `Bearer ${accessToken}`,
+    'Content-Type': 'application/json'
+};
+
+function checkData() {
+    axios.get(`${apiEndpoint}/states/${entityId}`, { headers })
+        .then(response => {
+            const data = response.data;
+            console.log(data);
+
+            // Check if the data is lower than 5
+            if (data.state < 80) {
+              emptybin();
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+}
+
+// Run the checkData function every 5 minutes (300,000 milliseconds)
+setInterval(checkData, 60000);

@@ -9,10 +9,11 @@
   "author": "Karel B.",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.7.2",
     "fs": "0.0.1-security",
     "node-schedule": "^2.1.0",
     "obs-websocket-js": "^5.0.3",
-    "openai": "^3.1.0",
+    "openai": "^4.47.1",
     "request": "^2.88.2",
     "sockjs": "^0.3.24",
     "sockjs-client": "^1.6.1",
