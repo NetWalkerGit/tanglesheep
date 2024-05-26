@@ -486,7 +486,7 @@ function checkData() {
             console.log(data);
 
             // Check if the data is lower than 5
-            if (data.state < 80) {
+            if (data.state < 2) {
               emptybin();
             }
         })
@@ -495,5 +495,5 @@ function checkData() {
         });
 }
 
-// Run the checkData function every 5 minutes (300,000 milliseconds)
+// Run the checkData function every 1 minutes
 setInterval(checkData, 60000);
