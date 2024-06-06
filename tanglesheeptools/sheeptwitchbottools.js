@@ -40,25 +40,31 @@ const opts = {
 
 
 
-//OPENAI chatgpt  
+//ollama aichat  
 
 client.on ('message', function(channel, userstate,  message, self) {
 
   if (self) return;
   if ( userstate ['custom-reward-id'] === '1f835010-ee82-45c0-934a-b8326979b793') {
 
-const completion = openai.createCompletion({
-  model: "text-davinci-003",
-  prompt: message,
-  max_tokens: 1000
-});
+    const aidata = {
+      model: "llama3",
+      prompt: message,
+      stream: false  // Set stream as a boolean
+    };
 
 
-//console.info("Searching for answer...");
-completion.then((result) => {
-  client.say(channel, result.data.choices[0].text);
-});
-
+    axios.post('http://localhost:11434/api/generate', aidata)
+    .then(response => {
+      if (response.data && response.data.response) {
+        client.say(channel, response.data.response);
+      } else {
+        console.log('Response field not found in the response data.');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
 } 
 
 });
