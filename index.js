@@ -6,7 +6,7 @@ const request = require("request");
 const config = require('./config.js');
 const fs = require('fs');
 const { default: OBSWebSocket } = require('obs-websocket-js');
-const obs = new OBSWebSocket();
+const axios = require('axios');
 
 
 const dbcon = mysql.createConnection({
@@ -357,31 +357,46 @@ var app = express();
 // feeding gif animation and sound
 
 
-function feedaniamtion () {
-  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
-  obs.on('Identified', () => {
-     // console.log('Identified, good to go!')
+async function feedanimation() {
+  const obs = new OBSWebSocket();
 
-     obs.call('SetSceneItemEnabled', {
+  try {
+    // Connect to OBS WebSocket
+    await obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
+   // console.log('Connected to OBS WebSocket');
+
+    // Enable the scene item
+    await obs.call('SetSceneItemEnabled', {
       sceneName: 'Main',
       sceneItemId: 23,
-      sceneItemEnabled: true 
+      sceneItemEnabled: true
     });
-          
-          // Wait for 10 seconds
-          setTimeout(() => {
+   // console.log('Scene item enabled');
 
-            obs.call('SetSceneItemEnabled', {
-              sceneName: 'Main',
-              sceneItemId: 23,
-              sceneItemEnabled: false 
-            }).then(() => {
-              obs.disconnect();
-             });
+    // Wait for 4.5 seconds before disabling the scene item
+    await new Promise(resolve => setTimeout(resolve, 4500)); // 4500 milliseconds = 4.5 seconds
+   // console.log('Waited for 4.5 seconds');
 
-          }, 4500); // 4500 milliseconds = 4,5 seconds       
-      })
+    // Disable the scene item
+    await obs.call('SetSceneItemEnabled', {
+      sceneName: 'Main',
+      sceneItemId: 23,
+      sceneItemEnabled: false
+    });
+   // console.log('Scene item disabled');
+
+  } catch (err) {
+    console.error('Error occurred:', err);
+  } finally {
+    // Disconnect from OBS WebSocket
+    try {
+      obs.disconnect();
+   //   console.log('Disconnected from OBS WebSocket');
+    } catch (disconnectError) {
+      console.error('Error while disconnecting:', disconnectError);
     }
+  }
+}
 
 
 
@@ -391,19 +406,31 @@ function feedaniamtion () {
 
 
 //activate broekn feeder notice on the stream
-function feedingbroken () {
-  obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew );
-  obs.on('Identified', () => {
-           
-        obs.call('SetSceneItemEnabled', {
-          sceneName: 'Main',
-          sceneItemId: 24,
-          sceneItemEnabled: true 
-        }).then(() => {
-          obs.disconnect();
-         });
-      }
-  )}
+async function feedingbroken() {
+  const obs = new OBSWebSocket();
+
+  try {
+    // Connect to OBS WebSocket
+    await obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
+    console.log('Connected to OBS WebSocket for feedingbroken');
+
+    // Enable the scene item
+    await obs.call('SetSceneItemEnabled', {
+      sceneName: 'Main',
+      sceneItemId: 24,
+      sceneItemEnabled: true
+    });
+   // console.log('Scene item enabled for feedingbroken');
+
+  } catch (error) {
+    console.error('Error occurred in feedingbroken:', error);
+  } finally {
+    // Disconnect from OBS WebSocket
+    obs.disconnect();
+  //  console.log('Disconnected from OBS WebSocket for feedingbroken');
+  }
+}
+
 //activate broekn feeder notice on the stream
 
 
@@ -412,31 +439,41 @@ function feedingbroken () {
 
 // Function calling feeder
  
-  function feeding () {
-    
-  
-      var options = { method: 'GET',url: (config.toolscontrol.dcmotor),headers:{ 'cache-control': 'no-cache' } };
-        request(options, function (error, response, body) {
-         if (!error && response.statusCode == 200) {
-            // console.log("URL is OK") 
-                  Hook.send("Normal feeding happen");
-                 dbcon.query("SELECT totalfeeds,todayfeeds FROM feedstat", function (err, result) {      //Feeding counters
-                  for (var i in result)
-                  totalfeeds = (result[i].totalfeeds) + 1;
-                  todayfeeds = (result[i].todayfeeds) + 1;
-                  dbcon.query("UPDATE feedstat SET totalfeeds=?, todayfeeds=? WHERE id=?",[totalfeeds, todayfeeds, 1], function (err, result ) {             //incrase counter in DB
-                    if (err) throw err; });    
-                    feedaniamtion ();   // plasy sound during the feeding
-                });
-          
-       } else {
-        HookAlert.send("Connection from server to ESP32chip broken!!!");
-        feedingbroken () ;
+async function feeding() {
+  try {
+      await axios.post(config.webhook.feeder); // Make sure to await the asynchronous operation
+      Hook.send("Normal feeding happened");
+
+      // Retrieve and update feeding counters
+      dbcon.query("SELECT totalfeeds, todayfeeds FROM feedstat", function (err, result) {
+          if (err) {
+              throw err; // Handle potential errors from the query
+          }
+
+          result.forEach(row => {
+              let totalfeeds = row.totalfeeds + 1;
+              let todayfeeds = row.todayfeeds + 1;
+
+              // Update the counters in the database
+              dbcon.query("UPDATE feedstat SET totalfeeds=?, todayfeeds=? WHERE id=?", [totalfeeds, todayfeeds, 1], function (updateErr) {
+                  if (updateErr) {
+                      throw updateErr; // Handle potential errors from the update query
+                  }
+              });
+          });
+      });
+
+      // Assuming feedanimation is an async function
+      await feedanimation(); // Corrected syntax
+  } catch (error) {
+      // Consolidate error handling
+         HookAlert.send("Connection from server to ESP32chip broken!!!");
+         await  feedingbroken () ;
          client.action("tanglesheep","CAN'T REACH FEEDER !!!, CONNECTION BROKEN , PLEASE CONTACT ADMIN ON DISCORD THX AND MY APOLOGIES tangle8Goatbits  tangle8Goatbits");
-         console.log("can't reach ESP32")  
-                 };
-            });
-    };
+         console.log("can't reach ESP32")
+  }
+}
+
         
 
 
