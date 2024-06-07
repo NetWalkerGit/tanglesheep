@@ -54,7 +54,7 @@ client.on ('message', function(channel, userstate,  message, self) {
     };
 
 
-    axios.post('http://localhost:11434/api/generate', aidata)
+    axios.post('http://127.0.0.1:11434/api/generate', aidata)
     .then(response => {
       if (response.data && response.data.response) {
         client.say(channel, response.data.response);
@@ -489,7 +489,7 @@ function checkbin() {
     axios.get(`${apiEndpoint}/states/${entityId}`, { headers })
         .then(response => {
             const data = response.data;
-            console.log(data);
+//            console.log(data);
 
             // Check if the data is lower than 5
             if (data.state < 2) {
