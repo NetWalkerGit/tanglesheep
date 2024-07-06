@@ -33,14 +33,14 @@ const opts = {
 
   function onConnectedHandler (addr, port) {
    console.log(`* Connected to ${addr}:${port}`);
- } 
+ }
  //twitch tmi connection
 
 
 
 
 
-//ollama aichat  
+//ollama aichat
 
 client.on ('message', function(channel, userstate,  message, self) {
 
@@ -48,13 +48,14 @@ client.on ('message', function(channel, userstate,  message, self) {
   if ( userstate ['custom-reward-id'] === '1f835010-ee82-45c0-934a-b8326979b793') {
 
     const aidata = {
-      model: "llama3",
+      model: "gemma2",
+      max_response_length: 20,
       prompt: message,
       stream: false  // Set stream as a boolean
     };
 
 
-    axios.post('http://127.0.0.1:11434/api/generate', aidata)
+    axios.post('http://192.168.1.60:11434/api/generate', aidata)
     .then(response => {
       if (response.data && response.data.response) {
         client.say(channel, response.data.response);
@@ -65,12 +66,12 @@ client.on ('message', function(channel, userstate,  message, self) {
     .catch(error => {
       console.error('Error:', error);
     });
-} 
+}
 
 });
 
 
-//OPENAI chatgpt  
+//ollama aichat
 
 
   // switch cams
@@ -106,7 +107,7 @@ client.on ('message', function(channel, userstate,  message, self) {
         "!bird2feeding": () => cambird2feeding(),
         "!bird2rest": () => cambird2rest(),
         "switchtosheepcam": () => userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221' && switchCameraCommand('sheep'),
-        "switchtobirdcam": () => userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221' && switchCamera('bird'), 
+        "switchtobirdcam": () => userstate['custom-reward-id'] === '99d381a5-b224-4277-a061-b42c5dc75221' && switchCamera('bird'),
         "!birdcam": () => switchCameraCommand('bird'),
         "!sheepcam": () => switchCameraCommand('sheep'),
         "!goatcam": () => switchCameraCommand('goat'),
@@ -118,7 +119,7 @@ client.on ('message', function(channel, userstate,  message, self) {
         "65263b98-c85f-4905-b35a-a965eca3cba7": () => client.action("tanglesheep", `!8ball Answer ${userstate['display-name']}'s question..`),
         "switchtosheepcam": () => switchCameraCommand('sheep'),
         "switchtobirdcam": () => switchCamera('bird'), // Assuming birdcam is similar to switchCamera
-        
+
     };
 
     // Handling for big camera commands with custom rewards or badge info
@@ -197,20 +198,20 @@ function sendPTZCommand(x, y, zoom, type) {
 
 function switchCamera(cameraType) {
   const obs = new OBSWebSocket();
-  
+
   // Define scene item IDs for each camera type
   const cameraSettings = {
     bird: { enable: 45, disable: [46, 47] },
     sheep: { enable: 46, disable: [45, 47] },
     goat: { enable: 47, disable: [45, 46] },
   };
-  
+
   const settings = cameraSettings[cameraType];
   if (!settings) {
     console.error('Invalid camera type specified');
     return;
   }
-  
+
   // Connect to OBS WebSocket
   obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew).then(() => {
     console.log(`Successfully connected to OBS WebSocket for ${cameraType} camera`);
@@ -437,7 +438,7 @@ async function sceneswitch() {
 
       // Wait for 30 seconds
       await new Promise(resolve => setTimeout(resolve, 30000));
-      
+
      await obs.connect('ws://192.168.1.60:4455', config.obscontrol.apinew);
       // Switch back to the Main scene
       await obs.call('SetCurrentProgramScene', { sceneName: 'Main' });
@@ -445,7 +446,7 @@ async function sceneswitch() {
       obs.disconnect();
   } catch (err) {
       console.error('Error occurred:', err);
-  } 
+  }
 }
 
 //activate empty bin notice on the stream
@@ -463,7 +464,7 @@ async function emptybin() {
       sceneItemId: 53,
       sceneItemEnabled: true
     });
- 
+
 
   } catch (error) {
     console.error('Error occurred in feedingbroken:', error);
