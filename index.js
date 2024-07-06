@@ -120,6 +120,7 @@ const opts = {
              dbcon.query(newuser, function (err, result) {  });
               
                 feeding();
+                Hook.send("Feeding subfeed");
                 dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'subfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
 
              client.action("tanglesheep", userstate['display-name'] + " Thx for first time subpower feeding :) :) "); 
@@ -143,6 +144,7 @@ const opts = {
 
 
                 feeding();             //run feeder
+                Hook.send("Feeding subfeed");
                 dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'subfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
 
                client.action("tanglesheep", userstate['display-name'] + " Sub power feeding :) ");
@@ -172,6 +174,7 @@ const opts = {
                           dbcon.query("UPDATE  twitchuser SET pointfeeds=? WHERE userid=?",[1, userstate['user-id']], function (err, result ) {    //incrase counter in DB
                           });   
                                feeding();                          //run feeder
+                               Hook.send("Feeding Loyalty");
                                dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'loyaltyfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
                            client.action("tanglesheep", userstate['display-name'] + " Thx for first time  loyalty feeding:) ");
                           
@@ -185,6 +188,7 @@ const opts = {
                              });
                             
                                   feeding();   //run feeder
+                                  Hook.send("Feeding Loyalty");
                            dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'loyaltyfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
 
                              client.action("tanglesheep", userstate['display-name'] + " Enjoy your loyalty feeding :) <3 ");
@@ -255,6 +259,7 @@ client.on ("cheer", (channel, userstate, message) =>  {
                          });
                          
                          feeding();
+                         Hook.send("Feeding Bits");
                          dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'cheerfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
                         client.action("tanglesheep", userstate['display-name'] + " Thx for firs time  cheer feeding :)  ");
                               
@@ -266,6 +271,7 @@ client.on ("cheer", (channel, userstate, message) =>  {
                             dbcon.query("UPDATE  twitchuser SET cheerfeeds=? WHERE userid=?",[sumpocheerfeeds, userstate['user-id']], function (err, result ) {    //incrase counter in DB
                                       });   
                           feeding();
+                          Hook.send("Feeding Bits");
                           dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'cheerfeed', " + dbcon.escape(userstate['display-name']) + ")"); //feedingststat
                           client.action("tanglesheep", userstate['display-name'] + " Thx for feeding <3 <3   Sheep are happy :)  ");
                                  });
@@ -339,6 +345,7 @@ var app = express();
       client.action("tanglesheep"," Thx for feeding via BITCOIN LN your payment hash is "+request.body.hashed_order);
       createlnpay (); 
       feeding ();
+      Hook.send("Feeding LN");
       dbcon.query("INSERT INTO feedingstats (id, type, info) VALUES ("+ dbcon.escape(uniqid()) +", 'BTCLN', '"+request.body.hashed_order+"')"); //feedingststat
      }
      response.status(200).end();
@@ -442,9 +449,7 @@ async function feedingbroken() {
 async function feeding() {
   try {
       await axios.post(config.webhook.feeder); // Make sure to await the asynchronous operation
-      Hook.send("Normal feeding happened");
-
-      // Retrieve and update feeding counters
+            // Retrieve and update feeding counters
       dbcon.query("SELECT totalfeeds, todayfeeds FROM feedstat", function (err, result) {
           if (err) {
               throw err; // Handle potential errors from the query
