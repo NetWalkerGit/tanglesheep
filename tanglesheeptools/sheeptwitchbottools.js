@@ -48,7 +48,7 @@ client.on ('message', function(channel, userstate,  message, self) {
   if ( userstate ['custom-reward-id'] === '1f835010-ee82-45c0-934a-b8326979b793') {
 
     const aidata = {
-      model: "gemma2",
+      model: "llama3.2",
       max_response_length: 20,
       prompt: message,
       stream: false  // Set stream as a boolean
